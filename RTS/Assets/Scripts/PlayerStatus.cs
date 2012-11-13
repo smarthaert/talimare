@@ -15,9 +15,6 @@ public class PlayerStatus : MonoBehaviour {
 	public int aluminum = 0;
 	public int uranium = 0;
 	public int unobtanium = 0;
-	
-	// Currents
-	private GameObject currentSelection;
 
 	// Use this for initialization
 	void Start () {
@@ -26,29 +23,6 @@ public class PlayerStatus : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		// Handle mouse0 click (object selection)
-		if(Input.GetMouseButtonDown(0)) {
-			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-			RaycastHit hit;
-			
-			if (Physics.Raycast(ray, out hit)) {
-				if(hit.collider.gameObject.GetComponent("Selectable") != null) {
-					if(currentSelection != null)
-						DeselectCurrent();
-					currentSelection = hit.collider.gameObject;
-					hit.collider.gameObject.GetComponent("Selectable").SendMessage("Select");
-				} else {
-					DeselectCurrent();
-				}
-			} else {
-				DeselectCurrent();
-			}
-		}
-	}
-	
-	void DeselectCurrent() {
-		if(currentSelection != null)
-			currentSelection.SendMessage("Deselect");
-		currentSelection = null;
+		
 	}
 }
