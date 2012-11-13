@@ -17,12 +17,14 @@ public class Selectable : MonoBehaviour {
 		
 	}
 	
-	void Select() {
+	// Called when this GameObject has been selected
+	public void Select() {
 		currentMarker = (GameObject)Instantiate(selectionMarker, this.gameObject.transform.position, Quaternion.identity);
 		currentMarker.transform.parent = this.gameObject.transform;
 	}
 	
-	void Deselect() {
+	// Called when this GameObject has been deselected
+	public void Deselect() {
 		Destroy(currentMarker);
 		currentMarker = null;
 	}
