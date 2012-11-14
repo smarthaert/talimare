@@ -1,7 +1,8 @@
 using UnityEngine;
 using System.Collections;
 
-public class BuildingControl : MonoBehaviour {
+// Parent class for all building controls. Contains general building utility functions
+public class BuildingControl : Selectable {
 
 	// Use this for initialization
 	void Start () {
