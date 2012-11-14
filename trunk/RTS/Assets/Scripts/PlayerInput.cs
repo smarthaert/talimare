@@ -13,6 +13,11 @@ public class PlayerInput : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		// Send key press notification to the currently selected object
+		if(currentSelection != null && Input.anyKeyDown) {
+			currentSelection.KeyPressed();
+		}
+		
 		// Handle mouse0 click (object selection)
 		if(Input.GetMouseButtonDown(0)) {
 			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);

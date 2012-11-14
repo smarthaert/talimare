@@ -3,6 +3,7 @@ using System.Collections;
 
 // Defines the behavior of a selectable GameObject
 public class Selectable : MonoBehaviour {
+	
 	public GameObject selectionMarker;
 	
 	private GameObject currentMarker;
@@ -28,4 +29,7 @@ public class Selectable : MonoBehaviour {
 		Destroy(currentMarker);
 		currentMarker = null;
 	}
+	
+	// Called when this GameObject is selected and a key is pressed
+	public virtual void KeyPressed() {}
 }

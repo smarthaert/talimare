@@ -3,6 +3,7 @@ using System.Collections;
 
 // Keeps information about a player's current status
 public class PlayerStatus : MonoBehaviour {
+	
 	// Resources
 	public int food = 0;
 	public int water = 0;
