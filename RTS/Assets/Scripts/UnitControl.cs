@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-// Parent class for all unit controls. Contains general unit utility functions
+// Contains general unit utility functions
 public class UnitControl : Selectable {
 
 	// Use this for initialization

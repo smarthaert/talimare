@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 
 // Defines the behavior of a selectable GameObject
+// BuildingControl and UnitControl extend this, but simpler objects can just use this component
 public class Selectable : MonoBehaviour {
 	
 	// Use this for initialization
@@ -20,9 +21,7 @@ public class Selectable : MonoBehaviour {
 	}
 	
 	// Called when this GameObject has been deselected
-	public void Deselect() {
-		
-	}
+	public void Deselect() {}
 	
 	// Called when this GameObject is selected and a key is pressed
 	public virtual void KeyPressed() {}
