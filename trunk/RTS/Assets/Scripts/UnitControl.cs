@@ -2,15 +2,15 @@ using UnityEngine;
 using System.Collections;
 
 // Parent class for all unit controls. Contains general unit utility functions
-public class UnitControl : MonoBehaviour {
+public class UnitControl : Selectable {
 
 	// Use this for initialization
-	void Start () {
-	
+	protected override void Start () {
+		base.Start();
 	}
 	
 	// Update is called once per frame
-	void Update () {
-	
+	protected override void Update () {
+		base.Update();
 	}
 }

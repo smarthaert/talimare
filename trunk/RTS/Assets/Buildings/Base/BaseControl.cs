@@ -3,21 +3,23 @@ using System.Collections;
 
 public class BaseControl : BuildingControl {
 	
-	public KeyCode trainCivilianKey = KeyCode.C;
+	public GameObject civilian;
+	public KeyCode civilianTrainKey = KeyCode.C;
+	public float civilianTrainTime = 5;
 
 	// Use this for initialization
-	void Start () {
-	
+	protected override void Start () {
+		base.Start();
 	}
 	
 	// Update is called once per frame
-	void Update () {
-	
+	protected override void Update () {
+		base.Update();
 	}
 	
 	public override void KeyPressed() {
-		if(Input.GetKeyDown(trainCivilianKey)) {
-			Debug.Log("trainCivilianKey was pressed");
+		if(Input.GetKeyDown(civilianTrainKey)) {
+			TrainUnit(new TrainingTask(civilian, civilianTrainTime));
 		}
 	}
 }
