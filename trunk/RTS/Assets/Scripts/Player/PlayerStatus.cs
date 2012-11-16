@@ -22,7 +22,7 @@ public class PlayerStatus : MonoBehaviour {
 	public int uranium = 0;
 	public int unobtanium = 0;
 	
-	// Current upkeep resource maximums
+	// Current upkeep resource maximums - use these fields only for the initial setting of values in the editor
 	public int maxFood = 0;
 	public int maxWater = 0;
 	public int maxPower = 0;
@@ -31,33 +31,47 @@ public class PlayerStatus : MonoBehaviour {
 	// Note: for upkeep resources, this contains the amount of usable resource remaining
 	public Dictionary<Resource, int> resourceLevels = new Dictionary<Resource, int>();
 	
+	// Resource maximums - use this when referencing current upkeep resource maximums from other scripts
+	public Dictionary<Resource, int> upkeepMaximums = new Dictionary<Resource, int>();
+	
 	// Keeps track of all objects (units or buildings) which are using upkeep resources
 	private Dictionary<Resource, Dictionary<UnityEngine.Object, int>> capturedUpkeepResources = new Dictionary<Resource, Dictionary<UnityEngine.Object, int>>();
-
-	void Start () {
+	
+	void Awake () {
 		food = maxFood;
 		water = maxWater;
 		power = maxPower;
+		
+		upkeepMaximums.Add(Resource.Food, maxFood);
+		upkeepMaximums.Add(Resource.Water, maxWater);
+		upkeepMaximums.Add(Resource.Power, maxPower);
 		
 		// Initialize the dictionaries by loading each with every resource
 		foreach(object resource in Enum.GetValues(typeof(Resource))) {
 			resourceLevels.Add((Resource)resource, (int)this.GetType().GetField(resource.ToString().ToLower()).GetValue(this));
 			capturedUpkeepResources.Add((Resource)resource, new Dictionary<UnityEngine.Object, int>());
 		}
-		
-		// Find all Trainables that currently exist and capture their upkeep resources
-		foreach(Trainable trainable in FindObjectsOfType(typeof(Trainable)).Cast<Trainable>()) {
-			foreach(ResourceAmount resourceCost in trainable.resourceCosts) {
+	}
+	
+	void Start () {
+		// Find all Creatables that currently exist and capture their upkeep resources
+		foreach(Creatable creatable in FindObjectsOfType(typeof(Creatable)).Cast<Creatable>()) {
+			foreach(ResourceAmount resourceCost in creatable.resourceCosts) {
 				if(resourceCost.IsUpkeepResource()) {
 					SpendResource(resourceCost.resource, resourceCost.amount);
-					CaptureUpkeepResource(resourceCost.resource, resourceCost.amount, trainable.gameObject);
+					CaptureUpkeepResource(resourceCost.resource, resourceCost.amount, creatable.gameObject);
 				}
 			}
 		}
 	}
 	
 	void Update () {
-		
+		//later on, this will be checking if upkeep resources used have exceeded maximum limits
+	}
+	
+	// Gains an amount of the given resource
+	public void GainResource(Resource resource, int amount) {
+		resourceLevels[resource] += amount;
 	}
 	
 	// Spends an amount of the given resource
@@ -65,8 +79,23 @@ public class PlayerStatus : MonoBehaviour {
 		resourceLevels[resource] -= amount;
 	}
 	
+	// Adds a supplied amount of an upkeep resource that may be used
+	public void AddSuppliedUpkeepResource(Resource resource, int amount) {
+		upkeepMaximums[resource] += amount;
+	}
+	
+	// Removes a supplied amount of an upkeep resource
+	public void RemoveSuppliedUpkeepResource(Resource resource, int amount) {
+		upkeepMaximums[resource] -= amount;
+	}
+	
 	// Captures an amount of an upkeep resource which is being used up by the given object (unit or building)
 	public void CaptureUpkeepResource(Resource resource, int amount, UnityEngine.Object user) {
 		capturedUpkeepResources[resource].Add(user, amount);
+	}
+	
+	// Releases the given upkeep resource being used by the given object (unit or building)
+	public void ReleaseUpkeepResource(Resource resource, UnityEngine.Object user) {
+		capturedUpkeepResources[resource].Remove(user);
 	}
 }

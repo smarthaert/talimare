@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 
 // Contains general unit utility functions
-public class UnitControl : Selectable {
+public class UnitControl : SelectableControl {
 
 	// Use this for initialization
 	protected override void Start () {
