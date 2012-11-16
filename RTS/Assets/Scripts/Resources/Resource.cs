@@ -3,7 +3,7 @@ using UnityEngine;
 public enum Resource {
 	Food,
 	Water,
-	Electricity,
+	Power,
 	Copper,
 	Iron,
 	Coal,
