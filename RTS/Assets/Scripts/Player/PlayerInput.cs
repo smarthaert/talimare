@@ -7,7 +7,7 @@ public class PlayerInput : MonoBehaviour {
 	// A visual marker for the current selection
 	public GameObject selectionMarker;
 	
-	private Selectable currentSelection;
+	private SelectableControl currentSelection;
 	private GameObject currentMarker;
 	
 	// Use this for initialization
@@ -30,13 +30,13 @@ public class PlayerInput : MonoBehaviour {
 			if (Physics.Raycast(ray, out hit)) {
 				// Note: this currently only works if the collider we hit is the same gameobject
 				// in the hierarchy as has the Selectable script attached
-				if(hit.collider.gameObject.GetComponent(typeof(Selectable)) != null) {
-					if(hit.collider.gameObject.GetComponent(typeof(Selectable)) != currentSelection) {
+				if(hit.collider.gameObject.GetComponent(typeof(SelectableControl)) != null) {
+					if(hit.collider.gameObject.GetComponent(typeof(SelectableControl)) != currentSelection) {
 						if(currentSelection != null) {
 							DeselectCurrent();
 						}
 						// Select the clicked object, adding a visual marker
-						currentSelection = (Selectable)hit.collider.gameObject.GetComponent(typeof(Selectable));
+						currentSelection = (SelectableControl)hit.collider.gameObject.GetComponent(typeof(SelectableControl));
 						currentMarker = (GameObject)Instantiate(selectionMarker, currentSelection.gameObject.transform.position, Quaternion.identity);
 						currentMarker.transform.parent = currentSelection.gameObject.transform;
 						currentSelection.Select();
