@@ -6,7 +6,7 @@ public class ResourceSupplier : MonoBehaviour {
 	
 	public List<ResourceAmount> suppliedResources;
 	
-	private PlayerStatus playerStatus;
+	private static PlayerStatus playerStatus;
 	
 	void Awake () {
 		playerStatus = (PlayerStatus)GameObject.Find("Main Camera").GetComponent(typeof(PlayerStatus));

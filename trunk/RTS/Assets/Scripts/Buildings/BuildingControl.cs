@@ -16,7 +16,7 @@ public class BuildingControl : SelectableControl {
 	private Queue<Creatable> techQueue = new Queue<Creatable>();
 	private float techTimer = 0;
 	
-	private PlayerStatus playerStatus;
+	private static PlayerStatus playerStatus;
 	
 	void Awake () {
 		playerStatus = (PlayerStatus)GameObject.Find("Main Camera").GetComponent(typeof(PlayerStatus));
@@ -47,31 +47,19 @@ public class BuildingControl : SelectableControl {
 		// See if pressed key exists in units and if so, train that unit
 		foreach(Creatable unit in units) {
 			if(Input.GetKeyDown(unit.creationKey)) {
-				QueueCreatable(unit);
+				if(unit.CanCreate()) {
+					unit.SpendResources();
+					unitQueue.Enqueue(unit);
+				}
 			}
 		}
 		foreach(Creatable tech in techs) {
 			if(Input.GetKeyDown(tech.creationKey)) {
-				QueueCreatable(tech);
+				if(tech.CanCreate()) {
+					tech.SpendResources();
+					techQueue.Enqueue(tech);
+				}
 			}
-		}
-	}
-	
-	// Queues a Creatable to begin creation if all resource cost checks pass
-	protected void QueueCreatable(Creatable creatable) {
-		bool canTrain = true;
-		foreach(ResourceAmount resourceCost in creatable.resourceCosts) {
-			if(playerStatus.resourceLevels[resourceCost.resource] < resourceCost.amount) {
-				canTrain = false;
-				Debug.Log ("Player does not have the required resource amount. Resource: "+resourceCost.resource+", Amount: "+resourceCost.amount+". Player has: "+playerStatus.resourceLevels[resourceCost.resource]);
-				//show some nice error message to the player here
-			}
-		}
-		if(canTrain) {
-			foreach(ResourceAmount resourceCost in creatable.resourceCosts) {
-				playerStatus.SpendResource(resourceCost.resource, resourceCost.amount);
-			}
-			unitQueue.Enqueue(creatable);
 		}
 	}
 	
@@ -83,8 +71,10 @@ public class BuildingControl : SelectableControl {
 		unitTimer = 0;
 	}
 	
-	// Complete a tech, adding it to the player's tech list
+	// Complete a tech, adding it to the player's tech list and running
 	void CompleteTech() {
-		
+		Tech tech = (Tech)techQueue.Dequeue().GetComponent(typeof(Tech));
+		playerStatus.techs.Add(tech);
+		tech.Execute();
 	}
 }
