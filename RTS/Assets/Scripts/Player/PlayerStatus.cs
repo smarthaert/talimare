@@ -37,6 +37,9 @@ public class PlayerStatus : MonoBehaviour {
 	// Keeps track of all objects (units or buildings) which are using upkeep resources
 	private Dictionary<Resource, Dictionary<UnityEngine.Object, int>> capturedUpkeepResources = new Dictionary<Resource, Dictionary<UnityEngine.Object, int>>();
 	
+	// Techs the player has researched
+	public HashSet<Tech> techs = new HashSet<Tech>();
+	
 	void Awake () {
 		food = maxFood;
 		water = maxWater;
@@ -54,12 +57,13 @@ public class PlayerStatus : MonoBehaviour {
 	}
 	
 	void Start () {
-		// Find all Creatables that currently exist and capture their upkeep resources
+		// Find all Creatables that currently exist and spend their upkeep resources.
+		// (This needs to be done since creatables that exist when the game starts were never queued,
+		// and thus were never spent for)
 		foreach(Creatable creatable in FindObjectsOfType(typeof(Creatable)).Cast<Creatable>()) {
 			foreach(ResourceAmount resourceCost in creatable.resourceCosts) {
 				if(resourceCost.IsUpkeepResource()) {
 					SpendResource(resourceCost.resource, resourceCost.amount);
-					CaptureUpkeepResource(resourceCost.resource, resourceCost.amount, creatable.gameObject);
 				}
 			}
 		}
@@ -74,7 +78,7 @@ public class PlayerStatus : MonoBehaviour {
 		resourceLevels[resource] += amount;
 	}
 	
-	// Spends an amount of the given resource
+	// Spends an amount of the given resource. This is called when a unit, tech, or building is queued
 	public void SpendResource(Resource resource, int amount) {
 		resourceLevels[resource] -= amount;
 	}
@@ -89,12 +93,14 @@ public class PlayerStatus : MonoBehaviour {
 		upkeepMaximums[resource] -= amount;
 	}
 	
-	// Captures an amount of an upkeep resource which is being used up by the given object (unit or building)
+	// Captures an amount of an upkeep resource which is being used up by the given object (unit or building).
+	// This is called when a unit, tech, or building is actually instantiated
 	public void CaptureUpkeepResource(Resource resource, int amount, UnityEngine.Object user) {
 		capturedUpkeepResources[resource].Add(user, amount);
 	}
 	
-	// Releases the given upkeep resource being used by the given object (unit or building)
+	// Releases the given upkeep resource being used by the given object (unit or building).
+	// This is called when the object is destroyed
 	public void ReleaseUpkeepResource(Resource resource, UnityEngine.Object user) {
 		capturedUpkeepResources[resource].Remove(user);
 	}
