@@ -16,12 +16,6 @@ public class BuildingControl : SelectableControl {
 	private Queue<Creatable> techQueue = new Queue<Creatable>();
 	private float techTimer = 0;
 	
-	private static PlayerStatus playerStatus;
-	
-	void Awake () {
-		playerStatus = (PlayerStatus)GameObject.Find("Main Camera").GetComponent(typeof(PlayerStatus));
-	}
-	
 	// Use this for initialization
 	protected override void Start () {
 		base.Start();
@@ -74,7 +68,6 @@ public class BuildingControl : SelectableControl {
 	// Complete a tech, adding it to the player's tech list and running
 	void CompleteTech() {
 		Tech tech = (Tech)techQueue.Dequeue().GetComponent(typeof(Tech));
-		playerStatus.techs.Add(tech);
 		tech.Execute();
 	}
 }
