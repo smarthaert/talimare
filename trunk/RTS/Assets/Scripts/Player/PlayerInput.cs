@@ -10,16 +10,14 @@ public class PlayerInput : MonoBehaviour {
 	private SelectableControl currentSelection;
 	private GameObject currentMarker;
 	
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
 	void Update () {
-		// Send key press notification to the currently selected object
-		if(currentSelection != null && Input.anyKeyDown) {
-			currentSelection.KeyPressed();
+		// Send key pressed notification to the currently selected object
+		if(currentSelection != null) {
+			if(Input.GetKeyDown(KeyCode.Escape)) {
+				DeselectCurrent();
+			} else if(Input.anyKeyDown) {
+				currentSelection.KeyPressed();
+			}
 		}
 		
 		// Handle mouse0 click (object selection)
@@ -32,14 +30,7 @@ public class PlayerInput : MonoBehaviour {
 				// in the hierarchy as has the Selectable script attached
 				if(hit.collider.gameObject.GetComponent(typeof(SelectableControl)) != null) {
 					if(hit.collider.gameObject.GetComponent(typeof(SelectableControl)) != currentSelection) {
-						if(currentSelection != null) {
-							DeselectCurrent();
-						}
-						// Select the clicked object, adding a visual marker
-						currentSelection = (SelectableControl)hit.collider.gameObject.GetComponent(typeof(SelectableControl));
-						currentMarker = (GameObject)Instantiate(selectionMarker, currentSelection.gameObject.transform.position, Quaternion.identity);
-						currentMarker.transform.parent = currentSelection.gameObject.transform;
-						currentSelection.Select();
+						Select((SelectableControl)hit.collider.gameObject.GetComponent(typeof(SelectableControl)));
 					}
 				} else {
 					DeselectCurrent();
@@ -48,13 +39,32 @@ public class PlayerInput : MonoBehaviour {
 				DeselectCurrent();
 			}
 		}
+		
+		// Handle mouse1 click (object action)
+		if(Input.GetMouseButtonDown(1)) {
+			
+		}
 	}
 	
+	// Selects the given object, adding a visual marker
+	void Select(SelectableControl selectable) {
+		DeselectCurrent();
+		currentSelection = selectable;
+		currentMarker = (GameObject)Instantiate(selectionMarker, currentSelection.gameObject.transform.position, Quaternion.identity);
+		currentMarker.transform.parent = currentSelection.gameObject.transform;
+		currentSelection.Selected();
+	}
+	
+	// Deselects the currently selected object
 	void DeselectCurrent() {
-		Destroy(currentMarker);
+		if(currentMarker != null) {
+			Destroy(currentMarker);
+		}
 		currentMarker = null;
-		if(currentSelection != null)
-			currentSelection.Deselect();
+		
+		if(currentSelection != null) {
+			currentSelection.Deselected();
+		}
 		currentSelection = null;
 	}
 }
