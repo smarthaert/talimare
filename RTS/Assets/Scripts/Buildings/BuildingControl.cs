@@ -16,14 +16,15 @@ public class BuildingControl : SelectableControl {
 	private Queue<Creatable> techQueue = new Queue<Creatable>();
 	private float techTimer = 0;
 	
-	// Use this for initialization
+	private Vector3 rallyPoint;
+	
 	protected override void Start () {
 		base.Start();
 	}
 	
-	// Update is called once per frame
 	protected override void Update () {
 		base.Update();
+		// Advance creation queues
 		if(unitQueue.Count > 0) {
 			unitTimer += Time.deltaTime;
 			if(unitTimer >= unitQueue.Peek().creationTime)
@@ -36,9 +37,17 @@ public class BuildingControl : SelectableControl {
 		}
 	}
 	
+	// Called when mouse action button is clicked on any object while this building is selected
+	public override void MouseAction(RaycastHit hit) {
+		if(hit.collider.GetType() == typeof(TerrainCollider)) {
+			rallyPoint = hit.point;
+			Debug.Log("Rally point set to: "+rallyPoint);
+		}
+	}
+	
 	// Called when any key is pressed while this building is selected
 	public override void KeyPressed() {
-		// See if pressed key exists in units and if so, train that unit
+		// See if pressed key exists in units or techs and if so, queue that Creatable
 		foreach(Creatable unit in units) {
 			if(Input.GetKeyDown(unit.creationKey)) {
 				if(unit.CanCreate()) {
