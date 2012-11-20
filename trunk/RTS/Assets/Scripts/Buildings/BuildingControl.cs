@@ -18,6 +18,10 @@ public class BuildingControl : SelectableControl {
 	
 	private Vector3 rallyPoint;
 	
+	protected override void Awake() {
+		base.Awake();
+	}
+	
 	protected override void Start () {
 		base.Start();
 	}

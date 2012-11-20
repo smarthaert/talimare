@@ -8,7 +8,7 @@ public class Tech : MonoBehaviour {
 
 	public virtual void Execute() {
 		if(playerStatus == null) {
-			playerStatus = (PlayerStatus)GameObject.Find("Main Camera").GetComponent(typeof(PlayerStatus));
+			playerStatus = (PlayerStatus)GameObject.Find("Main Camera").GetComponent<PlayerStatus>();
 		}
 		playerStatus.techs.Add(this);
 		Debug.Log(this+" research completed!");

@@ -12,7 +12,7 @@ public class Creatable : MonoBehaviour {
 	private static PlayerStatus playerStatus;
 	
 	void Awake () {
-		playerStatus = (PlayerStatus)GameObject.Find("Main Camera").GetComponent(typeof(PlayerStatus));
+		playerStatus = (PlayerStatus)GameObject.Find("Main Camera").GetComponent<PlayerStatus>();
 	}
 	
 	void Start () {
