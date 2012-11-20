@@ -25,7 +25,7 @@ public class PlayerInput : MonoBehaviour {
 			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 			RaycastHit hit;
 			
-			if (Physics.Raycast(ray, out hit)) {
+			if(Physics.Raycast(ray, out hit)) {
 				// Note: this currently only works if the collider we hit is the same gameobject
 				// in the hierarchy as has the Selectable script attached
 				if(hit.collider.gameObject.GetComponent(typeof(SelectableControl)) != null) {
@@ -41,8 +41,13 @@ public class PlayerInput : MonoBehaviour {
 		}
 		
 		// Handle mouse1 click (object action)
-		if(Input.GetMouseButtonDown(1)) {
+		if(Input.GetMouseButtonDown(1) && currentSelection != null) {
+			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+			RaycastHit hit;
 			
+			if(Physics.Raycast(ray, out hit)) {
+				currentSelection.MouseAction(hit);
+			}
 		}
 	}
 	

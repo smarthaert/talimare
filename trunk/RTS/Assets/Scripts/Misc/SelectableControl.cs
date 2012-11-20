@@ -16,6 +16,9 @@ public class SelectableControl : MonoBehaviour {
 	// Called when this GameObject has been deselected
 	public void Deselected() {}
 	
-	// Called when this GameObject is selected and a key is pressed
+	// Called when mouse action button is clicked on any object while this GameObject is selected
+	public virtual void MouseAction(RaycastHit hit) {}
+	
+	// Called when any key is pressed while this GameObject is selected
 	public virtual void KeyPressed() {}
 }
