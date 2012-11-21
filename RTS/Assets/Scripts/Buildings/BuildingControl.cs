@@ -16,7 +16,7 @@ public class BuildingControl : SelectableControl {
 	private Queue<Creatable> techQueue = new Queue<Creatable>();
 	private float techTimer = 0;
 	
-	private Vector3 rallyPoint;
+	private Vector3? rallyPoint = null;
 	
 	protected override void Awake() {
 		base.Awake();
@@ -74,7 +74,9 @@ public class BuildingControl : SelectableControl {
 	void CompleteUnit() {
 		Creatable unit = unitQueue.Dequeue();
 		float distance = this.collider.bounds.size.magnitude + unit.gameObject.collider.bounds.size.magnitude;
-		Instantiate(unit.gameObject, transform.position + (transform.right * distance), Quaternion.identity);
+		GameObject newUnit = (GameObject)Instantiate(unit.gameObject, transform.position + (transform.right * distance), Quaternion.identity);
+		if(rallyPoint != null)
+			newUnit.GetComponent<UnitControl>().MoveTo(rallyPoint.Value);
 		unitTimer = 0;
 	}
 	
