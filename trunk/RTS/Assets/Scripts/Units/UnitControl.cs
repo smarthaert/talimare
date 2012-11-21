@@ -24,7 +24,14 @@ public class UnitControl : SelectableControl {
 	
 	// Called when mouse action button is clicked on any object while this unit is selected
 	public override void MouseAction(RaycastHit hit) {
-		pathfinder.MoveTo(hit.point);
+		if(hit.collider.GetType() == typeof(TerrainCollider)) {
+			pathfinder.MoveTo(hit.point);
+		}
+	}
+	
+	// Can be called from elsewhere to order this unit to move
+	public void MoveTo(Vector3 destination) {
+		pathfinder.MoveTo(destination);
 	}
 	
 	// Called when any key is pressed while this unit is selected

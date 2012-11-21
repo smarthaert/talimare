@@ -38,23 +38,23 @@ public class AIPathfinder : MonoBehaviour {
 	 * If you have fast moving targets or AIs, you might want to set it to a lower value.
 	 * The value is in seconds between path requests.
 	 */
-	public float repathRate = 0.5F;
+	public float repathRate = 1;
 	
 	/** Maximum velocity.
 	 * This is the maximum speed in world units per second.
 	 */
-	public float speed = 3;
+	public float speed = 5;
 	
 	/** Rotation speed.
 	 * Rotation is calculated using Quaternion.SLerp. This variable represents the damping, the higher, the faster it will be able to rotate.
 	 */
-	public float turningSpeed = 5;
+	public float turningSpeed = 99;
 	
 	/** Distance from the target point where the AI will start to slow down.
 	 * Note that this doesn't only affect the end point of the path
  	 * but also any intermediate points, so be sure to set #forwardLook and #pickNextWaypointDist to a higher value than this
  	 */
-	public float slowdownDistance = 0.6F;
+	public float slowdownDistance = 0;
 	
 	/** Determines within what range it will switch to target the next waypoint in the path */
 	public float pickNextWaypointDist = 2;
@@ -137,11 +137,18 @@ public class AIPathfinder : MonoBehaviour {
 	}
 	
 	public void MoveTo(Vector3 destination) {
+		//AI was already moving, so we need to make some adjustments to force repathing right away
+		if(!TargetReached) {
+			StopCoroutine("WaitForRepath");
+			path = null;
+			lastRepath = -9999;
+			canSearchAgain = true;
+		}
 		target = destination;
 		targetReached = false;
 		TrySearchPath();
 	}
-		
+	
 	protected void TrySearchPath () {
 		if(!TargetReached) {
 			if (Time.time - lastRepath >= repathRate && canSearchAgain) {
@@ -176,7 +183,6 @@ public class AIPathfinder : MonoBehaviour {
 	}
 	
 	protected virtual void OnTargetReached () {
-		Debug.Log ("target reached!");
 		//Throw out the current path so it doesn't come back to haunt us
 		path = null;
 	}
