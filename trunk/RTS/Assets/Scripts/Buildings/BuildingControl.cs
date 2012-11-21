@@ -18,10 +18,6 @@ public class BuildingControl : SelectableControl {
 	
 	private Vector3? rallyPoint = null;
 	
-	protected override void Awake() {
-		base.Awake();
-	}
-	
 	protected override void Start () {
 		base.Start();
 	}
@@ -76,7 +72,7 @@ public class BuildingControl : SelectableControl {
 		float distance = this.collider.bounds.size.magnitude + unit.gameObject.collider.bounds.size.magnitude;
 		GameObject newUnit = (GameObject)Instantiate(unit.gameObject, transform.position + (transform.right * distance), Quaternion.identity);
 		if(rallyPoint != null)
-			newUnit.GetComponent<UnitControl>().MoveTo(rallyPoint.Value);
+			newUnit.GetComponent<UnitControl>().Move(rallyPoint);
 		unitTimer = 0;
 	}
 	

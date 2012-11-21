@@ -11,11 +11,9 @@ public class Creatable : MonoBehaviour {
 	
 	private static PlayerStatus playerStatus;
 	
-	void Awake () {
-		playerStatus = (PlayerStatus)GameObject.Find("Main Camera").GetComponent<PlayerStatus>();
-	}
-	
 	void Start () {
+		playerStatus = (PlayerStatus)GameObject.Find("Main Camera").GetComponent<PlayerStatus>();
+		
 		// Capture a Creatable's upkeep resources when it is instantiated
 		foreach(ResourceAmount resourceCost in resourceCosts) {
 			if(resourceCost.IsUpkeepResource()) {

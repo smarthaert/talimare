@@ -2,35 +2,91 @@ using UnityEngine;
 using System.Collections;
 
 // Handles unit attacking
+[RequireComponent(typeof(AIPathfinder))]
 public class AIAttacker : MonoBehaviour {
 	
+	public float attackRange;
+	public int attackDamage;
+	public float attackTime;
+	public float attackCooldown;
+	
+	protected float attackTimer = 0;
+	protected float attackCooldownTimer = 0;
+	
+	// Whether or not the unit should get an attack range bonus due to higher ground
+	public bool heightBonus;
+	
+	protected float heightBonusMinHeight = 3;
+	protected float heightBonusPercentCap = 15;
+	
+	// The unit's attack target. If this is set, the unit should be actively trying to attack the target
 	protected GameObject target;
-
-	// Use this for initialization
-	void Start () {
-		
+	// An internal var to track who we're targeting for each individual attack sequence
+	protected GameObject currentAttackTarget;
+	
+	protected AIPathfinder pathfinder;
+	protected UnitControl unitControl;
+	
+	void Start() {
+		pathfinder = GetComponent<AIPathfinder>();
+		unitControl = GetComponent<UnitControl>();
 	}
 	
-	void Update () {
-		if(target != null) {
-			//if not in range, make sure we're moving into range
-			
-			//if cooldown timer not running
-				//if in range, engage target
-				
-				//if engaged, check range. if out of range, reset engage timer and move into range
-				
-				//if engage timer reaches limit, apply damage
-					//then reset engage timer
-					//then start cooldown timer
+	void Update() {
+		if(currentAttackTarget == null) {
+			// Not currently in an attack sequence (either due to being on cooldown, or have no target)
+			if(attackCooldownTimer > 0)
+				attackCooldownTimer -= Time.deltaTime;
+			if(target != null) {
+				// Have a target, so try to attack or move
+				if(IsInRange(target)) {
+					// In range, start attacking if cooldown is finished
+					if(attackCooldownTimer <= 0) {
+						attackTimer = attackTime;
+						currentAttackTarget = target;
+					}
+				} else {
+					// Not in range, make sure we're moving into range
+					pathfinder.Move(target.transform);
+				}
+			}
+		} else {
+			// Currently in an attack sequence
+			attackTimer -= Time.deltaTime;
+			if(attackTimer <= 0) {
+				// Check attack range at end of attack sequence
+				if(IsInRange(currentAttackTarget)) {
+					// Apply damage
+					currentAttackTarget.GetComponent<UnitStatus>().Damage(attackDamage);
+				}
+				// Start cooldown timer
+				attackCooldownTimer = attackCooldown;
+				currentAttackTarget = null;
+			}
 		}
 	}
 	
 	public void Attack(GameObject target) {
 		this.target = target;
+		targetStatus = target.GetComponent<UnitStatus>();
 	}
 	
 	public void StopAttacking() {
 		target = null;
+	}
+	
+	public void IsAttacking() {
+		return currentAttackTarget != null;
+	}
+	
+	protected bool IsInRange(GameObject targ) {
+		float tempAttackRange = attackRange;
+		if(heightBonus) {
+			float heightDifference = (this.transform.position - targ.transform.position).y;
+			if(heightDifference > heightBonusMinHeight) {
+				tempAttackRange *= (1 + (heightDifference - heightBonusMinHeight) / heightDifference) * (heightBonusPercentCap / 100);
+			}
+		}
+		return (targ.transform.position - this.transform.position).magnitude <= tempAttackRange;
 	}
 }

@@ -82,7 +82,7 @@ public class AIPathfinder : MonoBehaviour {
 	 * It can be a point on the ground where the player has clicked in an RTS for example, or it can be the player object in a zombie game.
 	 */
 	protected Transform target;
-	protected Vector3 targetAsPoint;
+	protected Vector3? targetAsPoint;
 	
 	protected float minMoveScale = 0.05F;
 	
@@ -117,14 +117,6 @@ public class AIPathfinder : MonoBehaviour {
 	/** Only when the previous path has been returned should be search for a new path */
 	protected bool canSearchAgain = true;
 	
-	/** Returns if the end-of-path has been reached
-	 * \see targetReached */
-	public bool TargetReached {
-		get {
-			return targetReached;
-		}
-	}
-	
 	// Use this for initialization
 	void Awake () {
 		seeker = GetComponent<Seeker>();
@@ -138,30 +130,40 @@ public class AIPathfinder : MonoBehaviour {
 	}
 	
 	public void Move(Transform target) {
-		this.target = target;
-		Move(target.position);
+		if(target != null && !target.Equals(this.target)) {
+			this.target = target;
+			Move(target.position);
+		}
 	}
 	
-	public void Move(Vector3 targetAsPoint) {
-		//AI was already moving, so we need to make some adjustments to force repathing right away
-		if(!TargetReached) {
-			StopCoroutine("WaitForRepath");
-			path = null;
-			lastRepath = -9999;
-			canSearchAgain = true;
+	public void Move(Vector3? targetAsPoint) {
+		if(targetAsPoint != null && !targetAsPoint.Equals(this.targetAsPoint)) {
+			//AI was already moving, so we need to make some adjustments to force repathing right away
+			if(!targetReached) {
+				StopCoroutine("WaitForRepath");
+				path = null;
+				lastRepath = -9999;
+				canSearchAgain = true;
+			}
+			this.targetAsPoint = targetAsPoint;
+			targetReached = false;
+			TrySearchPath();
 		}
-		this.targetAsPoint = targetAsPoint;
-		targetReached = false;
-		TrySearchPath();
 	}
 	
 	public void StopMoving() {
-		targetReached = true;
-		OnTargetReached();
+		if(!targetReached) {
+			targetReached = true;
+			OnTargetReached();
+		}
+	}
+	
+	public bool IsMoving() {
+		return !targetReached;
 	}
 	
 	protected void TrySearchPath () {
-		if(!TargetReached) {
+		if(!targetReached) {
 			if (Time.time - lastRepath >= repathRate && canSearchAgain) {
 				SearchPath ();
 			} else {
@@ -191,7 +193,7 @@ public class AIPathfinder : MonoBehaviour {
 			targetAsPoint = target.position;
 		
 		//We should search from the current position
-		Path p = new Path(GetFeetPosition(), targetAsPoint, null);
+		Path p = new Path(GetFeetPosition(), targetAsPoint.Value, null);
 		seeker.StartPath (p);
 	}
 	
@@ -199,6 +201,7 @@ public class AIPathfinder : MonoBehaviour {
 		//Throw out the current path so it doesn't come back to haunt us
 		path = null;
 		target = null;
+		targetAsPoint = null;
 	}
 	
 	/** Called when a requested path has finished calculation.
@@ -206,7 +209,7 @@ public class AIPathfinder : MonoBehaviour {
 	  * Finally it is returned to the seeker which forwards it to this function.\n
 	  */
 	protected void OnPathComplete (Path p) {
-		if(!TargetReached) {
+		if(!targetReached) {
 			path = p;
 			currentWaypointIndex = 0;
 			canSearchAgain = true;
