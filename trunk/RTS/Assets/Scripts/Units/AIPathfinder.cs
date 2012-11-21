@@ -38,7 +38,7 @@ public class AIPathfinder : MonoBehaviour {
 	 * If you have fast moving targets or AIs, you might want to set it to a lower value.
 	 * The value is in seconds between path requests.
 	 */
-	public float repathRate = 1;
+	protected float repathRate = 1;
 	
 	/** Maximum velocity.
 	 * This is the maximum speed in world units per second.
@@ -54,19 +54,19 @@ public class AIPathfinder : MonoBehaviour {
 	 * Note that this doesn't only affect the end point of the path
  	 * but also any intermediate points, so be sure to set #forwardLook and #pickNextWaypointDist to a higher value than this
  	 */
-	public float slowdownDistance = 0;
+	protected float slowdownDistance = 0;
 	
 	/** Determines within what range it will switch to target the next waypoint in the path */
-	public float pickNextWaypointDist = 2;
+	protected float pickNextWaypointDist = 2;
 	
 	/** Target point is Interpolated on the current segment in the path so that it has a distance of #forwardLook from the AI.
 	  * See the detailed description of AIPath for an illustrative image */
-	public float forwardLook = 1;
+	protected float forwardLook = 1;
 	
 	/** Distance to the end point to consider the end of path to be reached.
 	 * When this has been reached, the AI will not move anymore until the target changes and OnTargetReached will be called.
 	 */
-	public float endReachedDistance = 0.2F;
+	protected float endReachedDistance = 0.2F;
 	
 	/** Do a closest point on path check when receiving path callback.
 	 * Usually the AI has moved a bit between requesting the path, and getting it back, and there is usually a small gap between the AI
@@ -75,13 +75,14 @@ public class AIPathfinder : MonoBehaviour {
 	 * AI position. This helps to reduce the moments when the AI just get a new path back, and thinks it ought to move backwards to the start of the new path
 	 * even though it really should just proceed forward.
 	 */
-	public bool closestOnPathCheck = true;
+	protected bool closestOnPathCheck = true;
 	
 	/** Target to move towards.
 	 * The AI will try to follow/move towards this target.
 	 * It can be a point on the ground where the player has clicked in an RTS for example, or it can be the player object in a zombie game.
 	 */
-	protected Vector3 target;
+	protected Transform target;
+	protected Vector3 targetAsPoint;
 	
 	protected float minMoveScale = 0.05F;
 	
@@ -136,7 +137,12 @@ public class AIPathfinder : MonoBehaviour {
 		rigid = rigidbody;
 	}
 	
-	public void MoveTo(Vector3 destination) {
+	public void Move(Transform target) {
+		this.target = target;
+		Move(target.position);
+	}
+	
+	public void Move(Vector3 targetAsPoint) {
 		//AI was already moving, so we need to make some adjustments to force repathing right away
 		if(!TargetReached) {
 			StopCoroutine("WaitForRepath");
@@ -144,9 +150,14 @@ public class AIPathfinder : MonoBehaviour {
 			lastRepath = -9999;
 			canSearchAgain = true;
 		}
-		target = destination;
+		this.targetAsPoint = targetAsPoint;
 		targetReached = false;
 		TrySearchPath();
+	}
+	
+	public void StopMoving() {
+		targetReached = true;
+		OnTargetReached();
 	}
 	
 	protected void TrySearchPath () {
@@ -174,17 +185,20 @@ public class AIPathfinder : MonoBehaviour {
 	
 	protected void SearchPath () {
 		lastRepath = Time.time;
-		
 		canSearchAgain = false;
 		
+		if(target != null)
+			targetAsPoint = target.position;
+		
 		//We should search from the current position
-		Path p = new Path(GetFeetPosition(), target, null);
+		Path p = new Path(GetFeetPosition(), targetAsPoint, null);
 		seeker.StartPath (p);
 	}
 	
 	protected virtual void OnTargetReached () {
 		//Throw out the current path so it doesn't come back to haunt us
 		path = null;
+		target = null;
 	}
 	
 	/** Called when a requested path has finished calculation.
@@ -192,29 +206,31 @@ public class AIPathfinder : MonoBehaviour {
 	  * Finally it is returned to the seeker which forwards it to this function.\n
 	  */
 	protected void OnPathComplete (Path p) {
-		path = p;
-		currentWaypointIndex = 0;
-		canSearchAgain = true;
-		
-		//The next row can be used to find out if the path could be found or not
-		//If it couldn't (error == true), then a message has probably been logged to the console
-		//however it can also be got using p.errorLog
-		//if (p.error)
-		
-		if (closestOnPathCheck) {
-			Vector3 p1 = p.startPoint;
-			Vector3 p2 = GetFeetPosition ();
-			float magn = Vector3.Distance (p1,p2);
-			Vector3 dir = p2-p1;
-			dir /= magn;
-			int steps = (int)(magn/pickNextWaypointDist);
-			for (int i=0;i<steps;i++) {
-				CalculateVelocity (p1);
-				p1 += dir;
+		if(!TargetReached) {
+			path = p;
+			currentWaypointIndex = 0;
+			canSearchAgain = true;
+			
+			//The next row can be used to find out if the path could be found or not
+			//If it couldn't (error == true), then a message has probably been logged to the console
+			//however it can also be got using p.errorLog
+			//if (p.error)
+			
+			if (closestOnPathCheck) {
+				Vector3 p1 = p.startPoint;
+				Vector3 p2 = GetFeetPosition ();
+				float magn = Vector3.Distance (p1,p2);
+				Vector3 dir = p2-p1;
+				dir /= magn;
+				int steps = (int)(magn/pickNextWaypointDist);
+				for (int i=0;i<steps;i++) {
+					CalculateVelocity (p1);
+					p1 += dir;
+				}
 			}
+			
+			TrySearchPath ();
 		}
-		
-		TrySearchPath ();
 	}
 	
 	public virtual Vector3 GetFeetPosition () {
