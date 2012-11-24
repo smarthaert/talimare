@@ -14,7 +14,7 @@ public class AIAttacker : MonoBehaviour {
 	protected float attackCooldownTimer = 0;
 	
 	// Whether or not the unit should get an attack range bonus due to higher ground
-	public bool heightBonus;
+	public bool heightBonus = true;
 	
 	protected float heightBonusMinHeight = 3;
 	protected float heightBonusPercentCap = 15;
@@ -27,19 +27,22 @@ public class AIAttacker : MonoBehaviour {
 	protected AIPathfinder pathfinder;
 	protected UnitControl unitControl;
 	
-	void Start() {
+	void Awake() {
 		pathfinder = GetComponent<AIPathfinder>();
 		unitControl = GetComponent<UnitControl>();
 	}
 	
+	void Start() {}
+	
 	void Update() {
 		if(currentAttackTarget == null) {
-			// Not currently in an attack sequence (either due to being on cooldown, or have no target)
+			// Not currently in an attack sequence (either due to being on cooldown, out of range, or have no target)
 			if(attackCooldownTimer > 0)
 				attackCooldownTimer -= Time.deltaTime;
 			if(target != null) {
 				// Have a target, so try to attack or move
 				if(IsInRange(target)) {
+					pathfinder.StopMoving();
 					// In range, start attacking if cooldown is finished
 					if(attackCooldownTimer <= 0) {
 						attackTimer = attackTime;
@@ -58,6 +61,7 @@ public class AIAttacker : MonoBehaviour {
 				if(IsInRange(currentAttackTarget)) {
 					// Apply damage
 					currentAttackTarget.GetComponent<UnitStatus>().Damage(attackDamage);
+					//TODO i don't like getting a component here so often... see if we can find a way around this
 				}
 				// Start cooldown timer
 				attackCooldownTimer = attackCooldown;
@@ -68,14 +72,13 @@ public class AIAttacker : MonoBehaviour {
 	
 	public void Attack(GameObject target) {
 		this.target = target;
-		targetStatus = target.GetComponent<UnitStatus>();
 	}
 	
 	public void StopAttacking() {
 		target = null;
 	}
 	
-	public void IsAttacking() {
+	public bool IsAttacking() {
 		return currentAttackTarget != null;
 	}
 	

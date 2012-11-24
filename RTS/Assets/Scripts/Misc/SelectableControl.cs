@@ -4,6 +4,8 @@ using System.Collections;
 // Defines the behavior of a selectable GameObject
 public class SelectableControl : MonoBehaviour {
 	
+	protected virtual void Awake () {}
+	
 	protected virtual void Start () {}
 	
 	protected virtual void Update () {}

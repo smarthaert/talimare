@@ -464,7 +464,6 @@ endif
 						nodeR2.cost = tmpCost;
 						nodeR2.parent = nodeR;
 						
-						//TODO!!!!! ??
 						node.UpdateAllG (nodeR2,nodeRunData);
 						
 						nodeRunData.open.Add (nodeR2);
@@ -493,7 +492,6 @@ endif
 						nodeR.parent = nodeR2;
 						nodeR.cost = tmpCost;
 						
-						//TODO!!!!!!! ??
 						UpdateAllG (nodeR,nodeRunData);
 						
 						nodeRunData.open.Add (nodeR);
