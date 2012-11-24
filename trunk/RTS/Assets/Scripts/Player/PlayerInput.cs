@@ -7,8 +7,8 @@ public class PlayerInput : MonoBehaviour {
 	// A visual marker for the current selection
 	public GameObject selectionMarker;
 	
-	private SelectableControl currentSelection;
-	private GameObject currentMarker;
+	protected SelectableControl currentSelection;
+	protected GameObject currentMarker;
 	
 	void Update () {
 		// Send key pressed notification to the currently selected object

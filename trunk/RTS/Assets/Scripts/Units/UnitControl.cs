@@ -11,23 +11,28 @@ public class UnitControl : SelectableControl {
 	
 	protected AIPathfinder pathfinder;
 	protected AIAttacker attacker;
-
-	protected override void Start () {
-		base.Start();
-		
+	
+	protected override void Awake() {
 		pathfinder = GetComponent<AIPathfinder>();
 		attacker = GetComponent<AIAttacker>();
 	}
+
+	protected override void Start() {
+		base.Start();
+	}
 	
-	protected override void Update () {
+	protected override void Update() {
 		base.Update();
 	}
 	
 	// Called when mouse action button is clicked on any object while this unit is selected
 	public override void MouseAction(RaycastHit hit) {
 		if(hit.collider.GetType() == typeof(TerrainCollider)) {
+			attacker.StopAttacking();
 			pathfinder.Move(hit.point);
+			//TODO stop units from walking on top of each other
 		} else if(hit.collider.GetType() == typeof(CharacterController)) {
+			pathfinder.StopMoving();
 			attacker.Attack(hit.collider.gameObject);
 		}
 	}

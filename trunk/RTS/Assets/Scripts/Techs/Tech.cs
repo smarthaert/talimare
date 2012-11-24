@@ -5,12 +5,10 @@ using System.Collections;
 public class Tech : MonoBehaviour {
 	
 	private static PlayerStatus playerStatus;
-	
-	void Start() {
-		playerStatus = (PlayerStatus)GameObject.Find("Main Camera").GetComponent<PlayerStatus>();
-	}
 
 	public virtual void Execute() {
+		// Player status must be gotten here since techs are never actually instantiated
+		playerStatus = (PlayerStatus)GameObject.Find("Main Camera").GetComponent<PlayerStatus>();
 		playerStatus.techs.Add(this);
 		Debug.Log(this+" research completed!");
 	}

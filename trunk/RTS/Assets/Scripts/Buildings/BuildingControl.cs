@@ -42,6 +42,9 @@ public class BuildingControl : SelectableControl {
 		if(hit.collider.GetType() == typeof(TerrainCollider)) {
 			rallyPoint = hit.point;
 			Debug.Log("Rally point set to: "+rallyPoint);
+		} else if(hit.collider.gameObject == this.gameObject) {
+			rallyPoint = null;
+			Debug.Log("Rally point removed.");
 		}
 	}
 	
@@ -71,9 +74,12 @@ public class BuildingControl : SelectableControl {
 		Creatable unit = unitQueue.Dequeue();
 		float distance = this.collider.bounds.size.magnitude + unit.gameObject.collider.bounds.size.magnitude;
 		GameObject newUnit = (GameObject)Instantiate(unit.gameObject, transform.position + (transform.right * distance), Quaternion.identity);
-		if(rallyPoint != null)
+		if(rallyPoint != null) {
 			newUnit.GetComponent<UnitControl>().Move(rallyPoint);
+		}
 		unitTimer = 0;
+		
+		((AstarPath)GameObject.Find("Pathfinding").GetComponent<AstarPath>()).Scan();
 	}
 	
 	// Complete a tech, adding it to the player's tech list and running

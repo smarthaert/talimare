@@ -93,7 +93,7 @@ public class AIPathfinder : MonoBehaviour {
 	protected Transform tr;
 	
 	/** Time when the last path request was sent */
-	private float lastRepath = -9999;
+	protected float lastRepath = -9999;
 	
 	/** Current path which is followed */
 	protected Path path;
