@@ -9,12 +9,12 @@ public class SelectableControl : MonoBehaviour {
 	protected virtual void Update () {}
 	
 	// Called when this GameObject has been selected
-	public void Selected() {
+	public virtual void Selected() {
 		//play some audio file or something
 	}
 	
 	// Called when this GameObject has been deselected
-	public void Deselected() {}
+	public virtual void Deselected() {}
 	
 	// Called when mouse action button is clicked on any object while this GameObject is selected
 	public virtual void MouseAction(RaycastHit hit) {}

@@ -40,7 +40,7 @@ public class PlayerStatus : MonoBehaviour {
 	// Techs the player has researched
 	public HashSet<Tech> techs = new HashSet<Tech>();
 	
-	void Awake () {
+	void Start () {
 		food = maxFood;
 		water = maxWater;
 		power = maxPower;
@@ -54,9 +54,7 @@ public class PlayerStatus : MonoBehaviour {
 			resourceLevels.Add((Resource)resource, (int)this.GetType().GetField(resource.ToString().ToLower()).GetValue(this));
 			capturedUpkeepResources.Add((Resource)resource, new Dictionary<UnityEngine.Object, int>());
 		}
-	}
-	
-	void Start () {
+		
 		// Find all Creatables that currently exist and spend their upkeep resources.
 		// (This needs to be done since creatables that exist when the game starts were never queued,
 		// and thus were never spent for)
@@ -76,33 +74,38 @@ public class PlayerStatus : MonoBehaviour {
 	// Gains an amount of the given resource
 	public void GainResource(Resource resource, int amount) {
 		resourceLevels[resource] += amount;
-		Debug.Log("Player gained "+amount+" "+resource);
+		Debug.Log("Player gained "+amount+" "+resource+". Now has "+resourceLevels[resource]+" available");
 	}
 	
 	// Spends an amount of the given resource. This is called when a unit, tech, or building is queued
 	public void SpendResource(Resource resource, int amount) {
 		resourceLevels[resource] -= amount;
+		Debug.Log("Player spent "+amount+" "+resource+". Now has "+resourceLevels[resource]+" available");
 	}
 	
 	// Adds a supplied amount of an upkeep resource that may be used
 	public void AddSuppliedUpkeepResource(Resource resource, int amount) {
 		upkeepMaximums[resource] += amount;
+		Debug.Log("Player gained "+amount+" "+resource+" supply. Now has "+upkeepMaximums[resource]+" total");
 	}
 	
 	// Removes a supplied amount of an upkeep resource
 	public void RemoveSuppliedUpkeepResource(Resource resource, int amount) {
 		upkeepMaximums[resource] -= amount;
+		Debug.Log("Player lost "+amount+" "+resource+" supply. Now has "+upkeepMaximums[resource]+" total");
 	}
 	
 	// Captures an amount of an upkeep resource which is being used up by the given object (unit or building).
 	// This is called when a unit, tech, or building is actually instantiated
 	public void CaptureUpkeepResource(Resource resource, int amount, UnityEngine.Object user) {
 		capturedUpkeepResources[resource].Add(user, amount);
+		Debug.Log(user+" captured "+amount+" "+resource+" supply.");
 	}
 	
 	// Releases the given upkeep resource being used by the given object (unit or building).
 	// This is called when the object is destroyed
 	public void ReleaseUpkeepResource(Resource resource, UnityEngine.Object user) {
 		capturedUpkeepResources[resource].Remove(user);
+		Debug.Log(user+" released its "+resource+" supply.");
 	}
 }
