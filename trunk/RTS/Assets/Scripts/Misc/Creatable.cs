@@ -5,17 +5,15 @@ using System.Collections.Generic;
 public class Creatable : MonoBehaviour {
 	
 	public KeyCode creationKey;
-	public int creationTime;
+	public float creationTime;
 	public List<ResourceAmount> resourceCosts;
 	public List<Tech> techDependencies;
 	
-	private static PlayerStatus playerStatus;
-	
-	void Awake() {
-		playerStatus = (PlayerStatus)GameObject.Find("Main Camera").GetComponent<PlayerStatus>();
-	}
+	protected static PlayerStatus playerStatus;
 	
 	void Start () {
+		playerStatus = (PlayerStatus)GameObject.Find("Main Camera").GetComponent<PlayerStatus>();
+		
 		// Capture a Creatable's upkeep resources when it is instantiated
 		foreach(ResourceAmount resourceCost in resourceCosts) {
 			if(resourceCost.IsUpkeepResource()) {

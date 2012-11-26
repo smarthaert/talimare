@@ -27,12 +27,10 @@ public class AIAttacker : MonoBehaviour {
 	protected AIPathfinder pathfinder;
 	protected UnitControl unitControl;
 	
-	void Awake() {
+	void Start() {
 		pathfinder = GetComponent<AIPathfinder>();
 		unitControl = GetComponent<UnitControl>();
 	}
-	
-	void Start() {}
 	
 	void Update() {
 		if(currentAttackTarget == null) {
@@ -41,7 +39,7 @@ public class AIAttacker : MonoBehaviour {
 				attackCooldownTimer -= Time.deltaTime;
 			if(target != null) {
 				// Have a target, so try to attack or move
-				if(IsInRange(target)) {
+				if(IsInRange(target.transform)) {
 					pathfinder.StopMoving();
 					// In range, start attacking if cooldown is finished
 					if(attackCooldownTimer <= 0) {
@@ -58,7 +56,7 @@ public class AIAttacker : MonoBehaviour {
 			attackTimer -= Time.deltaTime;
 			if(attackTimer <= 0) {
 				// Check attack range at end of attack sequence
-				if(IsInRange(currentAttackTarget)) {
+				if(IsInRange(currentAttackTarget.transform)) {
 					// Apply damage
 					currentAttackTarget.GetComponent<UnitStatus>().Damage(attackDamage);
 					//TODO i don't like getting a component here so often... see if we can find a way around this
@@ -82,14 +80,14 @@ public class AIAttacker : MonoBehaviour {
 		return currentAttackTarget != null;
 	}
 	
-	protected bool IsInRange(GameObject targ) {
+	protected bool IsInRange(Transform targetTransform) {
 		float tempAttackRange = attackRange;
 		if(heightBonus) {
-			float heightDifference = (this.transform.position - targ.transform.position).y;
+			float heightDifference = (this.transform.position - targetTransform.position).y;
 			if(heightDifference > heightBonusMinHeight) {
 				tempAttackRange *= (1 + (heightDifference - heightBonusMinHeight) / heightDifference) * (heightBonusPercentCap / 100);
 			}
 		}
-		return (targ.transform.position - this.transform.position).magnitude <= tempAttackRange;
+		return (targetTransform.position - this.transform.position).magnitude <= tempAttackRange;
 	}
 }

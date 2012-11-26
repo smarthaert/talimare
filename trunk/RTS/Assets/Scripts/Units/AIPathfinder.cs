@@ -81,8 +81,8 @@ public class AIPathfinder : MonoBehaviour {
 	 * The AI will try to follow/move towards this target.
 	 * It can be a point on the ground where the player has clicked in an RTS for example, or it can be the player object in a zombie game.
 	 */
-	protected Transform target;
-	protected Vector3? targetAsPoint;
+	protected Transform targetTransform;
+	protected Vector3? targetPoint;
 	
 	protected float minMoveScale = 0.05F;
 	
@@ -130,14 +130,7 @@ public class AIPathfinder : MonoBehaviour {
 	}
 	
 	public void Move(Transform target) {
-		if(target != null && !target.Equals(this.target)) {
-			this.target = target;
-			Move(target.position);
-		}
-	}
-	
-	public void Move(Vector3? targetAsPoint) {
-		if(targetAsPoint != null && !targetAsPoint.Equals(this.targetAsPoint)) {
+		if(target != null && !target.Equals(targetTransform)) {
 			//AI was already moving, so we need to make some adjustments to force repathing right away
 			if(!targetReached) {
 				StopCoroutine("WaitForRepath");
@@ -145,7 +138,24 @@ public class AIPathfinder : MonoBehaviour {
 				lastRepath = -9999;
 				canSearchAgain = true;
 			}
-			this.targetAsPoint = targetAsPoint;
+			targetTransform = target;
+			targetPoint = null;
+			targetReached = false;
+			TrySearchPath();
+		}
+	}
+	
+	public void Move(Vector3? target) {
+		if(target != null && !target.Equals(targetPoint)) {
+			//AI was already moving, so we need to make some adjustments to force repathing right away
+			if(!targetReached) {
+				StopCoroutine("WaitForRepath");
+				path = null;
+				lastRepath = -9999;
+				canSearchAgain = true;
+			}
+			targetTransform = null;
+			targetPoint = target;
 			targetReached = false;
 			TrySearchPath();
 		}
@@ -189,19 +199,19 @@ public class AIPathfinder : MonoBehaviour {
 		lastRepath = Time.time;
 		canSearchAgain = false;
 		
-		if(target != null)
-			targetAsPoint = target.position;
+		if(targetTransform != null)
+			targetPoint = targetTransform.position;
 		
 		//We should search from the current position
-		Path p = new Path(GetFeetPosition(), targetAsPoint.Value, null);
+		Path p = new Path(GetFeetPosition(), targetPoint.Value, null);
 		seeker.StartPath (p);
 	}
 	
 	protected virtual void OnTargetReached () {
 		//Throw out the current path so it doesn't come back to haunt us
 		path = null;
-		target = null;
-		targetAsPoint = null;
+		targetTransform = null;
+		targetPoint = null;
 	}
 	
 	/** Called when a requested path has finished calculation.
@@ -266,7 +276,7 @@ public class AIPathfinder : MonoBehaviour {
 	
 	/** Point to where the AI is heading.
 	  * Filled in by #CalculateVelocity */
-	protected Vector3 targetPoint;
+	protected Vector3 targetPointDir;
 	/** Relative direction to where the AI is heading.
 	 * Filled in by #CalculateVelocity */
 	protected Vector3 targetDirection;
@@ -284,8 +294,8 @@ public class AIPathfinder : MonoBehaviour {
 	 * /see speed
 	 * /see endReachedDistance
 	 * /see slowdownDistance
-	 * /see CalculateTargetPoint
-	 * /see targetPoint
+	 * /see CalculateTargetPointDir
+	 * /see targetPointDir
 	 * /see targetDirection
 	 * /see currentWaypointIndex
 	 */
@@ -319,19 +329,19 @@ public class AIPathfinder : MonoBehaviour {
 		}
 		
 		Vector3 dir = vPath[currentWaypointIndex] - vPath[currentWaypointIndex-1];
-		Vector3 targetPoint = CalculateTargetPoint (currentPosition,vPath[currentWaypointIndex-1] , vPath[currentWaypointIndex]);
+		Vector3 targetPointDir = CalculateTargetPointDir (currentPosition,vPath[currentWaypointIndex-1] , vPath[currentWaypointIndex]);
 			//vPath[currentWaypointIndex] + Vector3.ClampMagnitude (dir,forwardLook);
 		
 		
 		
-		dir = targetPoint-currentPosition;
+		dir = targetPointDir-currentPosition;
 		dir.y = 0;
 		float targetDist = dir.magnitude;
 		
 		float slowdown = Mathf.Clamp01 (targetDist / slowdownDistance);
 		
 		this.targetDirection = dir;
-		this.targetPoint = targetPoint;
+		this.targetPointDir = targetPointDir;
 		
 		if (currentWaypointIndex == vPath.Length-1 && targetDist <= endReachedDistance) {
 			if (!targetReached) { targetReached = true; OnTargetReached (); }
@@ -376,7 +386,7 @@ public class AIPathfinder : MonoBehaviour {
 	 * \see #forwardLook
 	 * \todo This function uses .magnitude quite a lot, can it be optimized?
 	 */
-	protected Vector3 CalculateTargetPoint (Vector3 p, Vector3 a, Vector3 b) {
+	protected Vector3 CalculateTargetPointDir (Vector3 p, Vector3 a, Vector3 b) {
 		a.y = p.y;
 		b.y = p.y;
 		
