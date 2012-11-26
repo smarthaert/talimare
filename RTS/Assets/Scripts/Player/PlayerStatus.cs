@@ -76,6 +76,7 @@ public class PlayerStatus : MonoBehaviour {
 	// Gains an amount of the given resource
 	public void GainResource(Resource resource, int amount) {
 		resourceLevels[resource] += amount;
+		Debug.Log("Player gained "+amount+" "+resource);
 	}
 	
 	// Spends an amount of the given resource. This is called when a unit, tech, or building is queued

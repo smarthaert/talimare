@@ -7,18 +7,16 @@ using Pathfinding;
 [RequireComponent(typeof(AIAttacker))]
 public class UnitControl : SelectableControl {
 	
-	public bool attackWhileMoving = false;
-	
+	protected PlayerStatus playerStatus;
 	protected AIPathfinder pathfinder;
 	protected AIAttacker attacker;
-	
-	protected override void Awake() {
-		pathfinder = GetComponent<AIPathfinder>();
-		attacker = GetComponent<AIAttacker>();
-	}
 
 	protected override void Start() {
 		base.Start();
+		playerStatus = (PlayerStatus)GameObject.Find("Main Camera").GetComponent<PlayerStatus>();
+		
+		pathfinder = GetComponent<AIPathfinder>();
+		attacker = GetComponent<AIAttacker>();
 	}
 	
 	protected override void Update() {
@@ -28,22 +26,21 @@ public class UnitControl : SelectableControl {
 	// Called when mouse action button is clicked on any object while this unit is selected
 	public override void MouseAction(RaycastHit hit) {
 		if(hit.collider.GetType() == typeof(TerrainCollider)) {
+			StopAllActions();
 			attacker.StopAttacking();
 			pathfinder.Move(hit.point);
 			//TODO stop units from walking on top of each other
-		} else if(hit.collider.GetType() == typeof(CharacterController)) {
-			pathfinder.StopMoving();
+		} else if(hit.collider.gameObject.CompareTag("Unit")) {
+			StopAllActions();
 			attacker.Attack(hit.collider.gameObject);
 		}
-	}
-	
-	// Can be called from elsewhere to order this unit to move
-	public void Move(Vector3? destination) {
-		pathfinder.Move(destination);
 	}
 	
 	// Called when any key is pressed while this unit is selected
 	public override void KeyPressed() {
 		
 	}
+	
+	// Overridden in subclasses so this class can request all subclass actions to be stopped
+	public virtual void StopAllActions() {}
 }

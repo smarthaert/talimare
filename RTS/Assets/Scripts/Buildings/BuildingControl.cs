@@ -75,11 +75,9 @@ public class BuildingControl : SelectableControl {
 		float distance = this.collider.bounds.size.magnitude + unit.gameObject.collider.bounds.size.magnitude;
 		GameObject newUnit = (GameObject)Instantiate(unit.gameObject, transform.position + (transform.right * distance), Quaternion.identity);
 		if(rallyPoint != null) {
-			newUnit.GetComponent<UnitControl>().Move(rallyPoint);
+			newUnit.GetComponent<AIPathfinder>().Move(rallyPoint);
 		}
 		unitTimer = 0;
-		
-		((AstarPath)GameObject.Find("Pathfinding").GetComponent<AstarPath>()).Scan();
 	}
 	
 	// Complete a tech, adding it to the player's tech list and running
