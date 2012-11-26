@@ -7,13 +7,11 @@ using Pathfinding;
 [RequireComponent(typeof(AIAttacker))]
 public class UnitControl : SelectableControl {
 	
-	protected PlayerStatus playerStatus;
 	protected AIPathfinder pathfinder;
 	protected AIAttacker attacker;
 
 	protected override void Start() {
 		base.Start();
-		playerStatus = (PlayerStatus)GameObject.Find("Main Camera").GetComponent<PlayerStatus>();
 		
 		pathfinder = GetComponent<AIPathfinder>();
 		attacker = GetComponent<AIAttacker>();

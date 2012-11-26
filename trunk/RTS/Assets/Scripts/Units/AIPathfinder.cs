@@ -117,8 +117,7 @@ public class AIPathfinder : MonoBehaviour {
 	/** Only when the previous path has been returned should be search for a new path */
 	protected bool canSearchAgain = true;
 	
-	// Use this for initialization
-	void Awake () {
+	void Start () {
 		seeker = GetComponent<Seeker>();
 		//This is a simple optimization, cache the transform component lookup
 		tr = transform;

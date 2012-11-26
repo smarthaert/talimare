@@ -7,12 +7,11 @@ public class ResourceSupplier : MonoBehaviour {
 	public List<ResourceAmount> suppliedResources;
 	
 	private static PlayerStatus playerStatus;
-	
-	void Awake() {
-		playerStatus = (PlayerStatus)GameObject.Find("Main Camera").GetComponent<PlayerStatus>();
-	}
 
 	void Start () {
+		if(playerStatus == null)
+			playerStatus = GameObject.Find("Main Camera").GetComponent<PlayerStatus>();
+		
 		// Add all supplied resources to the player's pool
 		foreach(ResourceAmount suppliedResource in suppliedResources) {
 			playerStatus.GainResource(suppliedResource.resource, suppliedResource.amount);

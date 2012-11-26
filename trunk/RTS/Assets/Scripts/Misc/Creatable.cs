@@ -8,11 +8,13 @@ public class Creatable : MonoBehaviour {
 	public float creationTime;
 	public List<ResourceAmount> resourceCosts;
 	public List<Tech> techDependencies;
+	public BuildProgress buildProgressObject;
 	
 	protected static PlayerStatus playerStatus;
 	
 	void Start () {
-		playerStatus = (PlayerStatus)GameObject.Find("Main Camera").GetComponent<PlayerStatus>();
+		if(playerStatus == null)
+			playerStatus = GameObject.Find("Main Camera").GetComponent<PlayerStatus>();
 		
 		// Capture a Creatable's upkeep resources when it is instantiated
 		foreach(ResourceAmount resourceCost in resourceCosts) {
