@@ -130,32 +130,26 @@ public class AIPathfinder : MonoBehaviour {
 	
 	public void Move(Transform target) {
 		if(target != null && !target.Equals(targetTransform)) {
-			//AI was already moving, so we need to make some adjustments to force repathing right away
-			if(!targetReached) {
-				StopCoroutine("WaitForRepath");
-				path = null;
-				lastRepath = -9999;
-				canSearchAgain = true;
-			}
 			targetTransform = target;
-			targetPoint = null;
 			targetReached = false;
+			
+			//Make some adjustments to allow immediate repathing
+			lastRepath = -9999;
+			canSearchAgain = true;
+			
 			TrySearchPath();
 		}
 	}
 	
 	public void Move(Vector3? target) {
 		if(target != null && !target.Equals(targetPoint)) {
-			//AI was already moving, so we need to make some adjustments to force repathing right away
-			if(!targetReached) {
-				StopCoroutine("WaitForRepath");
-				path = null;
-				lastRepath = -9999;
-				canSearchAgain = true;
-			}
-			targetTransform = null;
 			targetPoint = target;
 			targetReached = false;
+			
+			//Make some adjustments to allow immediate repathing
+			lastRepath = -9999;
+			canSearchAgain = true;
+			
 			TrySearchPath();
 		}
 	}

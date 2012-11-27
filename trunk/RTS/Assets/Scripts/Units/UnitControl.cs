@@ -24,12 +24,11 @@ public class UnitControl : SelectableControl {
 	// Called when mouse action button is clicked on any object while this unit is selected
 	public override void MouseAction(RaycastHit hit) {
 		if(hit.collider.GetType() == typeof(TerrainCollider)) {
-			StopAllActions();
-			attacker.StopAttacking();
+			SendMessage("StopAllActions");
 			pathfinder.Move(hit.point);
 			//TODO stop units from walking on top of each other
 		} else if(hit.collider.gameObject.CompareTag("Unit")) {
-			StopAllActions();
+			SendMessage("StopAllActions");
 			attacker.Attack(hit.collider.gameObject);
 		}
 	}
@@ -39,6 +38,9 @@ public class UnitControl : SelectableControl {
 		
 	}
 	
-	// Overridden in subclasses so this class can request all subclass actions to be stopped
-	public virtual void StopAllActions() {}
+	// Stops all actions the unit is performing. Keep in mind that it's likely that one of the stopped actions will be resumed immediately
+	public virtual void StopAllActions() {
+		attacker.StopAttacking();
+		pathfinder.StopMoving();
+	}
 }
