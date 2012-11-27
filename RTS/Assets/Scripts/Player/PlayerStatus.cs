@@ -35,7 +35,7 @@ public class PlayerStatus : MonoBehaviour {
 	public Dictionary<Resource, int> upkeepMaximums = new Dictionary<Resource, int>();
 	
 	// Keeps track of all objects (units or buildings) which are using upkeep resources
-	private Dictionary<Resource, Dictionary<UnityEngine.Object, int>> capturedUpkeepResources = new Dictionary<Resource, Dictionary<UnityEngine.Object, int>>();
+	protected Dictionary<Resource, Dictionary<UnityEngine.Object, int>> capturedUpkeepResources = new Dictionary<Resource, Dictionary<UnityEngine.Object, int>>();
 	
 	// Techs the player has researched
 	public HashSet<Tech> techs = new HashSet<Tech>();

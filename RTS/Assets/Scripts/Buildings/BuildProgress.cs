@@ -1,6 +1,6 @@
 using UnityEngine;
 
-// Handles the status of a building being built
+// Handles the status of a building being placed and built
 public class BuildProgress : MonoBehaviour {
 	
 	public GameObject finishedObject;
@@ -14,10 +14,15 @@ public class BuildProgress : MonoBehaviour {
 	protected bool completed = false;
 	
 	void Start() {
+		creatable = finishedObject.GetComponent<Creatable>();
+	}
+	
+	// Called when this building is committed (goes from a queued/placement state to actually being in the world)
+	public void Commit() {
 		if(pathfinding == null)
 			pathfinding = GameObject.Find("Pathfinding").GetComponent<AstarPath>();
 		pathfinding.Scan();
-		creatable = finishedObject.GetComponent<Creatable>();
+		creatable.SpendResources();
 	}
 	
 	// Called at regular intervals while this building is being built to advance its completion
@@ -38,6 +43,10 @@ public class BuildProgress : MonoBehaviour {
 	
 	public bool Completed() {
 		return completed;
+	}
+	
+	public Creatable GetCreatable() {
+		return creatable;
 	}
 }
 
