@@ -79,8 +79,14 @@ public class CivilianControl : UnitControl {
 		Ray ray = playerInput.camera.ScreenPointToRay(Input.mousePosition);
 		RaycastHit hit;
 		if(Physics.Raycast(ray, out hit, Mathf.Infinity, (1 << terrainLayer.Value))) {
-			//TODO move queuedBuildTarget so that it sits on top of the terrain
-			queuedBuildTarget.transform.position = hit.point;
+			// Shift the target position up on top of the ground and snap it to grid
+			Vector3 position = hit.point;
+			position.y += (queuedBuildTarget.renderer.bounds.size.y / 2);
+			position.x = Mathf.RoundToInt(position.x);
+			position.y = Mathf.RoundToInt(position.y);
+			position.z = Mathf.RoundToInt(position.z);
+			queuedBuildTarget.transform.position = position;
+			Debug.Log (position);
 		}
 	}
 	
@@ -106,16 +112,13 @@ public class CivilianControl : UnitControl {
 	public override void MouseAction(RaycastHit hit) {
 		base.MouseAction(hit);
 		if(hit.collider.gameObject.CompareTag("Resource")) {
-			attacker.StopAttacking();
-			StopBuilding();
+			SendMessage("StopAllActions");
 			Gather(hit.collider.gameObject.GetComponent<ResourceNode>());
 		} else if(queuedBuildTarget != null) {
-			attacker.StopAttacking();
-			StopBuilding();
+			SendMessage("StopAllActions");
 			CommitQueuedBuilding(hit.point);
 		} else if(hit.collider.gameObject.CompareTag("BuildProgress")) {
-			attacker.StopAttacking();
-			StopGathering();
+			SendMessage("StopAllActions");
 			Build(hit.collider.gameObject.GetComponent<BuildProgress>());
 		}
 	}
@@ -170,7 +173,9 @@ public class CivilianControl : UnitControl {
 		isBuilding = false;
 	}
 	
+	// Stops all actions the unit is performing. Keep in mind that it's likely that one of the stopped actions will be resumed immediately
 	public override void StopAllActions() {
+		base.StopAllActions();
 		StopGathering();
 		StopBuilding();
 	}
