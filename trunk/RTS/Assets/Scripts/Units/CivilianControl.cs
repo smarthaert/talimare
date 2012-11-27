@@ -18,17 +18,23 @@ public class CivilianControl : UnitControl {
 	
 	// The building this unit is currently building
 	protected bool buildMenuOpen = false;
-	protected Creatable queuedBuilding;
+	protected BuildProgress queuedBuildTarget;
 	protected BuildProgress buildTarget;
 	protected bool isBuilding = false;
 	
 	protected static PlayerStatus playerStatus;
+	protected static PlayerInput playerInput;
+	protected static int? terrainLayer;
 
 	protected override void Start () {
 		base.Start();
 		
 		if(playerStatus == null)
 			playerStatus = GameObject.Find("Main Camera").GetComponent<PlayerStatus>();
+		if(playerInput == null)
+			playerInput = GameObject.Find("Main Camera").GetComponent<PlayerInput>();
+		if(terrainLayer == null)
+			terrainLayer = GameObject.Find("Terrain").layer;
 	}
 	
 	protected override void Update () {
@@ -36,8 +42,9 @@ public class CivilianControl : UnitControl {
 		
 		if(gatherTarget != null) {
 			UpdateGather();
-		}
-		if(buildTarget != null) {
+		} else if(queuedBuildTarget != null) {
+			DrawQueuedBuildingAtMouse();
+		} else if(buildTarget != null) {
 			UpdateBuild();
 		}
 	}
@@ -67,6 +74,16 @@ public class CivilianControl : UnitControl {
 		}
 	}
 	
+	// Moves the queued building to where the mouse hits the ground
+	protected void DrawQueuedBuildingAtMouse() {
+		Ray ray = playerInput.camera.ScreenPointToRay(Input.mousePosition);
+		RaycastHit hit;
+		if(Physics.Raycast(ray, out hit, Mathf.Infinity, (1 << terrainLayer.Value))) {
+			//TODO move queuedBuildTarget so that it sits on top of the terrain
+			queuedBuildTarget.transform.position = hit.point;
+		}
+	}
+	
 	protected void UpdateBuild() {
 		if(isBuilding) {
 			// Currently building
@@ -92,10 +109,10 @@ public class CivilianControl : UnitControl {
 			attacker.StopAttacking();
 			StopBuilding();
 			Gather(hit.collider.gameObject.GetComponent<ResourceNode>());
-		} else if(queuedBuilding != null && hit.collider.GetType() == typeof(TerrainCollider)) {
+		} else if(queuedBuildTarget != null) {
 			attacker.StopAttacking();
 			StopBuilding();
-			commitQueuedBuilding(hit.point);
+			CommitQueuedBuilding(hit.point);
 		} else if(hit.collider.gameObject.CompareTag("BuildProgress")) {
 			attacker.StopAttacking();
 			StopGathering();
@@ -111,7 +128,7 @@ public class CivilianControl : UnitControl {
 			foreach(Creatable building in buildings) {
 				if(Input.GetKeyDown(building.creationKey)) {
 					if(building.CanCreate()) {
-						queuedBuilding = building;
+						queuedBuildTarget = ((GameObject)Instantiate(building.buildProgressObject.gameObject)).GetComponent<BuildProgress>();
 					}
 				}
 			}
@@ -129,12 +146,12 @@ public class CivilianControl : UnitControl {
 	}
 	
 	// Commits the currently queued building at the given position and begins building
-	protected void commitQueuedBuilding(Vector3 position) {
-		if(queuedBuilding.CanCreate()) {
-			queuedBuilding.SpendResources();
-			GameObject newBuilding = (GameObject)Instantiate(queuedBuilding.buildProgressObject.gameObject, position, Quaternion.identity);
-			Build(newBuilding.GetComponent<BuildProgress>());
+	protected void CommitQueuedBuilding(Vector3 position) {
+		if(queuedBuildTarget.GetCreatable().CanCreate()) {
+			queuedBuildTarget.Commit();
+			Build(queuedBuildTarget);
 		}
+		queuedBuildTarget = null;
 	}
 	
 	// Sets this unit to build the given building
@@ -161,7 +178,10 @@ public class CivilianControl : UnitControl {
 	// Called when this GameObject has been deselected
 	public override void Deselected() {
 		buildMenuOpen = false;
-		queuedBuilding = null;
+		if(queuedBuildTarget != null) {
+			Destroy(queuedBuildTarget.gameObject);
+			queuedBuildTarget = null;
+		}
 	}
 	
 	protected bool IsInGatherRange() {
