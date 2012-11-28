@@ -35,7 +35,9 @@ public class UnitControl : SelectableControl {
 	
 	// Called when any key is pressed while this unit is selected
 	public override void KeyPressed() {
-		
+		if(Input.GetKeyDown(KeyCode.S)) {
+			SendMessage("StopAllActions");
+		}
 	}
 	
 	// Stops all actions the unit is performing. Keep in mind that it's likely that one of the stopped actions will be resumed immediately
