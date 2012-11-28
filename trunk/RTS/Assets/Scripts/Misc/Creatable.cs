@@ -49,4 +49,14 @@ public class Creatable : MonoBehaviour {
 			playerStatus.SpendResource(resourceCost.resource, resourceCost.amount);
 		}
 	}
+	
+	// Called when the object is destroyed, this refunds and releases the Creatable's upkeep resources
+	void OnDestroy() {
+		foreach(ResourceAmount resourceCost in resourceCosts) {
+			if(resourceCost.IsUpkeepResource()) {
+				playerStatus.GainResource(resourceCost.resource, resourceCost.amount);
+				playerStatus.ReleaseUpkeepResource(resourceCost.resource, this.gameObject);
+			}
+		}
+	}
 }
