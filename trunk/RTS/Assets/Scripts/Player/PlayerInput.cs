@@ -7,8 +7,14 @@ public class PlayerInput : MonoBehaviour {
 	// A visual marker for the current selection
 	public GameObject selectionMarker;
 	
+	protected int allLayersMinusFogMask;
+	
 	protected SelectableControl currentSelection;
 	protected GameObject currentMarker;
+	
+	void Start () {
+		allLayersMinusFogMask = ~(1 << LayerMask.NameToLayer("FogOfWar"));
+	}
 	
 	void Update () {
 		// Send key pressed notification to the currently selected object
@@ -25,7 +31,7 @@ public class PlayerInput : MonoBehaviour {
 			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 			RaycastHit hit;
 			
-			if(Physics.Raycast(ray, out hit)) {
+			if(Physics.Raycast(ray, out hit, Mathf.Infinity, allLayersMinusFogMask)) {
 				// Note: this currently only works if the collider we hit is the same gameobject
 				// in the hierarchy as has the Selectable script attached
 				if(hit.collider.gameObject.GetComponent(typeof(SelectableControl)) != null) {
@@ -45,7 +51,7 @@ public class PlayerInput : MonoBehaviour {
 			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 			RaycastHit hit;
 			
-			if(Physics.Raycast(ray, out hit)) {
+			if(Physics.Raycast(ray, out hit, Mathf.Infinity, allLayersMinusFogMask)) {
 				currentSelection.MouseAction(hit);
 			}
 		}
