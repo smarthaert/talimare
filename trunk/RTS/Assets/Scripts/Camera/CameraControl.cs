@@ -5,28 +5,20 @@ public class CameraControl : MonoBehaviour {
 	
 	public float moveSpeed = 30f;
 	
-	public float rotateSpeed = 100f;
-	
 	public float zoomSpeed = 5f;
 	public float zoomUpperLimit = 90f;
 	public float zoomLowerLimit = 5f;
 
 	private Vector3 moveDirection = Vector3.zero;
-	private Vector3 rotateDirection = Vector3.zero;
 
 	void Start () {}
 	
 	void FixedUpdate () {
-		Debug.Log(Input.GetAxis("CamHorizontal"));
 		// Move
 		moveDirection = new Vector3(Input.GetAxis("CamHorizontal"), 0, Input.GetAxis("CamVertical"));
 		moveDirection = transform.TransformDirection(moveDirection);
 		moveDirection *= moveSpeed;
 		transform.position += moveDirection * Time.deltaTime;
-		
-		// Rotate
-		rotateDirection = new Vector3(0, Input.GetAxis("CamRotate"), 0);
-		transform.Rotate(rotateDirection * Time.deltaTime * rotateSpeed);
 		
 		// Zoom
 		if (((Input.GetAxis("CamZoom") > 0) && (transform.localPosition.z < -zoomLowerLimit)) ||
