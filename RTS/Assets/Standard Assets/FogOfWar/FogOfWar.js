@@ -28,7 +28,7 @@ function AddVert(pos : Vector3, x : float, z : float) : Vector3
 	return Vector3(x,hitInfo.point.y,z);
 }
 
-function Start()
+function Awake()
 {
 	gameObject.AddComponent("MeshFilter");
 	gameObject.AddComponent("MeshRenderer");
@@ -274,15 +274,4 @@ function ResetFog()
 function AddRevealer(r : FogOfWarRevealer)
 {
 	UniquePush(revealers, r);
-}
-
-function OnGUI()
-{
-	if (GUI.Button(Rect(10, 60, 110, 20), (resettingFog ? "Resetting Fog..." : "Reset Fog")) && !resettingFog)
-	{
-		ResetFog();
-	}
-
-	//GUI.Label(Rect(10,90,400,100),
-	//	"\nrevealedVerts.length: " + revealedVerts.length + "\ninitialRevealVerts.length: " + initialRevealVerts.length);
 }

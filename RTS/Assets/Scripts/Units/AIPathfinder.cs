@@ -162,7 +162,11 @@ public class AIPathfinder : MonoBehaviour {
 	}
 	
 	public bool IsMoving() {
-		return !targetReached;
+		if(targetPoint != null || targetTransform != null) {
+			return !targetReached;
+		} else {
+			return false;
+		}
 	}
 	
 	protected void TrySearchPath () {
