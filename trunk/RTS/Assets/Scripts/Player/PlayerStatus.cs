@@ -40,7 +40,7 @@ public class PlayerStatus : MonoBehaviour {
 	// Techs the player has researched
 	public HashSet<Tech> techs = new HashSet<Tech>();
 	
-	void Start () {
+	void Awake () {
 		food = maxFood;
 		water = maxWater;
 		power = maxPower;
