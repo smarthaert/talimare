@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class AIVision : MonoBehaviour {
 
@@ -16,8 +17,6 @@ public class AIVision : MonoBehaviour {
 	// Layer mask for the layers that impede vision
 	protected int LOSLayerMask;
 	
-	//TODO keep a list of currently revealed verts, sending old verts to the fog to be re-covered upon movement
-	
 	protected static float REVEALER_CIRCLE_SMOOTHNESS = 4.75f;
 	
 	void Start() {
@@ -29,26 +28,27 @@ public class AIVision : MonoBehaviour {
 		fogLayerMask = 1 << LayerMask.NameToLayer("FogOfWar");
 		LOSLayerMask = (1 << LayerMask.NameToLayer("Terrain")) + (1 << LayerMask.NameToLayer("Building"));
 	
-		RevealFogOFWarAt(transform.position.x, transform.position.z, true);
 		CalculateRevealPoints();
 	}
 	
 	void Update() {
-		if (pathfinder.IsMoving()) {
+		// If this script is too inefficient, we can improve FogOfWar so that AIVisions don't need to recalculate vision while non-moving
+		//if (pathfinder.IsMoving()) {
 			CalculateRevealPoints();
-		}
+		//}
 	}
 	
 	void CalculateRevealPoints() {
-		var x = transform.position.x;
-		var z = transform.position.z;
+		float x = transform.position.x;
+		float z = transform.position.z;
+		RevealFogOFWarAt(transform.position.x, transform.position.z);
 		
 		for (float i = 0.0f; i <= 2*Mathf.PI; i += REVEALER_CIRCLE_SMOOTHNESS/revealerRange) {
-			RevealFogOFWarAt(x+(Mathf.Cos(i)*revealerRange), z+(Mathf.Sin(i)*revealerRange), false);
+			RevealFogOFWarAt(x+(Mathf.Cos(i)*revealerRange), z+(Mathf.Sin(i)*revealerRange));
 		}
 	}
 	
-	void RevealFogOFWarAt(float x, float z, bool quickReveal) {
+	void RevealFogOFWarAt(float x, float z) {
 		RaycastHit hit;
 	
 		Debug.DrawRay(new Vector3(x,FogOfWar.RAYCAST_HEIGHT,z), -Vector3.up*FogOfWar.RAYCAST_HEIGHT);
@@ -73,15 +73,14 @@ public class AIVision : MonoBehaviour {
 		
 		// By now it is assumed that we hit the fog of war mesh, so we use it
 		// directly and not hit.collider.gameObject.GetComponent(MeshFilter).mesh;
-		int[] triangles = fogOfWarMesh.triangles;
 		
 		// Get which vertices were hit
-		var p0 = triangles[hit.triangleIndex * 3 + 0];
-		var p1 = triangles[hit.triangleIndex * 3 + 1];
-		var p2 = triangles[hit.triangleIndex * 3 + 2];
+		int p0 = fogOfWarMesh.triangles[hit.triangleIndex * 3 + 0];
+		int p1 = fogOfWarMesh.triangles[hit.triangleIndex * 3 + 1];
+		int p2 = fogOfWarMesh.triangles[hit.triangleIndex * 3 + 2];
 	
-		fogOfWarScript.AddVertToReveal(p0, quickReveal);
-		fogOfWarScript.AddVertToReveal(p1, quickReveal);
-		fogOfWarScript.AddVertToReveal(p2, quickReveal);
+		fogOfWarScript.AddVertToReveal(p0);
+		fogOfWarScript.AddVertToReveal(p1);
+		fogOfWarScript.AddVertToReveal(p2);
 	}
 }

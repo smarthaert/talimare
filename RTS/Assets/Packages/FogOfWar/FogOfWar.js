@@ -17,7 +17,6 @@ private var colors : Color[];
 private var resettingFog = false;
 private var revealedVerts = new Array(); // the verts that need to be darkened again
 private var initialRevealVerts = new Array(); // the verts that don't get darkened again since there are units on them
-private var revealers = new Array();
 
 function AddVert(pos : Vector3, x : float, z : float) : Vector3
 {
@@ -151,127 +150,41 @@ function AddVertToReveal(vertIdx : int, quickReveal : boolean)
 	}
 }
 
-function IsVertRevealed(vertIdx : int) : boolean
-{
+function IsVertRevealed(vertIdx : int) : boolean {
 	return (colors[vertIdx].a < targetAlpha);
 }
 
-function Update()
-{
-	//Debug.Log(verticesToReveal.length);
-
-	if (verticesToReveal.length > 0)
-	{
-		for (var i = 0; i < verticesToReveal.length; ++i)
-		{
-			var vertIdxToReveal = verticesToReveal[i];
-
-			colors[vertIdxToReveal].a -= alphaAnimationSpeed * Time.deltaTime;
-			if (colors[vertIdxToReveal].a <= 0.0)
-			{
-				verticesToReveal.RemoveAt(i);
-				if (!resettingFog)
-				{
-					UniquePush(revealedVerts, vertIdxToReveal);
-				}
-				--i;
-				if (i <= -1)
-				{
-					i = 0;
-				}
+function Update() {
+	// Darken all revealed verts
+	for (i = 0; i < revealedVerts.length; ++i) {
+		var vertIdxToDarken = revealedVerts[i];
+		
+		colors[vertIdxToDarken].a += alphaAnimationSpeed * Time.deltaTime;
+		if (colors[vertIdxToDarken].a >= targetAlpha) {
+			revealedVerts.RemoveAt(i);
+			--i;
+			if (i <= -1) {
+				i = 0;
 			}
 		}
 	}
+	
+	// And lighten all visible ones
+	for (var j = 0; j < verticesToReveal.length; ++j) {
+		var vertIdxToReveal = verticesToReveal[j];
 
-	if (resettingFog)
-	{
-		if (revealedVerts.length == 0)
-		{
-			resettingFog = false;
-		}
-		else
-		{
-			//Debug.Log("darkening");
-			for (i = 0; i < revealedVerts.length; ++i)
-			{
-				var vertIdxToDarken = revealedVerts[i];
-
-				colors[vertIdxToDarken].a += alphaAnimationSpeed * Time.deltaTime;
-				if (colors[vertIdxToDarken].a >= targetAlpha)
-				{
-					revealedVerts.RemoveAt(i);
-					--i;
-					if (i <= -1)
-					{
-						i = 0;
-					}
-				}
+		colors[vertIdxToReveal].a -= alphaAnimationSpeed * Time.deltaTime;
+		if (colors[vertIdxToReveal].a <= 0.0) {
+			verticesToReveal.RemoveAt(j);
+			if (!resettingFog) {
+				UniquePush(revealedVerts, vertIdxToReveal);
+			}
+			--j;
+			if (j <= -1) {
+				j = 0;
 			}
 		}
 	}
-
-	if ((verticesToReveal.length > 0) || resettingFog)
-	{
-		mesh.colors = colors;
-	}
-}
-
-
-
-function ResetFog()
-{
-	// add contents of initialRevealVerts to revealedVerts
-	for (idx in initialRevealVerts)
-	{
-		UniquePush(revealedVerts, idx);
-	}
-
-	// clear initialRevealVerts
-	initialRevealVerts.Clear();
-	//Debug.Log("initialRevealVerts now: " + initialRevealVerts.length);
-
-	// tell all revealers to call their InitialReveal to repopulate initialRevealVerts
-	//Debug.Log("revealers: " + revealers.length);
-	for (r in revealers)
-	{
-		r.InitialReveal();
-	}
-
-	//Debug.Log("initialRevealVerts after all revealers to call their InitialReveal: " + initialRevealVerts.length);
-
-	// remove elements of initialRevealVerts from revealedVerts
-	// revealedVerts - initialRevealVerts
-	for (initial in initialRevealVerts)
-	{
-		for (var i = 0; i < revealedVerts.length; ++i)
-		{
-			if (revealedVerts[i] == initial)
-			{
-				revealedVerts.RemoveAt(i);
-				--i;
-				if (i <= -1)
-				{
-					i = 0;
-				}
-			}
-		}
-	}
-
-
-	// redarken verts found in revealedVerts
-	resettingFog = true;
-
-	//for (vertIdx in revealedVerts)
-	//{
-	//	colors[vertIdx].a = targetAlpha;
-	//}
-	//revealedVerts.Clear();
-	//mesh.colors = colors;
-}
-
-
-
-function AddRevealer(r : FogOfWarRevealer)
-{
-	UniquePush(revealers, r);
+	
+	mesh.colors = colors;
 }
