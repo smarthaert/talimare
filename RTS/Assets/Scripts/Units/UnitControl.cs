@@ -45,4 +45,9 @@ public class UnitControl : SelectableControl {
 		attacker.StopAttacking();
 		pathfinder.StopMoving();
 	}
+	
+	// Called when an object of interest moves into visual range
+	public virtual void ObjectSighted(GameObject obj) {
+		Debug.Log("I see you "+obj.name+"!");
+	}
 }

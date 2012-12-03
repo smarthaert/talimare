@@ -7,7 +7,7 @@ public class FogOfWar : MonoBehaviour {
 	public float targetAlpha = 0.5f;
 	public float alphaAnimationSpeed = 0.8f;
 	
-	public float gridSize = 3.0f;
+	public float gridSize = 5.0f;
 	public int xLength = 10;
 	public int yLength = 10;
 	
