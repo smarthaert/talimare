@@ -85,4 +85,14 @@ public class BuildingControl : SelectableControl {
 		Tech tech = (Tech)techQueue.Dequeue().GetComponent(typeof(Tech));
 		tech.Execute();
 	}
+	
+	// Called when an object of interest moves into visual range
+	public virtual void ObjectEnteredVision(GameObject obj) {
+		Debug.Log("I see you "+obj.name+"!");
+	}
+	
+	// Called when an object of interest moves out of visual range
+	public virtual void ObjectLeftVision(GameObject obj) {
+		Debug.Log("I can't see you "+obj.name+"!");
+	}
 }

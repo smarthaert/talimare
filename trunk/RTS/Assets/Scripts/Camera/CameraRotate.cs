@@ -10,7 +10,7 @@ public class CameraRotate : MonoBehaviour {
 	
 	void Start () {
 		screenCenter = new Vector3(Screen.width/2, Screen.height/2, 0);
-		layerMask = ~(1 << LayerMask.NameToLayer("FogOfWar"));
+		layerMask = ~((1 << LayerMask.NameToLayer("FogOfWar")) + (1 << LayerMask.NameToLayer("Ignore Raycast")));
 	}
 	
 	void LateUpdate () {
