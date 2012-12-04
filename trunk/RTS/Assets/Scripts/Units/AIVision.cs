@@ -48,8 +48,9 @@ public class AIVision : MonoBehaviour {
 		LOSLayerMask = 1 << LayerMask.NameToLayer("Terrain");
 		
 		circleStep = ((2*Mathf.PI) / visionRange) - 0.0001f;
-	
-		CalculateRevealPoints();
+		
+		if(revealsFog)
+			CalculateRevealPoints();
 	}
 	
 	void Update() {
@@ -59,7 +60,7 @@ public class AIVision : MonoBehaviour {
 				CalculateRevealPoints();
 			//}
 		} else if(hidesInFog) {
-			//TODO hide in fog
+			CheckHideOrShow();
 		}
 	}
 	
@@ -75,6 +76,7 @@ public class AIVision : MonoBehaviour {
 		}
 	}
 	
+	// Reveals fog of war at the given position
 	void RevealFogOFWarAt(float x, float z) {
 		RaycastHit hit;
 		
@@ -108,6 +110,47 @@ public class AIVision : MonoBehaviour {
 		fogOfWarScript.AddVertToReveal(p0);
 		fogOfWarScript.AddVertToReveal(p1);
 		fogOfWarScript.AddVertToReveal(p2);
+	}
+	
+	// Checks whether this object should be hidden under the fog, or shown if it no longer under fog
+	void CheckHideOrShow() {
+		float x = transform.position.x;
+		float z = transform.position.z;
+		
+		RaycastHit hit;
+		if (!Physics.Raycast(new Vector3(x, FogOfWar.RAYCAST_HEIGHT, z), -Vector3.up, out hit, Mathf.Infinity, fogLayerMask)) {
+			return;
+		}
+		
+		// By now it is assumed that we hit the fog of war mesh, so we use it
+		// directly and not hit.collider.gameObject.GetComponent(MeshFilter).mesh;
+	
+		// Get which vertices were hit
+		int p0 = fogOfWarScript.meshTriangles[hit.triangleIndex * 3 + 0];
+		int p1 = fogOfWarScript.meshTriangles[hit.triangleIndex * 3 + 1];
+		int p2 = fogOfWarScript.meshTriangles[hit.triangleIndex * 3 + 2];
+	
+		if (fogOfWarScript.IsVertRevealed(p0) && fogOfWarScript.IsVertRevealed(p1) && fogOfWarScript.IsVertRevealed(p2)) {
+			Show();
+		} else {
+			Hide();
+		}
+	}
+	
+	// Hides this object, disabling all renderers
+	void Hide() {
+		Renderer[] allRenderer = transform.root.gameObject.GetComponentsInChildren<Renderer>();
+		foreach(Renderer rendR in allRenderer) {
+			rendR.enabled = false;
+		}
+	}
+	
+	// Shows this object, enabling all renderers
+	void Show() {
+		Renderer[] allRenderer = transform.root.gameObject.GetComponentsInChildren<Renderer>();
+		foreach(Renderer rendR in allRenderer) {
+			rendR.enabled = true;
+		}
 	}
 	
 	// Called when another collider enters this vision range
