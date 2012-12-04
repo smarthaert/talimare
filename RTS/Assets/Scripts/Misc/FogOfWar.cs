@@ -4,7 +4,8 @@ using System.Collections.Generic;
 public class FogOfWar : MonoBehaviour {
 	
 	public Material newMaterial;
-	public float targetAlpha = 0.5f;
+	public float undiscoveredAlpha = 1f;
+	public float fogAlpha = 0.5f;
 	public float alphaAnimationSpeed = 0.8f;
 	
 	public float gridSize = 5.0f;
@@ -79,7 +80,7 @@ public class FogOfWar : MonoBehaviour {
 		colors = new List<Color>(mesh.vertices.Length);
 	
 		for (int i=0; i<mesh.vertices.Length; i++) {
-			colors.Add(new Color(0, 0, 0, targetAlpha));
+			colors.Add(new Color(0, 0, 0, undiscoveredAlpha));
 		}
 		mesh.colors = colors.ToArray();
 	
@@ -103,13 +104,17 @@ public class FogOfWar : MonoBehaviour {
 	
 	// Adds a vert that should be revealed because it is visible to some unit
 	public void AddVertToReveal(int vertIdx) {
-		if (colors[vertIdx].a > 0.0 && !verticesToReveal.Contains(vertIdx)) {
+		if (colors[vertIdx].a > 0.0f && !verticesToReveal.Contains(vertIdx)) {
 			verticesToReveal.Add(vertIdx);
 		}
 	}
 	
 	public bool IsVertRevealed(int vertIdx) {
-		return (colors[vertIdx].a < targetAlpha);
+		return (colors[vertIdx].a < fogAlpha);
+	}
+	
+	public bool IsVertDiscovered(int vertIdx) {
+		return (colors[vertIdx].a < undiscoveredAlpha);
 	}
 	
 	void Update() {
@@ -125,7 +130,7 @@ public class FogOfWar : MonoBehaviour {
 				Color color = colors[vertIdxToDarken];
 				color.a += alphaAnimationSpeed * Time.deltaTime;
 				colors[vertIdxToDarken] = color;
-				if(color.a >= targetAlpha) {
+				if(color.a >= fogAlpha) {
 					// Vert is totally darkened, so remove it from revealedVerts
 					revealedVerts.RemoveAt(i);
 					--i;
@@ -145,7 +150,7 @@ public class FogOfWar : MonoBehaviour {
 				Color color = colors[vertIdxToReveal];
 				color.a -= alphaAnimationSpeed * Time.deltaTime;
 				colors[vertIdxToReveal] = color;
-				if(color.a <= 0.0) {
+				if(color.a <= 0.0f) {
 					// Vert is totally transparent, so remove it from verticesToReveal and add it to revealedVerts
 					if(!revealedVerts.Contains(vertIdxToReveal)) {
 						revealedVerts.Add(vertIdxToReveal);
