@@ -20,16 +20,22 @@ public class AIVision : MonoBehaviour {
 	protected int fogLayerMask;
 	// Layer mask for the layers that impede vision
 	protected int LOSLayerMask;
-	// This determines how many rays we cast evenly around the circle around this object
+	// This determines how many rays we cast evenly around in a circle around this object
 	protected float circleStep;
 	
 	void Start() {
+		// A capsule collider provides a trigger for the vision range
 		gameObject.AddComponent<CapsuleCollider>();
 		CapsuleCollider visionCollider = GetComponent<CapsuleCollider>();
 		visionCollider.isTrigger = true;
 		visionCollider.radius = visionRange;
 		visionCollider.height = 99f;
 		
+		// A rigidbody allows this object's collider to trigger while it is moving
+		gameObject.AddComponent<Rigidbody>();
+		GetComponent<Rigidbody>().isKinematic = true;
+		
+		// Determine if this a unit (the alternative would be a building)
 		if(transform.root.gameObject.CompareTag("Unit"))
 			isUnit = true;
 		
