@@ -47,7 +47,12 @@ public class UnitControl : SelectableControl {
 	}
 	
 	// Called when an object of interest moves into visual range
-	public virtual void ObjectSighted(GameObject obj) {
+	public virtual void ObjectEnteredVision(GameObject obj) {
 		Debug.Log("I see you "+obj.name+"!");
+	}
+	
+	// Called when an object of interest moves out of visual range
+	public virtual void ObjectLeftVision(GameObject obj) {
+		Debug.Log("I can't see you "+obj.name+"!");
 	}
 }

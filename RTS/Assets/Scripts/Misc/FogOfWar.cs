@@ -11,11 +11,14 @@ public class FogOfWar : MonoBehaviour {
 	public int xLength = 10;
 	public int yLength = 10;
 	
-	
 	public static float RAYCAST_HEIGHT = 50.0f;
 	
 	protected Mesh mesh;
 	protected List<Color> colors;
+	
+	// Provides a public shortcut to the mesh's triangles array, since calling mesh.triangles
+	// actually creates a copy of that huge array for every access
+	public int[] meshTriangles;
 	
 	// Holds all verts that became visible to a unit
 	protected List<int> verticesToReveal = new List<int>();
@@ -24,8 +27,8 @@ public class FogOfWar : MonoBehaviour {
 	
 	// Builds the fog mesh and colors list based on the settings provided
 	void Awake() {
-		gameObject.AddComponent("MeshFilter");
-		gameObject.AddComponent("MeshRenderer");
+		gameObject.AddComponent<MeshFilter>();
+		gameObject.AddComponent<MeshRenderer>();
 		mesh = GetComponent<MeshFilter>().mesh;
 	
 		mesh.Clear();
@@ -44,7 +47,7 @@ public class FogOfWar : MonoBehaviour {
 		mesh.vertices = verts.ToArray();
 	
 		// uv's ----------------------------------------------------------------------------------------
-		List<Vector2> uvs = new List<Vector2>();
+		List<Vector2> uvs = new List<Vector2>(verts.Count);
 	
 		for (int i=0; i<verts.Count; i++) {
 			uvs.Add(new Vector2(verts[i].x, verts[i].z));
@@ -68,14 +71,14 @@ public class FogOfWar : MonoBehaviour {
 			}
 		}
 		mesh.triangles = tris.ToArray();
+		meshTriangles = tris.ToArray();
 		mesh.RecalculateNormals();
 		mesh.RecalculateBounds();
 	
 		// vertex colors ------------------------------------------------------------------------------
-		List<Vector3> vertices = new List<Vector3>(mesh.vertices);
-		colors = new List<Color>();
+		colors = new List<Color>(mesh.vertices.Length);
 	
-		for (int i=0; i<vertices.Count; i++) {
+		for (int i=0; i<mesh.vertices.Length; i++) {
 			colors.Add(new Color(0, 0, 0, targetAlpha));
 		}
 		mesh.colors = colors.ToArray();
@@ -122,11 +125,11 @@ public class FogOfWar : MonoBehaviour {
 				Color color = colors[vertIdxToDarken];
 				color.a += alphaAnimationSpeed * Time.deltaTime;
 				colors[vertIdxToDarken] = color;
-				if (colors[vertIdxToDarken].a >= targetAlpha) {
+				if(color.a >= targetAlpha) {
 					// Vert is totally darkened, so remove it from revealedVerts
 					revealedVerts.RemoveAt(i);
 					--i;
-					if (i <= -1) {
+					if(i <= -1) {
 						i = 0;
 					}
 				}
@@ -142,12 +145,14 @@ public class FogOfWar : MonoBehaviour {
 				Color color = colors[vertIdxToReveal];
 				color.a -= alphaAnimationSpeed * Time.deltaTime;
 				colors[vertIdxToReveal] = color;
-				if (colors[vertIdxToReveal].a <= 0.0) {
+				if(color.a <= 0.0) {
 					// Vert is totally transparent, so remove it from verticesToReveal and add it to revealedVerts
+					if(!revealedVerts.Contains(vertIdxToReveal)) {
+						revealedVerts.Add(vertIdxToReveal);
+					}
 					verticesToReveal.RemoveAt(j);
-					revealedVerts.Add(vertIdxToReveal);
 					--j;
-					if (j <= -1) {
+					if(j <= -1) {
 						j = 0;
 					}
 				}

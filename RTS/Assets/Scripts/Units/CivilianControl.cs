@@ -86,7 +86,6 @@ public class CivilianControl : UnitControl {
 			position.y = Mathf.RoundToInt(position.y);
 			position.z = Mathf.RoundToInt(position.z);
 			queuedBuildTarget.transform.position = position;
-			Debug.Log (position);
 		}
 	}
 	

@@ -11,34 +11,45 @@ public class AIVision : MonoBehaviour {
 	// Cast LOS lines from this height above the center of this object
 	protected float LOSHeight = 0.0f;
 	
-	protected GameObject fogOfWar;
-	protected Mesh fogOfWarMesh;
 	protected FogOfWar fogOfWarScript;
 	protected AIPathfinder pathfinder;
-	protected UnitControl unitControl;
+	
+	protected bool isUnit = false;
 	
 	// Layer mask for the fog layer only
 	protected int fogLayerMask;
 	// Layer mask for the layers that impede vision
 	protected int LOSLayerMask;
+	// This determines how many rays we cast evenly around the circle around this object
+	protected float circleStep;
 	
 	void Start() {
-		fogOfWar = GameObject.Find("FogOfWar");
-		fogOfWarMesh = fogOfWar.GetComponent<MeshFilter>().mesh;
+		gameObject.AddComponent<CapsuleCollider>();
+		CapsuleCollider visionCollider = GetComponent<CapsuleCollider>();
+		visionCollider.isTrigger = true;
+		visionCollider.radius = visionRange;
+		visionCollider.height = 99f;
+		
+		if(transform.root.gameObject.CompareTag("Unit"))
+			isUnit = true;
+		
+		GameObject fogOfWar = GameObject.Find("FogOfWar");
 		fogOfWarScript = fogOfWar.GetComponent<FogOfWar>();
-		pathfinder = transform.root.gameObject.GetComponent<AIPathfinder>();
-		unitControl = transform.root.gameObject.GetComponent<UnitControl>();
+		if(isUnit)
+			pathfinder = transform.root.gameObject.GetComponent<AIPathfinder>();
 		
 		fogLayerMask = 1 << LayerMask.NameToLayer("FogOfWar");
 		LOSLayerMask = 1 << LayerMask.NameToLayer("Terrain");
+		
+		circleStep = ((2*Mathf.PI) / visionRange) - 0.0001f;
 	
 		CalculateRevealPoints();
 	}
 	
 	void Update() {
-		if(revealsFog) {
+		if(isUnit && revealsFog) {
 			// If this script is too inefficient, we can improve FogOfWar so that AIVisions don't need to recalculate vision while non-moving
-			//if (pathfinder.IsMoving()) {
+			//if(pathfinder.IsMoving()) {
 				CalculateRevealPoints();
 			//}
 		} else if(hidesInFog) {
@@ -51,9 +62,6 @@ public class AIVision : MonoBehaviour {
 		float z = transform.position.z;
 		RevealFogOFWarAt(transform.position.x, transform.position.z);
 		
-		// This determines how many rays we cast evenly around the circle around this object
-		float circleStep = ((2*Mathf.PI) / (visionRange+1)) - 0.0001f;
-		
 		for (float visionRangeStep = fogOfWarScript.gridSize; visionRangeStep <= visionRange; visionRangeStep += fogOfWarScript.gridSize) {
 			for (float i = 0; i <= 2*Mathf.PI; i += circleStep) {
 				RevealFogOFWarAt(x+(Mathf.Cos(i)*visionRangeStep), z+(Mathf.Sin(i)*visionRangeStep));
@@ -64,7 +72,7 @@ public class AIVision : MonoBehaviour {
 	void RevealFogOFWarAt(float x, float z) {
 		RaycastHit hit;
 		
-		//Debug.DrawRay(new Vector3(x,FogOfWar.RAYCAST_HEIGHT,z), -Vector3.up*FogOfWar.RAYCAST_HEIGHT);
+		Debug.DrawRay(new Vector3(x,FogOfWar.RAYCAST_HEIGHT,z), -Vector3.up*FogOfWar.RAYCAST_HEIGHT);
 		if (!Physics.Raycast(new Vector3(x, FogOfWar.RAYCAST_HEIGHT, z), -Vector3.up, out hit, Mathf.Infinity, fogLayerMask)) {
 			return;
 		}
@@ -81,26 +89,35 @@ public class AIVision : MonoBehaviour {
 			Debug.DrawRay(LOSorigin, LOSdir*LOSdist, Color.red);
 			return;
 		}
-		//Debug.DrawRay(LOSorigin, LOSdir*LOSdist, Color.green);
+		Debug.DrawRay(LOSorigin, LOSdir*LOSdist, Color.green);
 		
 		// By now it is assumed that we hit the fog of war mesh, so we use it
 		// directly and not hit.collider.gameObject.GetComponent(MeshFilter).mesh;
 		
 		// Get which vertices were hit
-		int p0 = fogOfWarMesh.triangles[hit.triangleIndex * 3 + 0];
-		int p1 = fogOfWarMesh.triangles[hit.triangleIndex * 3 + 1];
-		int p2 = fogOfWarMesh.triangles[hit.triangleIndex * 3 + 2];
-	
+		int p0 = fogOfWarScript.meshTriangles[hit.triangleIndex * 3 + 0];
+		int p1 = fogOfWarScript.meshTriangles[hit.triangleIndex * 3 + 1];
+		int p2 = fogOfWarScript.meshTriangles[hit.triangleIndex * 3 + 2];
+		
 		fogOfWarScript.AddVertToReveal(p0);
 		fogOfWarScript.AddVertToReveal(p1);
 		fogOfWarScript.AddVertToReveal(p2);
 	}
 	
+	// Called when another collider enters this vision range
 	void OnTriggerEnter(Collider other) {
-		//TODO test vision triggering more, not sure if it's working right
 		if(other.transform.root != this.transform.root) {
 			if(other.CompareTag("Unit") || other.CompareTag("Building") || other.CompareTag("BuildProgress")) {
-				unitControl.ObjectSighted(other.gameObject);
+				transform.root.gameObject.SendMessage("ObjectEnteredVision", other.gameObject);
+			}
+		}
+	}
+	
+	// Called when another collider exits this vision range
+	void OnTriggerExit(Collider other) {
+		if(other.transform.root != this.transform.root) {
+			if(other.CompareTag("Unit") || other.CompareTag("Building") || other.CompareTag("BuildProgress")) {
+				transform.root.gameObject.SendMessage("ObjectLeftVision", other.gameObject);
 			}
 		}
 	}
