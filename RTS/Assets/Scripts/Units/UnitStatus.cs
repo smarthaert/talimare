@@ -4,7 +4,7 @@ using System.Collections;
 // Keeps information about a unit's current status
 public class UnitStatus : MonoBehaviour {
 	
-	public int maxHP;
+	public int maxHP = 0;
 	protected int currentHP;
 
 	void Start () {

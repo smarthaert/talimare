@@ -5,10 +5,10 @@ using System.Collections;
 [RequireComponent(typeof(AIPathfinder))]
 public class AIAttacker : MonoBehaviour {
 	
-	public float attackRange;
-	public int attackDamage;
-	public float attackTime;
-	public float attackCooldown;
+	public float attackRange = 0;
+	public int attackDamage = 0;
+	public float attackTime = 0;
+	public float attackCooldown = 0;
 	
 	protected float attackTimer = 0;
 	protected float attackCooldownTimer = 0;
