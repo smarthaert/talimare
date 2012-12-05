@@ -1,16 +1,12 @@
 using UnityEngine;
 using System.Collections;
 
-// Root class for all tech scripts
+// Root class for all tech scripts. Note: Even though this is a MonoBehaviour, this class is never instantiated, only Executed
 public class Tech : MonoBehaviour {
 	
-	private static PlayerStatus playerStatus;
-
-	public virtual void Execute() {
-		// Player status must be gotten here since techs are never actually instantiated
-		if(playerStatus == null)
-			playerStatus = GameObject.Find("Main Camera").GetComponent<PlayerStatus>();
-		playerStatus.techs.Add(this);
+	// Executes this tech, adding it to the tech list for the given player and performing any other changes
+	public virtual void Execute(Player player) {
+		player.playerStatus.techs.Add(this);
 		Debug.Log(this+" research completed!");
 	}
 }

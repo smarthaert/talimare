@@ -6,13 +6,17 @@ public class UnitStatus : MonoBehaviour {
 	
 	public int maxHP = 0;
 	protected int currentHP;
+	
+	protected TextMesh hpText;
 
 	void Start () {
 		currentHP = maxHP;
+		
+		hpText = GetComponentInChildren<TextMesh>();
 	}
 	
 	void Update () {
-		
+		hpText.text = currentHP.ToString();
 	}
 	
 	public int getCurrentHP() {

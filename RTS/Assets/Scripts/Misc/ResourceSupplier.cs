@@ -6,17 +6,16 @@ public class ResourceSupplier : MonoBehaviour {
 	
 	public List<ResourceAmount> suppliedResources;
 	
-	private static PlayerStatus playerStatus;
+	protected Player player;
 
 	void Start () {
-		if(playerStatus == null)
-			playerStatus = GameObject.Find("Main Camera").GetComponent<PlayerStatus>();
+		player = GetComponent<Creatable>().player;
 		
 		// Add all supplied resources to the player's pool
 		foreach(ResourceAmount suppliedResource in suppliedResources) {
-			playerStatus.GainResource(suppliedResource.resource, suppliedResource.amount);
+			player.playerStatus.GainResource(suppliedResource.resource, suppliedResource.amount);
 			if(suppliedResource.IsUpkeepResource()) {
-				playerStatus.AddSuppliedUpkeepResource(suppliedResource.resource, suppliedResource.amount);
+				player.playerStatus.AddSuppliedUpkeepResource(suppliedResource.resource, suppliedResource.amount);
 			}
 		}
 	}
@@ -27,7 +26,8 @@ public class ResourceSupplier : MonoBehaviour {
 	void OnDestroy () {
 		foreach(ResourceAmount suppliedResource in suppliedResources) {
 			if(suppliedResource.IsUpkeepResource()) {
-				playerStatus.RemoveSuppliedUpkeepResource(suppliedResource.resource, suppliedResource.amount);
+				player.playerStatus.SpendResource(suppliedResource.resource, suppliedResource.amount);
+				player.playerStatus.RemoveSuppliedUpkeepResource(suppliedResource.resource, suppliedResource.amount);
 			}
 		}
 	}
