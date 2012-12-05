@@ -22,17 +22,10 @@ public class CivilianControl : UnitControl {
 	protected BuildProgress buildTarget;
 	protected bool isBuilding = false;
 	
-	protected static PlayerStatus playerStatus;
-	protected static PlayerInput playerInput;
 	protected static int? terrainLayer;
 
 	protected override void Start () {
 		base.Start();
-		
-		if(playerStatus == null)
-			playerStatus = GameObject.Find("Main Camera").GetComponent<PlayerStatus>();
-		if(playerInput == null)
-			playerInput = GameObject.Find("Main Camera").GetComponent<PlayerInput>();
 		if(terrainLayer == null)
 			terrainLayer = GameObject.Find("Terrain").layer;
 	}
@@ -57,7 +50,7 @@ public class CivilianControl : UnitControl {
 				// Timer's up, trigger gather from node if still in range
 				if(IsInGatherRange()) {
 					gatherTarget.Gather(gatherAmount);
-					playerStatus.GainResource(gatherTarget.resource, gatherAmount);
+					player.playerStatus.GainResource(gatherTarget.resource, gatherAmount);
 					gatherTimer = gatherTime;
 				}
 			}
@@ -76,7 +69,7 @@ public class CivilianControl : UnitControl {
 	
 	// Moves the queued building to where the mouse hits the ground
 	protected void DrawQueuedBuildingAtMouse() {
-		Ray ray = playerInput.camera.ScreenPointToRay(Input.mousePosition);
+		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 		RaycastHit hit;
 		if(Physics.Raycast(ray, out hit, Mathf.Infinity, (1 << terrainLayer.Value))) {
 			// Shift the target position up on top of the ground and snap it to grid
@@ -126,11 +119,12 @@ public class CivilianControl : UnitControl {
 	public override void KeyPressed() {
 		base.KeyPressed();
 		if(buildMenuOpen) {
-			// See if pressed key exists in buildings and if so, queue that Creatable
+			// See if pressed key exists in buildings and if so, queue the BuildProgress object for that building, and also give it a Player
 			foreach(Creatable building in buildings) {
 				if(Input.GetKeyDown(building.creationKey)) {
-					if(building.CanCreate()) {
+					if(building.CanCreate(player)) {
 						queuedBuildTarget = ((GameObject)Instantiate(building.buildProgressObject.gameObject)).GetComponent<BuildProgress>();
+						queuedBuildTarget.player = player;
 					}
 				}
 			}
@@ -149,7 +143,7 @@ public class CivilianControl : UnitControl {
 	
 	// Commits the currently queued building at the given position and begins building
 	protected void CommitQueuedBuilding(Vector3 position) {
-		if(queuedBuildTarget.GetCreatable().CanCreate()) {
+		if(queuedBuildTarget.creatable.CanCreate(player)) {
 			queuedBuildTarget.Commit();
 			Build(queuedBuildTarget);
 		}

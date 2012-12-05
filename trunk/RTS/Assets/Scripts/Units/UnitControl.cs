@@ -9,12 +9,14 @@ public class UnitControl : SelectableControl {
 	
 	protected AIPathfinder pathfinder;
 	protected AIAttacker attacker;
+	protected Player player;
 
 	protected override void Start() {
 		base.Start();
 		
 		pathfinder = GetComponent<AIPathfinder>();
 		attacker = GetComponent<AIAttacker>();
+		player = GetComponent<Creatable>().player;
 	}
 	
 	protected override void Update() {

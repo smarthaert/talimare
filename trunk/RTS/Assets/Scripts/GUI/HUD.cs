@@ -3,16 +3,12 @@ using System.Collections.Generic;
 
 public class HUD : MonoBehaviour {
 	
+	public Player player;
 	public GUISkin skin;
 	
 	protected Rect resourceLevelsLocation;
 	
-	protected static PlayerStatus playerStatus;
-	
 	void Start() {
-		if(playerStatus == null)
-			playerStatus = GameObject.Find("Main Camera").GetComponent<PlayerStatus>();
-		
 		resourceLevelsLocation = new Rect(5, Screen.height-170, 100, 100);
 	}
 	
@@ -26,10 +22,16 @@ public class HUD : MonoBehaviour {
 	
 	void RenderResourceLevels() {
 		int offset = 0;
-		foreach(KeyValuePair<Resource, int> resourceLevel in playerStatus.resourceLevels) {
+		foreach(KeyValuePair<Resource, int> resourceLevel in player.playerStatus.resourceLevels) {
 			Rect tempLocation = resourceLevelsLocation;
 			tempLocation.y += offset;
-			GUI.Label(tempLocation, resourceLevel.Key.ToString()+": "+resourceLevel.Value.ToString());
+			if(resourceLevel.Key == Resource.Food || resourceLevel.Key == Resource.Water || resourceLevel.Key == Resource.Power) {
+				int resourceUpkeepMaximum = player.playerStatus.upkeepMaximums[resourceLevel.Key];
+				int resourceAmountUsed = resourceUpkeepMaximum - resourceLevel.Value;
+				GUI.Label(tempLocation, resourceLevel.Key.ToString()+": "+resourceAmountUsed+" / "+resourceUpkeepMaximum.ToString());
+			} else {
+				GUI.Label(tempLocation, resourceLevel.Key.ToString()+": "+resourceLevel.Value.ToString());
+			}
 			offset += 16;
 		}
 	}

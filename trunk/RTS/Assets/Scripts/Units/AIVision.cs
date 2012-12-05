@@ -54,7 +54,8 @@ public class AIVision : MonoBehaviour {
 	}
 	
 	void Update() {
-		if(isUnit && revealsFog) {
+		if(revealsFog) {
+		//if(isUnit && revealsFog) {
 			// If this script is too inefficient, we can improve FogOfWar so that AIVisions don't need to recalculate vision while non-moving
 			//if(pathfinder.IsMoving()) {
 				CalculateRevealPoints();

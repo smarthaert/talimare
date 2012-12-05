@@ -11,15 +11,19 @@ public class BuildingControl : SelectableControl {
 	public List<Creatable> techs;
 	
 	// Used for keeping track of creation in this building
-	private Queue<Creatable> unitQueue = new Queue<Creatable>();
-	private float unitTimer = 0;
-	private Queue<Creatable> techQueue = new Queue<Creatable>();
-	private float techTimer = 0;
+	protected Queue<Creatable> unitQueue = new Queue<Creatable>();
+	protected float unitTimer = 0;
+	protected Queue<Creatable> techQueue = new Queue<Creatable>();
+	protected float techTimer = 0;
 	
-	private Vector3? rallyPoint = null;
+	protected Vector3? rallyPoint = null;
+	
+	protected Player player;
 	
 	protected override void Start () {
 		base.Start();
+		
+		player = GetComponent<Creatable>().player;
 	}
 	
 	protected override void Update () {
@@ -53,27 +57,28 @@ public class BuildingControl : SelectableControl {
 		// See if pressed key exists in units or techs and if so, queue that Creatable
 		foreach(Creatable unit in units) {
 			if(Input.GetKeyDown(unit.creationKey)) {
-				if(unit.CanCreate()) {
-					unit.SpendResources();
+				if(unit.CanCreate(player)) {
+					unit.SpendResources(player);
 					unitQueue.Enqueue(unit);
 				}
 			}
 		}
 		foreach(Creatable tech in techs) {
 			if(Input.GetKeyDown(tech.creationKey)) {
-				if(tech.CanCreate()) {
-					tech.SpendResources();
+				if(tech.CanCreate(player)) {
+					tech.SpendResources(player);
 					techQueue.Enqueue(tech);
 				}
 			}
 		}
 	}
 	
-	// Complete a unit, instantiating it at a proper location
+	// Complete a unit, instantiating it at a proper location, assigning it a Player, and giving it a rally point if necessary
 	void CompleteUnit() {
 		Creatable unit = unitQueue.Dequeue();
 		float distance = this.collider.bounds.size.magnitude + unit.gameObject.collider.bounds.size.magnitude;
 		GameObject newUnit = (GameObject)Instantiate(unit.gameObject, transform.position + (transform.right * distance), Quaternion.identity);
+		newUnit.GetComponent<Creatable>().player = player;
 		if(rallyPoint != null) {
 			newUnit.GetComponent<AIPathfinder>().Move(rallyPoint);
 		}
@@ -82,8 +87,8 @@ public class BuildingControl : SelectableControl {
 	
 	// Complete a tech, adding it to the player's tech list and running
 	void CompleteTech() {
-		Tech tech = (Tech)techQueue.Dequeue().GetComponent(typeof(Tech));
-		tech.Execute();
+		Tech tech = techQueue.Dequeue().GetComponent<Tech>();
+		tech.Execute(player);
 	}
 	
 	// Called when an object of interest moves into visual range

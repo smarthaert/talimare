@@ -18,11 +18,31 @@ public class RTSGameObjects {
 		unit.AddComponent<UnitStatus>();
 		unit.AddComponent<UnitControl>();
 		
-		GameObject vision = new GameObject("Vision");
-		vision.transform.parent = unit.transform;
-		vision.layer = LayerMask.NameToLayer("Ignore Raycast");
-		vision.AddComponent<AIVision>();
+		AddVision(unit);
 		
 		unit.transform.position = new Vector3(0, 1, 0);
+	}
+	
+	[MenuItem("GameObject/Create Other/RTS Objects/Building", false, 1101)]
+	static void AddBuilding() {
+		GameObject building = GameObject.CreatePrimitive(PrimitiveType.Cube);
+		building.name = "Building";
+		building.tag = "Building";
+		building.layer = LayerMask.NameToLayer("Building");
+		building.transform.localScale = new Vector3(2, 2, 2);
+		building.AddComponent<Creatable>();
+		building.AddComponent<BuildingControl>();
+		building.AddComponent<BuildingStatus>();
+		
+		AddVision(building);
+		
+		building.transform.position = new Vector3(0, 1, 0);
+	}
+	
+	static void AddVision(GameObject obj) {
+		GameObject vision = new GameObject("Vision");
+		vision.transform.parent = obj.transform;
+		vision.layer = LayerMask.NameToLayer("Ignore Raycast");
+		vision.AddComponent<AIVision>();
 	}
 }
