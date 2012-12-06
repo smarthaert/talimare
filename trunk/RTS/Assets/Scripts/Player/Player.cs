@@ -9,6 +9,8 @@ public class Player : MonoBehaviour {
 	[NonSerialized]
 	public PlayerInput playerInput;
 	
+	//TODO !!! add a player relationship dictionary before continuing work on players
+	
 	void Awake() {
 		playerStatus = GetComponent<PlayerStatus>();
 		playerInput = GetComponent<PlayerInput>();

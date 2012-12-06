@@ -40,10 +40,13 @@ public class BuildProgress : MonoBehaviour {
 	
 	// Complete the building, instantiating its finished version, giving it a player, and destroying this progress object
 	protected void Complete() {
-		completed = true;
-		GameObject newBuilding = (GameObject)Instantiate(finishedObject, this.transform.position, this.transform.rotation);
-		newBuilding.GetComponent<Creatable>().player = player;
-		Destroy(this.gameObject);
+		// If multiple civs are building this, there's a chance that Complete gets called more than once
+		if(completed != true) {
+			completed = true;
+			GameObject newBuilding = (GameObject)Instantiate(finishedObject, this.transform.position, this.transform.rotation);
+			newBuilding.GetComponent<Creatable>().player = player;
+			Destroy(this.gameObject);
+		}
 	}
 	
 	// Returns the creation percentage complete as an integer

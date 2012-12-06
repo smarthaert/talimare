@@ -28,7 +28,6 @@ public class UnitControl : SelectableControl {
 		if(hit.collider.GetType() == typeof(TerrainCollider)) {
 			SendMessage("StopAllActions");
 			pathfinder.Move(hit.point);
-			//TODO stop units from walking on top of each other
 		} else if(hit.collider.gameObject.CompareTag("Unit")) {
 			SendMessage("StopAllActions");
 			attacker.Attack(hit.collider.gameObject);

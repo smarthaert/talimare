@@ -18,7 +18,7 @@ public class Creatable : MonoBehaviour {
 	// Note: this function is called before the Creatable is instantiated
 	public bool CanCreate(Player player) {
 		bool canCreate = true;
-		if(GetComponent<Tech>() != null) {
+		if(gameObject.CompareTag("Tech")) {
 			// Creatable is a tech, check to make sure the player hasn't already researched it
 			if(player.playerStatus.techs.Contains(GetComponent<Tech>())) {
 				canCreate = false;
