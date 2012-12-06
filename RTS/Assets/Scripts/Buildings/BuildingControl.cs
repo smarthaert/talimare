@@ -65,7 +65,7 @@ public class BuildingControl : SelectableControl {
 		}
 		foreach(Creatable tech in techs) {
 			if(Input.GetKeyDown(tech.creationKey)) {
-				if(tech.CanCreate(player)) {
+				if(!techQueue.Contains(tech) && tech.CanCreate(player)) {
 					tech.SpendResources(player);
 					techQueue.Enqueue(tech);
 				}
