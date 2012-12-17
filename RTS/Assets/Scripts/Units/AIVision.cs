@@ -13,6 +13,7 @@ public class AIVision : MonoBehaviour {
 	
 	protected FogOfWar fogOfWarScript;
 	protected AIPathfinder pathfinder;
+	protected Creatable creatable;
 	
 	protected bool isUnit = false;
 	
@@ -43,6 +44,7 @@ public class AIVision : MonoBehaviour {
 		fogOfWarScript = fogOfWar.GetComponent<FogOfWar>();
 		if(isUnit)
 			pathfinder = transform.root.gameObject.GetComponent<AIPathfinder>();
+		creatable = transform.root.gameObject.GetComponent<Creatable>();
 		
 		fogLayerMask = 1 << LayerMask.NameToLayer("FogOfWar");
 		LOSLayerMask = 1 << LayerMask.NameToLayer("Terrain");
@@ -157,8 +159,9 @@ public class AIVision : MonoBehaviour {
 	// Called when another collider enters this vision range
 	void OnTriggerEnter(Collider other) {
 		if(other.transform.root != this.transform.root) {
-			if(other.CompareTag("Unit") || other.CompareTag("Building") || other.CompareTag("BuildProgress")) {
-				transform.root.gameObject.SendMessage("ObjectEnteredVision", other.gameObject);
+			if(other.GetComponent<Creatable>() != null && other.GetComponent<Creatable>().player.team != creatable.player.team) {
+				// Object is a Creatable on another team
+				transform.root.gameObject.SendMessage("EnemyEnteredVision", other.gameObject);
 			}
 		}
 	}
@@ -166,8 +169,9 @@ public class AIVision : MonoBehaviour {
 	// Called when another collider exits this vision range
 	void OnTriggerExit(Collider other) {
 		if(other.transform.root != this.transform.root) {
-			if(other.CompareTag("Unit") || other.CompareTag("Building") || other.CompareTag("BuildProgress")) {
-				transform.root.gameObject.SendMessage("ObjectLeftVision", other.gameObject);
+			if(other.GetComponent<Creatable>() != null && other.GetComponent<Creatable>().player.team != creatable.player.team) {
+				// Object is a Creatable on another team
+				transform.root.gameObject.SendMessage("EnemyLeftVision", other.gameObject);
 			}
 		}
 	}

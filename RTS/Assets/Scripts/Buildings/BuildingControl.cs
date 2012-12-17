@@ -91,13 +91,13 @@ public class BuildingControl : SelectableControl {
 		tech.Execute(player);
 	}
 	
-	// Called when an object of interest moves into visual range
-	public virtual void ObjectEnteredVision(GameObject obj) {
+	// Called when an enemy object moves into visual range
+	public virtual void EnemyEnteredVision(GameObject obj) {
 		
 	}
 	
-	// Called when an object of interest moves out of visual range
-	public virtual void ObjectLeftVision(GameObject obj) {
+	// Called when an enemy object moves out of visual range
+	public virtual void EnemyLeftVision(GameObject obj) {
 		
 	}
 }
