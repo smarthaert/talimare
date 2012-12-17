@@ -21,7 +21,7 @@ public class PlayerInput : MonoBehaviour {
 		if(currentSelection != null) {
 			if(Input.GetKeyDown(KeyCode.Escape)) {
 				DeselectCurrent();
-			} else if(Input.anyKeyDown) {
+			} else if(Input.anyKeyDown && CurrentSelectionIsMine()) {
 				currentSelection.KeyPressed();
 			}
 		}
@@ -47,7 +47,8 @@ public class PlayerInput : MonoBehaviour {
 		}
 		
 		// Handle mouse1 click (object action)
-		if(Input.GetMouseButtonDown(1) && currentSelection != null) {
+		if(Input.GetMouseButtonDown(1) && currentSelection != null && CurrentSelectionIsMine()) {
+			// Make sure the current selection is owned by this player
 			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 			RaycastHit hit;
 			
@@ -77,5 +78,9 @@ public class PlayerInput : MonoBehaviour {
 			currentSelection.Deselected();
 		}
 		currentSelection = null;
+	}
+	
+	protected bool CurrentSelectionIsMine() {
+		return (currentSelection.GetComponent<Creatable>() != null && currentSelection.GetComponent<Creatable>().player == PlayerHub.myPlayer);
 	}
 }

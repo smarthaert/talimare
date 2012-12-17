@@ -3,12 +3,13 @@ using System.Collections.Generic;
 
 public class HUD : MonoBehaviour {
 	
-	public Player player;
 	public GUISkin skin;
 	
+	protected Player player;
 	protected Rect resourceLevelsLocation;
 	
 	void Start() {
+		player = PlayerHub.myPlayer;
 		resourceLevelsLocation = new Rect(5, Screen.height-170, 100, 100);
 	}
 	

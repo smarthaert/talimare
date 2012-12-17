@@ -28,7 +28,8 @@ public class UnitControl : SelectableControl {
 		if(hit.collider.GetType() == typeof(TerrainCollider)) {
 			SendMessage("StopAllActions");
 			pathfinder.Move(hit.point);
-		} else if(hit.collider.gameObject.CompareTag("Unit")) {
+		} else if(hit.collider.gameObject.CompareTag("Unit") && hit.collider.gameObject.GetComponent<Creatable>() != null && 
+				hit.collider.gameObject.GetComponent<Creatable>().player.team != PlayerHub.myPlayer.team) {
 			SendMessage("StopAllActions");
 			attacker.Attack(hit.collider.gameObject);
 		}
@@ -47,13 +48,13 @@ public class UnitControl : SelectableControl {
 		pathfinder.StopMoving();
 	}
 	
-	// Called when an object of interest moves into visual range
-	public virtual void ObjectEnteredVision(GameObject obj) {
+	// Called when an enemy object moves into visual range
+	public virtual void EnemyEnteredVision(GameObject obj) {
 		
 	}
 	
-	// Called when an object of interest moves out of visual range
-	public virtual void ObjectLeftVision(GameObject obj) {
+	// Called when an oenemy object moves out of visual range
+	public virtual void EnemyLeftVision(GameObject obj) {
 		
 	}
 }
