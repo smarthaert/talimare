@@ -38,6 +38,6 @@ public class UnitStatus : MonoBehaviour {
 	}
 	
 	protected void Die() {
-		Destroy(this.gameObject);
+		Destroy(this.gameObject, 200);
 	}
 }
