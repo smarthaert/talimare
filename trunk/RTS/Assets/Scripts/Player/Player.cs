@@ -4,6 +4,7 @@ using System;
 [RequireComponent(typeof(PlayerStatus))]
 public class Player : MonoBehaviour {
 	
+	public int id;
 	public Team team;
 	
 	[NonSerialized]
