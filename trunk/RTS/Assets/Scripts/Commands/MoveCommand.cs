@@ -2,11 +2,11 @@ using UnityEngine;
 
 public class MoveCommand : Command {
 	
-	public int unitId;
+	public int objectId;
 	public Vector3 target;
 	
 	public MoveCommand(int unitId, Vector3 target) {
-		this.unitId = unitId;
+		this.objectId = unitId;
 		this.target = target;
 	}
 }
