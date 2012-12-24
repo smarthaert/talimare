@@ -1,10 +1,15 @@
 using UnityEngine;
-using System.Collections;
+using System;
 
 // Defines the behavior of a selectable GameObject
 public class SelectableControl : MonoBehaviour {
 	
-	protected virtual void Start () {}
+	[NonSerialized]
+	public int objectId;
+	
+	protected virtual void Start () {
+		Game.RegisterSelectable(this);
+	}
 	
 	protected virtual void Update () {}
 	

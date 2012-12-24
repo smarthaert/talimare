@@ -4,6 +4,9 @@ using UnityEngine;
 public abstract class CommandExecutor {
 	
 	public static void ExecuteCommand(Command command) {
-		//TODO unwrap commands and execute them
+		if(command.GetType() == typeof(MoveCommand)) {
+			MoveCommand moveCommand = (MoveCommand)command;
+			Game.GetObjectById(moveCommand.objectId).SendMessage("ExecuteMove", moveCommand.target);
+		}
 	}
 }

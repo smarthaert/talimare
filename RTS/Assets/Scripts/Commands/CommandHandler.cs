@@ -6,7 +6,7 @@ using System.Collections.Generic;
 public abstract class CommandHandler {
 	
 	// Whether or not the current game is running over a network
-	protected static bool multiplayer = true;
+	protected static bool multiplayer = false;
 	
 	// Time each synchronization turn lasts, in ms
 	public static float timePerTurn = 200f;

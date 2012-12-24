@@ -26,8 +26,7 @@ public class UnitControl : SelectableControl {
 	// Called when mouse action button is clicked on any object while this unit is selected
 	public override void MouseAction(RaycastHit hit) {
 		if(hit.collider.GetType() == typeof(TerrainCollider)) {
-			SendMessage("StopAllActions");
-			pathfinder.Move(hit.point);
+			CommandHandler.AddCommandFromLocal(new MoveCommand(objectId, hit.point));
 		} else if(hit.collider.gameObject.CompareTag("Unit") && hit.collider.gameObject.GetComponent<Creatable>() != null && 
 				hit.collider.gameObject.GetComponent<Creatable>().player.team != PlayerHub.myPlayer.team) {
 			SendMessage("StopAllActions");
@@ -40,6 +39,16 @@ public class UnitControl : SelectableControl {
 		if(Input.GetKeyDown(KeyCode.S)) {
 			SendMessage("StopAllActions");
 		}
+	}
+	
+	public void ExecuteMove(Vector3 target) {
+		SendMessage("StopAllActions");
+		pathfinder.Move(target);
+	}
+	
+	public void ExecuteAttack(GameObject gameObject) {
+		SendMessage("StopAllActions");
+		attacker.Attack(gameObject);
 	}
 	
 	// Stops all actions the unit is performing. Keep in mind that it's likely that one of the stopped actions will be resumed immediately
