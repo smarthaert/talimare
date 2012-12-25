@@ -1,6 +1,6 @@
 using UnityEngine;
 using Lidgren.Network;
-using System.Collections.Generic;
+using System.Reflection;
 
 // This class handles all network communications required by the game
 public abstract class NetworkHub {
@@ -16,7 +16,7 @@ public abstract class NetworkHub {
 		peer = new NetPeer(config);
 		peer.Start();
 		
-		peer.DiscoverLocalPeers(12345);
+		//peer.DiscoverKnownPeer("192.168.111.23", 12345);
 	}
 	
 	public static void Update() {
@@ -41,6 +41,9 @@ public abstract class NetworkHub {
 				case NetIncomingMessageType.ConnectionApproval:
 					Debug.Log("Connected to "+msg.SenderEndPoint);
 					break;
+				case NetIncomingMessageType.StatusChanged:
+					Debug.Log("Network status changed to: "+peer.Status);
+					break;
 				case NetIncomingMessageType.Data:
 					ReceiveData(msg);
 					break;
@@ -63,13 +66,15 @@ public abstract class NetworkHub {
 	
 	public static void SendMessage(Message message) {
 		NetOutgoingMessage msg = peer.CreateMessage();
-		msg.WriteAllFields(message);
+		msg.WriteAllFields(message, BindingFlags.Public | BindingFlags.Instance);
+		// TODO ! figure out how to best serialize messages & commands
+		// probably need methods like Serialize(NetOutgoingMessage) and Deserialize(Message)
 		peer.SendMessage(msg, peer.Connections, NetDeliveryMethod.ReliableUnordered, sequenceChannel);
 	}
 	
 	public static void SendCommand(Command command) {
 		NetOutgoingMessage msg = peer.CreateMessage();
-		msg.WriteAllFields(command);
+		msg.WriteAllFields(command, BindingFlags.Public | BindingFlags.Instance);
 		peer.SendMessage(msg, peer.Connections, NetDeliveryMethod.ReliableUnordered, sequenceChannel);
 	}
 }
