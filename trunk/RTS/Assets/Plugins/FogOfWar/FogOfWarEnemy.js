@@ -1,12 +1,12 @@
 
 var fogOfWar : GameObject;
 private var fogOfWarMesh : Mesh;
-private var fogOfWarScript : FogOfWar;
+private var fogOfWarScript : FogOfWarJS;
 
 function Start()
 {
 	fogOfWarMesh = fogOfWar.GetComponent(MeshFilter).mesh;
-	fogOfWarScript = fogOfWar.GetComponent(FogOfWar);
+	fogOfWarScript = fogOfWar.GetComponent(FogOfWarJS);
 
 }
 
@@ -18,8 +18,8 @@ function HideOrShow()
 	var hit : RaycastHit;
 	var layerMask = 1 << LayerMask.NameToLayer("FogOfWar");
 
-	Debug.DrawRay(Vector3(x,FogOfWar.RAYCAST_HEIGHT,z), -Vector3.up*FogOfWar.RAYCAST_HEIGHT);
-	if (!Physics.Raycast(Vector3(x,FogOfWar.RAYCAST_HEIGHT,z), -Vector3.up, hit, Mathf.Infinity, layerMask))
+	Debug.DrawRay(Vector3(x,FogOfWarJS.RAYCAST_HEIGHT,z), -Vector3.up*FogOfWarJS.RAYCAST_HEIGHT);
+	if (!Physics.Raycast(Vector3(x,FogOfWarJS.RAYCAST_HEIGHT,z), -Vector3.up, hit, Mathf.Infinity, layerMask))
 	{
 		//Debug.Log("raycast did not hit anything");
 		return;
