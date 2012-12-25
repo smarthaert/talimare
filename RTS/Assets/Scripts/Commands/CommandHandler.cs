@@ -5,9 +5,6 @@ using System.Collections.Generic;
 // This class handles the queueing and execution of commands, as well as the turn synchronization system
 public abstract class CommandHandler {
 	
-	// Whether or not the current game is running over a network
-	protected static bool multiplayer = false;
-	
 	// Time each synchronization turn lasts, in ms
 	public static float timePerTurn = 200f;
 	
@@ -21,39 +18,36 @@ public abstract class CommandHandler {
 	// Current turn tracking variables
 	protected static int currentTurn = 1;
 	protected static float currentTurnTimer = 0f;
-	protected static int currentTurnCommandSequence = 0;
+	protected static int currentTurnCommandNumber = 0;
 	protected static bool currentTurnFinished = false;
 	
+	// Only called during a multiplayer game
 	public static void Update() {
-		if(multiplayer) {
-			if(currentTurnFinished) {
+		if(!currentTurnFinished) {
+			currentTurnTimer += Time.deltaTime;
+			if(currentTurnTimer >= timePerTurn) {
+				FinishTurn();
 				TryAdvanceTurn();
-			} else {
-				currentTurnTimer += Time.deltaTime;
-				if(currentTurnTimer >= timePerTurn) {
-					FinishTurn();
-					TryAdvanceTurn();
-				}
 			}
 		}
 	}
 	
-	// Finishes the current turn and transmits a 'done' message
+	// Finishes the current turn and transmits a 'turn done' message
 	protected static void FinishTurn() {
-		TurnDoneMessage turnDoneMessage = new TurnDoneMessage(currentTurn, currentTurnCommandSequence);
+		TurnDoneMessage turnDoneMessage = new TurnDoneMessage(currentTurn, currentTurnCommandNumber);
 		TagMessage(turnDoneMessage);
 		NetworkHub.SendMessage(turnDoneMessage);
 		
 		currentTurn++;
 		currentTurnTimer = 0f;
-		currentTurnCommandSequence = 0;
+		currentTurnCommandNumber = 0;
 		currentTurnFinished = true;
 	}
 	
 	// Attempts to advance to the next synchronization turn if all commands for that turn have been received from all players
 	protected static void TryAdvanceTurn() {
-		// If received 'turn done' messages from all other players for new turn
-		if(HaveAllDonesForCurrentTurn()) {
+		// If have all commands from all other players for new turn
+		if(HaveAllCommandsForCurrentTurn()) {
 			//TODO ensure that the command queue is being ordered properly
 			// Dump the command queue for the new turn, executing them all
 			IList<Command> newTurnCommands = commandQueue[currentTurn].Values;
@@ -76,9 +70,9 @@ public abstract class CommandHandler {
 		}
 	}
 	
-	// Returns whether or not all 'turn done' messages have been received from all other players for the current turn
-	protected static bool HaveAllDonesForCurrentTurn() {
-		if(turnDoneMessages[currentTurn].Count == NetworkHub.GetNumOtherClients()) {
+	// Returns whether or not all commands have been received from all other players for the current turn
+	protected static bool HaveAllCommandsForCurrentTurn() {
+		if(turnDoneMessages[currentTurn].Count == NetworkHub.GetNumPeers()) {
 			// We have all the turn done messages, so let's make sure we have all the commands from each player
 			foreach(TurnDoneMessage turnDoneMessage in turnDoneMessages[currentTurn]) {
 				if(numCommands[currentTurn][turnDoneMessage.fromPlayer] < turnDoneMessage.numCommands) {
@@ -97,7 +91,7 @@ public abstract class CommandHandler {
 	
 	// Add a command, received from this player, to be executed immediately in singleplayer or queued in multiplayer
 	public static void AddCommandFromLocal(Command command) {
-		if(multiplayer) {
+		if(Game.multiplayer) {
 			if(currentTurnFinished) {
 				Debug.Log("A local command was received between turns. This should never happen. Is some script unpaused?");
 			} else {
@@ -122,14 +116,19 @@ public abstract class CommandHandler {
 		} else {
 			numCommands[command.turnToExecute][command.fromPlayer]++;
 		}
+		
+		// If the turn is finished and we're waiting on something, see if this is what we needed
+		if(currentTurnFinished) {
+			TryAdvanceTurn();
+		}
 	}
 	
 	// Tags a command with all required header values
 	protected static void TagCommand(Command command) {
 		command.fromPlayer = PlayerHub.myPlayer.id;
 		command.turnToExecute = currentTurn + 2;
-		command.sequence = ++currentTurnCommandSequence;
 		command.timestamp = DateTime.UtcNow.Ticks;
+		currentTurnCommandNumber++;
 	}
 	
 	// Tags a message with all required header values
@@ -152,5 +151,10 @@ public abstract class CommandHandler {
 			turnDoneMessages.Add(turnDoneMessage.turn, new List<TurnDoneMessage>());
 		}
 		turnDoneMessages[turnDoneMessage.turn].Add(turnDoneMessage);
+		
+		// If the turn is finished and we're waiting on something, see if this is what we needed
+		if(currentTurnFinished) {
+			TryAdvanceTurn();
+		}
 	}
 }

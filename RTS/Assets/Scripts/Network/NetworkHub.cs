@@ -1,17 +1,75 @@
 using UnityEngine;
+using Lidgren.Network;
+using System.Collections.Generic;
 
+// This class handles all network communications required by the game
 public abstract class NetworkHub {
 	
-	// Returns the number of other clients we're communicating with
-	public static int GetNumOtherClients() {
-		return 2; //TODO network layer!
+	// The sequence channel on which all messages are sent; don't worry about this
+	protected static int sequenceChannel = 1;
+	
+	protected static NetPeer peer;
+	
+	public static void Start() {
+		NetPeerConfiguration config = new NetPeerConfiguration("Apocalyptia");
+		config.Port = 12345;
+		peer = new NetPeer(config);
+		peer.Start();
+		
+		peer.DiscoverLocalPeers(12345);
+	}
+	
+	public static void Update() {
+		NetIncomingMessage msg;
+		while ((msg = peer.ReadMessage()) != null) {
+		    switch (msg.MessageType) {
+		        case NetIncomingMessageType.VerboseDebugMessage:
+		        case NetIncomingMessageType.DebugMessage:
+		        case NetIncomingMessageType.WarningMessage:
+		        case NetIncomingMessageType.ErrorMessage:
+		            Debug.Log(msg.ReadString());
+		            break;
+				case NetIncomingMessageType.DiscoveryRequest:
+					NetOutgoingMessage response = peer.CreateMessage();
+					response.Write("Local Apocalyptia Server");
+					peer.SendDiscoveryResponse(response, msg.SenderEndPoint);
+					break;
+				case NetIncomingMessageType.DiscoveryResponse:
+					Debug.Log("Found server at "+msg.SenderEndPoint+" with name: "+msg.ReadString()+". Attempting connection...");
+					peer.Connect(msg.SenderEndPoint);
+					break;
+				case NetIncomingMessageType.ConnectionApproval:
+					Debug.Log("Connected to "+msg.SenderEndPoint);
+					break;
+				case NetIncomingMessageType.Data:
+					ReceiveData(msg);
+					break;
+		        default:
+		            Debug.Log("Unhandled type: " + msg.MessageType);
+		            break;
+		    }
+		    peer.Recycle(msg);
+		}
+	}
+	
+	protected static void ReceiveData(NetIncomingMessage msg) {
+		Debug.Log("received msg: "+msg);
+	}
+	
+	// Returns the number of other peers we're communicating with
+	public static int GetNumPeers() {
+		return peer.ConnectionsCount;
 	}
 	
 	public static void SendMessage(Message message) {
-		
+		NetOutgoingMessage msg = peer.CreateMessage();
+		msg.WriteAllFields(message);
+		peer.SendMessage(msg, peer.Connections, NetDeliveryMethod.ReliableUnordered, sequenceChannel);
 	}
 	
 	public static void SendCommand(Command command) {
-		
+		NetOutgoingMessage msg = peer.CreateMessage();
+		msg.WriteAllFields(command);
+		peer.SendMessage(msg, peer.Connections, NetDeliveryMethod.ReliableUnordered, sequenceChannel);
 	}
 }
