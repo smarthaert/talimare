@@ -8,7 +8,7 @@ public class TurnDoneMessage : Message {
 	// The total number of commands that were issued for the turn
 	public int numCommands;
 	
-	public TurnDoneMessage(int turn, int numCommands) {
+	public TurnDoneMessage(int turn, int numCommands) : base(MessageType.TurnDoneMessage) {
 		this.turn = turn;
 		this.numCommands = numCommands;
 	}

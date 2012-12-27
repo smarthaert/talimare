@@ -16,7 +16,7 @@ public abstract class NetworkHub {
 		peer = new NetPeer(config);
 		peer.Start();
 		
-		//peer.DiscoverKnownPeer("192.168.111.23", 12345);
+		peer.DiscoverKnownPeer("192.168.111.23", 12345);
 	}
 	
 	public static void Update() {
@@ -45,7 +45,7 @@ public abstract class NetworkHub {
 					Debug.Log("Network status changed to: "+peer.Status);
 					break;
 				case NetIncomingMessageType.Data:
-					ReceiveData(msg);
+					ParseData(msg);
 					break;
 		        default:
 		            Debug.Log("Unhandled type: " + msg.MessageType);
@@ -55,8 +55,8 @@ public abstract class NetworkHub {
 		}
 	}
 	
-	protected static void ReceiveData(NetIncomingMessage msg) {
-		Debug.Log("received msg: "+msg);
+	protected static void ParseData(NetIncomingMessage msg) {
+		Debug.Log("parsing msg: "+msg);
 	}
 	
 	// Returns the number of other peers we're communicating with
@@ -66,15 +66,8 @@ public abstract class NetworkHub {
 	
 	public static void SendMessage(Message message) {
 		NetOutgoingMessage msg = peer.CreateMessage();
-		msg.WriteAllFields(message, BindingFlags.Public | BindingFlags.Instance);
-		// TODO ! figure out how to best serialize messages & commands
-		// probably need methods like Serialize(NetOutgoingMessage) and Deserialize(Message)
-		peer.SendMessage(msg, peer.Connections, NetDeliveryMethod.ReliableUnordered, sequenceChannel);
-	}
-	
-	public static void SendCommand(Command command) {
-		NetOutgoingMessage msg = peer.CreateMessage();
-		msg.WriteAllFields(command, BindingFlags.Public | BindingFlags.Instance);
+		message.SerializeTo(out msg); //do we need this keyword 'out'?
+		// TODO ! figure out how to best serialize messages
 		peer.SendMessage(msg, peer.Connections, NetDeliveryMethod.ReliableUnordered, sequenceChannel);
 	}
 }

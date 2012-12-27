@@ -97,7 +97,7 @@ public abstract class CommandHandler {
 			} else {
 				TagCommand(command);
 				QueueCommand(command);
-				NetworkHub.SendCommand(command);
+				NetworkHub.SendMessage(command);
 			}
 		} else {
 			CommandExecutor.ExecuteCommand(command);
@@ -125,16 +125,14 @@ public abstract class CommandHandler {
 	
 	// Tags a command with all required header values
 	protected static void TagCommand(Command command) {
-		command.fromPlayer = PlayerHub.myPlayer.id;
+		TagMessage(command);
 		command.turnToExecute = currentTurn + 2;
-		command.timestamp = DateTime.UtcNow.Ticks;
 		currentTurnCommandNumber++;
 	}
 	
 	// Tags a message with all required header values
 	protected static void TagMessage(Message message) {
 		message.fromPlayer = PlayerHub.myPlayer.id;
-		message.timestamp = DateTime.UtcNow.Ticks;
 	}
 	
 	// Queues a command to be executed some time in the future
