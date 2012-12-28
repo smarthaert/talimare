@@ -23,13 +23,13 @@ public abstract class CommandHandler {
 		// If this is the first player in the game, wait for others
 		if(NetworkHub.GetNumPeers() == 0) {
 			Debug.Log("Game paused, waiting for other players...");
-			Game.paused = true;
+			Game.Paused = true;
 		}
 	}
 	
 	// Only called during a multiplayer game
 	public static void Update() {
-		if(!Game.paused) {
+		if(!Game.Paused) {
 			currentTurnTimer += Time.deltaTime;
 			if(currentTurnTimer >= timePerTurn) {
 				FinishTurn();
@@ -65,10 +65,10 @@ public abstract class CommandHandler {
 			// Advance to the next turn, ready to accept new commands
 			currentTurnTimer = 0f;
 			currentTurnCommandSequence = 0;
-			Game.paused = false;
+			Game.Paused = false;
 		} else {
 			// If waiting for another player's commands, pause our game and prevent issuing more commands
-			Game.paused = true;
+			Game.Paused = true;
 			Debug.Log("waiting for commands, pausing game...");
 			//TODO Process drop and timeout checks, find out which player is holding us up
 		}
@@ -104,8 +104,8 @@ public abstract class CommandHandler {
 	
 	// Add a command, received from this player, to be executed immediately in singleplayer or queued in multiplayer
 	public static void AddCommandFromLocal(Command command) {
-		if(Game.multiplayer) {
-			if(Game.paused) {
+		if(Game.IsMultiplayer) {
+			if(Game.Paused) {
 				Debug.Log("A local command was received between turns. This should never happen. Is some script unpaused?");
 			} else {
 				TagCommand(command);
@@ -122,7 +122,7 @@ public abstract class CommandHandler {
 		QueueCommand(command);
 		
 		// If the game is paused and we're waiting on something, see if this is what we needed
-		if(Game.paused) {
+		if(Game.Paused) {
 			TryAdvanceTurn();
 		}
 	}
@@ -136,7 +136,7 @@ public abstract class CommandHandler {
 	
 	// Tags a message with all required header values
 	protected static void TagMessage(Message message) {
-		message.fromPlayer = PlayerHub.myPlayer.id;
+		message.fromPlayer = Game.myPlayer.id;
 	}
 	
 	// Queues a command to be executed some time in the future
@@ -159,7 +159,7 @@ public abstract class CommandHandler {
 		turnDoneMessages[turnDoneMessage.turn].Add(turnDoneMessage);
 		
 		// If the game is paused and we're waiting on something, see if this is what we needed
-		if(Game.paused) {
+		if(Game.Paused) {
 			TryAdvanceTurn();
 		}
 	}

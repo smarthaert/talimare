@@ -10,6 +10,7 @@ public class PlayerInput : MonoBehaviour {
 	protected int clickLayerMask;
 	
 	protected SelectableControl currentSelection;
+	protected AIVision currentSelectionVision;
 	protected GameObject currentMarker;
 	
 	void Start () {
@@ -17,12 +18,17 @@ public class PlayerInput : MonoBehaviour {
 	}
 	
 	void Update () {
-		// Send key pressed notification to the currently selected object
 		if(currentSelection != null) {
-			if(Input.GetKeyDown(KeyCode.Escape)) {
+			if(currentSelectionVision != null && currentSelectionVision.IsHiddenByFog) {
+				// Current selection is now hidden by fog
 				DeselectCurrent();
-			} else if(Input.anyKeyDown && CurrentSelectionIsMine()) {
-				currentSelection.KeyPressed();
+			} else {
+				// Send and key pressed notifications to the currently selected object
+				if(Input.GetKeyDown(KeyCode.Escape)) {
+					DeselectCurrent();
+				} else if(Input.anyKeyDown && CurrentSelectionIsMine()) {
+					currentSelection.KeyPressed();
+				}
 			}
 		}
 		
@@ -34,9 +40,12 @@ public class PlayerInput : MonoBehaviour {
 			if(Physics.Raycast(ray, out hit, Mathf.Infinity, clickLayerMask)) {
 				// Note: this currently only works if the collider we hit is the same gameobject
 				// in the hierarchy as has the Selectable script attached
-				if(hit.collider.gameObject.GetComponent(typeof(SelectableControl)) != null) {
-					if(hit.collider.gameObject.GetComponent(typeof(SelectableControl)) != currentSelection) {
-						Select((SelectableControl)hit.collider.gameObject.GetComponent(typeof(SelectableControl)));
+				GameObject clickedObject = hit.collider.gameObject;
+				SelectableControl selectable = clickedObject.GetComponent<SelectableControl>();
+				AIVision vision = clickedObject.GetComponentInChildren<AIVision>();
+				if(selectable != null && (vision == null || !vision.IsHiddenByFog)) {
+					if(selectable != currentSelection) {
+						Select(selectable);
 					}
 				} else {
 					DeselectCurrent();
@@ -65,22 +74,22 @@ public class PlayerInput : MonoBehaviour {
 		currentMarker = (GameObject)Instantiate(selectionMarker, currentSelection.gameObject.transform.position, Quaternion.identity);
 		currentMarker.transform.parent = currentSelection.gameObject.transform;
 		currentSelection.Selected();
+		currentSelectionVision = currentSelection.GetComponentInChildren<AIVision>();
 	}
 	
 	// Deselects the currently selected object
 	void DeselectCurrent() {
-		if(currentMarker != null) {
+		if(currentMarker != null)
 			Destroy(currentMarker);
-		}
 		currentMarker = null;
 		
-		if(currentSelection != null) {
+		if(currentSelection != null)
 			currentSelection.Deselected();
-		}
 		currentSelection = null;
+		currentSelectionVision = null;
 	}
 	
 	protected bool CurrentSelectionIsMine() {
-		return (currentSelection.GetComponent<OwnedObjectControl>() != null && currentSelection.GetComponent<OwnedObjectControl>().player == PlayerHub.myPlayer);
+		return (currentSelection.GetComponent<OwnedObjectControl>() != null && currentSelection.GetComponent<OwnedObjectControl>().player == Game.myPlayer);
 	}
 }

@@ -4,8 +4,8 @@ public class AIVision : MonoBehaviour {
 
 	public float visionRange = 10.0f;
 	//public int visionCasts = 6; trying out using visionRange for this instead
-	public bool revealsFog = true;
-	public bool hidesInFog = true;
+	public bool RevealsFog { get; set; }
+	public bool HidesInFog { get; set; }
 	
 	// Cast LOS lines from this height above the center of this object
 	protected float LOSHeight = 0.0f;
@@ -15,6 +15,7 @@ public class AIVision : MonoBehaviour {
 	protected OwnedObjectControl ownedObject;
 	
 	protected bool isUnit = false;
+	public bool IsHiddenByFog { get; set; }
 	
 	// Layer mask for the fog layer only
 	protected int fogLayerMask;
@@ -50,18 +51,20 @@ public class AIVision : MonoBehaviour {
 		
 		circleStep = ((2*Mathf.PI) / visionRange) - 0.0001f;
 		
-		if(revealsFog)
+		if(RevealsFog) {
+			IsHiddenByFog = false;
 			CalculateRevealPoints();
+		}
 	}
 	
 	void Update() {
-		if(revealsFog) {
+		if(RevealsFog) {
 		//if(isUnit && revealsFog) {
 			// If this script is too inefficient, we can improve FogOfWar so that AIVisions don't need to recalculate vision while non-moving
 			//if(pathfinder.IsMoving()) {
 				CalculateRevealPoints();
 			//}
-		} else if(hidesInFog) {
+		} else if(HidesInFog) {
 			CheckHideOrShow();
 		}
 	}
@@ -145,6 +148,7 @@ public class AIVision : MonoBehaviour {
 		foreach(Renderer rendR in allRenderer) {
 			rendR.enabled = false;
 		}
+		IsHiddenByFog = true;
 	}
 	
 	// Shows this object, enabling all renderers
@@ -153,6 +157,7 @@ public class AIVision : MonoBehaviour {
 		foreach(Renderer rendR in allRenderer) {
 			rendR.enabled = true;
 		}
+		IsHiddenByFog = false;
 	}
 	
 	// Called when another collider enters this vision range
