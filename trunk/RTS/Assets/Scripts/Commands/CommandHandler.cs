@@ -51,7 +51,6 @@ public abstract class CommandHandler {
 			currentTurn++;
 			
 			if(commandQueue.ContainsKey(currentTurn)) {
-				//TODO ensure that the command queue is being ordered properly
 				// Dump the command queue for the new turn, executing them all
 				IList<SortedList<int, Command>> commandsByPlayer = commandQueue[currentTurn].Values;
 				foreach(SortedList<int, Command> sequencedCommands in commandsByPlayer) {

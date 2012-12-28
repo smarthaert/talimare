@@ -5,18 +5,16 @@ using Pathfinding;
 // Contains general unit utility functions
 [RequireComponent(typeof(AIPathfinder))]
 [RequireComponent(typeof(AIAttacker))]
-public class UnitControl : SelectableControl {
+public class UnitControl : OwnedObjectControl {
 	
 	protected AIPathfinder pathfinder;
 	protected AIAttacker attacker;
-	protected Player player;
 
 	protected override void Start() {
 		base.Start();
 		
 		pathfinder = GetComponent<AIPathfinder>();
 		attacker = GetComponent<AIAttacker>();
-		player = GetComponent<Creatable>().player;
 	}
 	
 	protected override void Update() {
@@ -26,10 +24,10 @@ public class UnitControl : SelectableControl {
 	// Called when mouse action button is clicked on any object while this unit is selected
 	public override void MouseAction(RaycastHit hit) {
 		if(hit.collider.GetType() == typeof(TerrainCollider)) {
-			Debug.Log ("adding move command, object: "+objectId+"hit: "+hit.point);
-			CommandHandler.AddCommandFromLocal(new MoveCommand(objectId, hit.point));
-		} else if(hit.collider.gameObject.CompareTag("Unit") && hit.collider.gameObject.GetComponent<Creatable>() != null && 
-				hit.collider.gameObject.GetComponent<Creatable>().player.team != PlayerHub.myPlayer.team) {
+			//TODO ! implement commands for all other actions
+			CommandHandler.AddCommandFromLocal(new MoveCommand(ownedObjectId, hit.point));
+		} else if(hit.collider.gameObject.CompareTag("Unit") && hit.collider.gameObject.GetComponent<OwnedObjectControl>() != null && 
+				hit.collider.gameObject.GetComponent<OwnedObjectControl>().player.team != PlayerHub.myPlayer.team) {
 			SendMessage("StopAllActions");
 			attacker.Attack(hit.collider.gameObject);
 		}

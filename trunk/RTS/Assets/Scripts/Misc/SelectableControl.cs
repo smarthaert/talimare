@@ -4,14 +4,9 @@ using System;
 // Defines the behavior of a selectable GameObject
 public class SelectableControl : MonoBehaviour {
 	
-	[NonSerialized]
-	public int objectId;
+	protected virtual void Start() {}
 	
-	protected virtual void Start () {
-		Game.RegisterSelectable(this);
-	}
-	
-	protected virtual void Update () {}
+	protected virtual void Update() {}
 	
 	// Called when this GameObject has been selected
 	public virtual void Selected() {

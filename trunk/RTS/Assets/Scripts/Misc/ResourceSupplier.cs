@@ -9,7 +9,7 @@ public class ResourceSupplier : MonoBehaviour {
 	protected Player player;
 
 	void Start () {
-		player = GetComponent<Creatable>().player;
+		player = GetComponent<OwnedObjectControl>().player;
 		
 		// Add all supplied resources to the player's pool
 		foreach(ResourceAmount suppliedResource in suppliedResources) {

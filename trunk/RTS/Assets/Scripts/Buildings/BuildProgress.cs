@@ -2,22 +2,22 @@ using UnityEngine;
 using System;
 
 // Handles the status of a building being placed and built
-public class BuildProgress : MonoBehaviour {
+public class BuildProgress : OwnedObjectControl {
 	
 	public GameObject finishedObject;
 	
 	protected static AstarPath pathfinding;
 	[NonSerialized]
 	public Creatable creatable;
-	[NonSerialized]
-	public Player player;
 	
 	// The amount of time that has been spent creating this building
 	protected float timeSpentCreating = 0;
 	// Whether or not this building was completed (this is probably only available for one frame before this GameObject is destroyed)
 	protected bool completed = false;
 	
-	void Start() {
+	protected override void Start() {
+		base.Start();
+		
 		creatable = finishedObject.GetComponent<Creatable>();
 	}
 	
@@ -44,7 +44,7 @@ public class BuildProgress : MonoBehaviour {
 		if(completed != true) {
 			completed = true;
 			GameObject newBuilding = (GameObject)Instantiate(finishedObject, this.transform.position, this.transform.rotation);
-			newBuilding.GetComponent<Creatable>().player = player;
+			newBuilding.GetComponent<OwnedObjectControl>().player = player;
 			Destroy(this.gameObject);
 		}
 	}

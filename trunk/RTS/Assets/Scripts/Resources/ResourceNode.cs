@@ -1,14 +1,15 @@
 using UnityEngine;
 using System.Collections;
 
-public class ResourceNode : MonoBehaviour {
+public class ResourceNode : SelectableControl {
 	
 	public Resource resource;
 	public int amount;
 	
 	protected static AstarPath pathfinding;
 	
-	void Start() {
+	protected override void Start() {
+		base.Start();
 		if(pathfinding == null)
 			pathfinding = GameObject.Find("Pathfinding").GetComponent<AstarPath>();
 	}
