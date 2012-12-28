@@ -19,6 +19,7 @@ public class Game : MonoBehaviour {
 	void Start() {
 		if(multiplayer) {
 			NetworkHub.Start();
+			CommandHandler.Start();
 		}
 	}
 	
@@ -26,6 +27,12 @@ public class Game : MonoBehaviour {
 		if(multiplayer) {
 			NetworkHub.Update();
 			CommandHandler.Update();
+		}
+	}
+	
+	void OnDestroy() {
+		if(multiplayer) {
+			NetworkHub.OnDestroy();
 		}
 	}
 	

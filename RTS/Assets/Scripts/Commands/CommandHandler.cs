@@ -18,11 +18,18 @@ public abstract class CommandHandler {
 	protected static int currentTurn = 1;
 	protected static float currentTurnTimer = 0f;
 	protected static int currentTurnCommandSequence = 0;
-	protected static bool currentTurnFinished = false;
+	
+	public static void Start() {
+		// If this is the first player in the game, wait for others
+		if(NetworkHub.GetNumPeers() == 0) {
+			Debug.Log("Game paused, waiting for other players...");
+			Game.paused = true;
+		}
+	}
 	
 	// Only called during a multiplayer game
 	public static void Update() {
-		if(!currentTurnFinished) {
+		if(!Game.paused) {
 			currentTurnTimer += Time.deltaTime;
 			if(currentTurnTimer >= timePerTurn) {
 				FinishTurn();
@@ -36,11 +43,7 @@ public abstract class CommandHandler {
 		TurnDoneMessage turnDoneMessage = new TurnDoneMessage(currentTurn, currentTurnCommandSequence);
 		TagMessage(turnDoneMessage);
 		NetworkHub.SendMessage(turnDoneMessage);
-		
-		currentTurn++;
-		currentTurnTimer = 0f;
-		currentTurnCommandSequence = 0;
-		currentTurnFinished = true;
+		Debug.Log("finished turn: "+currentTurn);
 	}
 	
 	// Attempts to advance to the next synchronization turn if all commands for that turn have been received from all players
@@ -60,8 +63,11 @@ public abstract class CommandHandler {
 			}
 			
 			// Advance to the next turn, ready to accept new commands
+			currentTurn++;
+			currentTurnTimer = 0f;
+			currentTurnCommandSequence = 0;
 			Game.paused = false;
-			currentTurnFinished = false;
+			Debug.Log("advanced to turn: "+currentTurn);
 		} else {
 			// If waiting for another player's commands, pause our game and prevent issuing more commands
 			Game.paused = true;
@@ -108,7 +114,7 @@ public abstract class CommandHandler {
 	// Add a command, received from this player, to be executed immediately in singleplayer or queued in multiplayer
 	public static void AddCommandFromLocal(Command command) {
 		if(Game.multiplayer) {
-			if(currentTurnFinished) {
+			if(Game.paused) {
 				Debug.Log("A local command was received between turns. This should never happen. Is some script unpaused?");
 			} else {
 				TagCommand(command);
@@ -124,8 +130,8 @@ public abstract class CommandHandler {
 	public static void AddCommandFromNetwork(Command command) {
 		QueueCommand(command);
 		
-		// If the turn is finished and we're waiting on something, see if this is what we needed
-		if(currentTurnFinished) {
+		// If the game is paused and we're waiting on something, see if this is what we needed
+		if(Game.paused) {
 			TryAdvanceTurn();
 		}
 	}
@@ -160,10 +166,11 @@ public abstract class CommandHandler {
 		if(!turnDoneMessages.ContainsKey(turnDoneMessage.turn)) {
 			turnDoneMessages.Add(turnDoneMessage.turn, new List<TurnDoneMessage>());
 		}
+		Debug.Log("storing turn done message for turn: "+turnDoneMessage.turn+" num commands: "+turnDoneMessage.numCommands);
 		turnDoneMessages[turnDoneMessage.turn].Add(turnDoneMessage);
 		
-		// If the turn is finished and we're waiting on something, see if this is what we needed
-		if(currentTurnFinished) {
+		// If the game is paused and we're waiting on something, see if this is what we needed
+		if(Game.paused) {
 			TryAdvanceTurn();
 		}
 	}
