@@ -17,12 +17,10 @@ public abstract class Message {
 	
 	public virtual void SerializeTo(NetOutgoingMessage msg) {
 		msg.Write((int)messageType);
-		Debug.Log("serializing message from player: "+fromPlayer);
 		msg.Write(fromPlayer);
 	}
 	
 	public virtual void DeserializeFrom(NetIncomingMessage msg) {
 		fromPlayer = msg.ReadInt32();
-		Debug.Log("deserialized message from player: "+fromPlayer);
 	}
 }
