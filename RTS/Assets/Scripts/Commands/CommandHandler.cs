@@ -9,7 +9,7 @@ public abstract class CommandHandler {
 	public static float timePerTurn = 200f;
 	
 	// Queue for commands for future turns (outer keyed by turn #, inner keyed by timestamp)
-	protected static Dictionary<int, SortedList<long, Command>> commandQueue = new Dictionary<int, SortedList<long, Command>>();
+	protected static Dictionary<int, SortedList<double, Command>> commandQueue = new Dictionary<int, SortedList<double, Command>>();
 	// Holds the number of commands received from other players (outer keyed by turn #, inner keyed by player id)
 	protected static Dictionary<int, Dictionary<int, int>> numCommands = new Dictionary<int, Dictionary<int, int>>();
 	// Holdes 'turn done' messages from other players (outer keyed by turn #)
@@ -138,7 +138,7 @@ public abstract class CommandHandler {
 	// Queues a command to be executed some time in the future
 	protected static void QueueCommand(Command command) {
 		if(!commandQueue.ContainsKey(command.turnToExecute)) {
-			commandQueue.Add(command.turnToExecute, new SortedList<long, Command>());
+			commandQueue.Add(command.turnToExecute, new SortedList<double, Command>());
 		}
 		commandQueue[command.turnToExecute].Add(command.timestamp, command);
 	}
