@@ -9,8 +9,6 @@ public abstract class Message {
 	public MessageType messageType;
 	// Id of the player who issued this message
 	public int fromPlayer;
-	// Timestamp from when this message was issued
-	public double timestamp;
 	
 	public Message(MessageType messageType) {
 		this.messageType = messageType;
@@ -19,11 +17,9 @@ public abstract class Message {
 	public virtual void SerializeTo(NetOutgoingMessage msg) {
 		msg.Write((int)messageType);
 		msg.Write(fromPlayer);
-		msg.WriteTime(false);
 	}
 	
 	public virtual void DeserializeFrom(NetIncomingMessage msg) {
 		fromPlayer = msg.ReadInt32();
-		timestamp = msg.ReadTime(false);
 	}
 }

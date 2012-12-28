@@ -8,6 +8,11 @@ public class ResourceNode : MonoBehaviour {
 	
 	protected static AstarPath pathfinding;
 	
+	void Start() {
+		if(pathfinding == null)
+			pathfinding = GameObject.Find("Pathfinding").GetComponent<AstarPath>();
+	}
+	
 	public void Gather(int amount) {
 		this.amount -= amount;
 		if(this.amount <= 0) {
@@ -20,8 +25,6 @@ public class ResourceNode : MonoBehaviour {
 	}
 	
 	void OnDestroy() {
-		if(pathfinding == null)
-			pathfinding = GameObject.Find("Pathfinding").GetComponent<AstarPath>();
 		pathfinding.Scan();
 	}
 }
