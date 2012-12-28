@@ -15,7 +15,7 @@ public abstract class CommandHandler {
 	protected static Dictionary<int, List<TurnDoneMessage>> turnDoneMessages = new Dictionary<int, List<TurnDoneMessage>>();
 	
 	// Current turn tracking variables
-	protected static int currentTurn = 1;
+	protected static int currentTurn = -1;
 	protected static float currentTurnTimer = 0f;
 	protected static int currentTurnCommandSequence = 0;
 	
@@ -40,7 +40,7 @@ public abstract class CommandHandler {
 	
 	// Finishes the current turn and transmits a 'turn done' message
 	protected static void FinishTurn() {
-		TurnDoneMessage turnDoneMessage = new TurnDoneMessage(currentTurn, currentTurnCommandSequence);
+		TurnDoneMessage turnDoneMessage = new TurnDoneMessage(currentTurn + 2, currentTurnCommandSequence);
 		TagMessage(turnDoneMessage);
 		NetworkHub.SendMessage(turnDoneMessage);
 		Debug.Log("finished turn: "+currentTurn);
@@ -48,7 +48,9 @@ public abstract class CommandHandler {
 	
 	// Attempts to advance to the next synchronization turn if all commands for that turn have been received from all players
 	protected static void TryAdvanceTurn() {
-		if(HaveAllCommandsForCurrentTurn()) {
+		if(HaveAllCommandsForTurn(currentTurn+1)) {
+			currentTurn++;
+			
 			if(commandQueue.ContainsKey(currentTurn)) {
 				//TODO ensure that the command queue is being ordered properly
 				// Dump the command queue for the new turn, executing them all
@@ -63,7 +65,6 @@ public abstract class CommandHandler {
 			}
 			
 			// Advance to the next turn, ready to accept new commands
-			currentTurn++;
 			currentTurnTimer = 0f;
 			currentTurnCommandSequence = 0;
 			Game.paused = false;
@@ -76,39 +77,32 @@ public abstract class CommandHandler {
 		}
 	}
 	
-	// Returns whether or not all commands have been received from all other players for the current turn
-	protected static bool HaveAllCommandsForCurrentTurn() {
-		if(NetworkHub.GetNumPeers() > 0) {
-			if(turnDoneMessages.ContainsKey(currentTurn)) {
-				if(turnDoneMessages[currentTurn].Count == NetworkHub.GetNumPeers()) {
-					// We have all 'turn done' messages, so let's make sure we have all the commands from each player
-					if(commandQueue.ContainsKey(currentTurn)) {
-						// We have some commands for this turn
-						foreach(TurnDoneMessage turnDoneMessage in turnDoneMessages[currentTurn]) {
-							if(commandQueue[currentTurn].ContainsKey(turnDoneMessage.fromPlayer)) {
-								// We have some commands for this player
-								if(commandQueue[currentTurn][turnDoneMessage.fromPlayer].Count < turnDoneMessage.numCommands) {
-									Debug.Log("Have all turn dones, but missing commands from player: "+turnDoneMessage.fromPlayer);
-									return false;
-								} else if(commandQueue[currentTurn][turnDoneMessage.fromPlayer].Count > turnDoneMessage.numCommands) {
-									Debug.Log("Have all turn dones, but somehow have more commands than player: "+turnDoneMessage.fromPlayer+" sent.\nThis should never happen.");
-									return false;
-								}
-							}
-						}
+	// Returns whether or not all commands have been received from all other players for the given turn
+	protected static bool HaveAllCommandsForTurn(int turn) {
+		if(turn < 1)
+			return true; // We're in an initiation turn; automatically continue
+		if(!turnDoneMessages.ContainsKey(turn))
+			return false; // No 'turn done' messages have been received yet for this turn
+		if(turnDoneMessages[turn].Count != NetworkHub.GetNumPeers())
+			return false; // Don't have all 'turn done' messages for this turn
+		
+		// We have all 'turn done' messages, so let's make sure we have all the commands from each player
+		if(commandQueue.ContainsKey(turn)) {
+			// We have some commands for this turn
+			foreach(TurnDoneMessage turnDoneMessage in turnDoneMessages[turn]) {
+				if(commandQueue[turn].ContainsKey(turnDoneMessage.fromPlayer)) {
+					// We have some commands for this player
+					if(commandQueue[turn][turnDoneMessage.fromPlayer].Count < turnDoneMessage.numCommands) {
+						Debug.Log("Have all turn dones, but missing commands from player: "+turnDoneMessage.fromPlayer);
+						return false;
+					} else if(commandQueue[turn][turnDoneMessage.fromPlayer].Count > turnDoneMessage.numCommands) {
+						Debug.Log("Have all turn dones, but somehow have more commands than player: "+turnDoneMessage.fromPlayer+" sent. This should never happen.");
+						return false;
 					}
-					return true;
-				} else {
-					return false;
 				}
-			} else {
-				// No 'turn done' messages have been received yet for this turn
-				return false;
 			}
-		} else {
-			// There are no other players, so we automatically have all commands
-			return true;
 		}
+		return true;
 	}
 	
 	// Add a command, received from this player, to be executed immediately in singleplayer or queued in multiplayer
