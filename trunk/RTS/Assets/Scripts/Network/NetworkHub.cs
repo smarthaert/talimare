@@ -6,7 +6,7 @@ using System.Reflection;
 public abstract class NetworkHub {
 	
 	// The sequence channel on which all messages are sent; don't worry about this
-	protected static int sequenceChannel = 1;
+	protected static int sequenceChannel = 0;
 	
 	protected static NetPeer peer;
 	
@@ -61,8 +61,10 @@ public abstract class NetworkHub {
 	}
 	
 	public static void SendMessage(Message message) {
-		NetOutgoingMessage msg = peer.CreateMessage();
-		message.SerializeTo(msg);
-		peer.SendMessage(msg, peer.Connections, NetDeliveryMethod.ReliableUnordered, sequenceChannel);
+		if(GetNumPeers() > 0) {
+			NetOutgoingMessage msg = peer.CreateMessage();
+			message.SerializeTo(msg);
+			peer.SendMessage(msg, peer.Connections, NetDeliveryMethod.ReliableUnordered, sequenceChannel);
+		}
 	}
 }
