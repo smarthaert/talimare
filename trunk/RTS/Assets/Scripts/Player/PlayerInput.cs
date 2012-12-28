@@ -48,6 +48,7 @@ public class PlayerInput : MonoBehaviour {
 		
 		// Handle mouse1 click (object action)
 		if(Input.GetMouseButtonDown(1) && currentSelection != null && CurrentSelectionIsMine()) {
+			Debug.Log ("hit");
 			// Make sure the current selection is owned by this player
 			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 			RaycastHit hit;

@@ -43,7 +43,6 @@ public abstract class CommandHandler {
 		TurnDoneMessage turnDoneMessage = new TurnDoneMessage(currentTurn + 2, currentTurnCommandSequence);
 		TagMessage(turnDoneMessage);
 		NetworkHub.SendMessage(turnDoneMessage);
-		Debug.Log("finished turn: "+currentTurn);
 	}
 	
 	// Attempts to advance to the next synchronization turn if all commands for that turn have been received from all players
@@ -68,11 +67,10 @@ public abstract class CommandHandler {
 			currentTurnTimer = 0f;
 			currentTurnCommandSequence = 0;
 			Game.paused = false;
-			Debug.Log("advanced to turn: "+currentTurn);
 		} else {
 			// If waiting for another player's commands, pause our game and prevent issuing more commands
 			Game.paused = true;
-			Debug.Log("pausing game...");
+			Debug.Log("waiting for commands, pausing game...");
 			//TODO Process drop and timeout checks, find out which player is holding us up
 		}
 	}
@@ -146,7 +144,6 @@ public abstract class CommandHandler {
 	protected static void QueueCommand(Command command) {
 		if(!commandQueue.ContainsKey(command.turnToExecute)) {
 			commandQueue.Add(command.turnToExecute, new SortedList<int, SortedList<int, Command>>());
-			//TODO if there are two commands at the exact same time, this list will fail
 		}
 		if(!commandQueue[command.turnToExecute].ContainsKey(command.fromPlayer)) {
 			commandQueue[command.turnToExecute].Add(command.fromPlayer, new SortedList<int, Command>());
@@ -160,7 +157,6 @@ public abstract class CommandHandler {
 		if(!turnDoneMessages.ContainsKey(turnDoneMessage.turn)) {
 			turnDoneMessages.Add(turnDoneMessage.turn, new List<TurnDoneMessage>());
 		}
-		Debug.Log("storing turn done message for turn: "+turnDoneMessage.turn+" num commands: "+turnDoneMessage.numCommands);
 		turnDoneMessages[turnDoneMessage.turn].Add(turnDoneMessage);
 		
 		// If the game is paused and we're waiting on something, see if this is what we needed

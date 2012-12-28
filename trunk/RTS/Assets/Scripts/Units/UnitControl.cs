@@ -26,6 +26,7 @@ public class UnitControl : SelectableControl {
 	// Called when mouse action button is clicked on any object while this unit is selected
 	public override void MouseAction(RaycastHit hit) {
 		if(hit.collider.GetType() == typeof(TerrainCollider)) {
+			Debug.Log ("adding move command, object: "+objectId+"hit: "+hit.point);
 			CommandHandler.AddCommandFromLocal(new MoveCommand(objectId, hit.point));
 		} else if(hit.collider.gameObject.CompareTag("Unit") && hit.collider.gameObject.GetComponent<Creatable>() != null && 
 				hit.collider.gameObject.GetComponent<Creatable>().player.team != PlayerHub.myPlayer.team) {
