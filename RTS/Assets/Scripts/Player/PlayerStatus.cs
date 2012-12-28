@@ -40,7 +40,11 @@ public class PlayerStatus : MonoBehaviour {
 	// Techs the player has researched
 	public HashSet<Tech> techs = new HashSet<Tech>();
 	
-	void Awake () {
+	protected Player player;
+	
+	void Awake() {
+		player = gameObject.GetComponent<Player>();
+		
 		food = maxFood;
 		water = maxWater;
 		power = maxPower;
@@ -56,18 +60,20 @@ public class PlayerStatus : MonoBehaviour {
 		}
 		
 		// Find all Creatables that currently exist and spend their upkeep resources.
-		// (This needs to be done since creatables that exist when the game starts were never queued,
+		// (This needs to be done since Creatables that exist when the game starts were never queued,
 		// and thus were never spent for)
 		foreach(Creatable creatable in FindObjectsOfType(typeof(Creatable)).Cast<Creatable>()) {
-			foreach(ResourceAmount resourceCost in creatable.resourceCosts) {
-				if(resourceCost.IsUpkeepResource()) {
-					SpendResource(resourceCost.resource, resourceCost.amount);
+			if(creatable.gameObject.GetComponent<OwnedObjectControl>().player == player) {
+				foreach(ResourceAmount resourceCost in creatable.resourceCosts) {
+					if(resourceCost.IsUpkeepResource()) {
+						SpendResource(resourceCost.resource, resourceCost.amount);
+					}
 				}
 			}
 		}
 	}
 	
-	void Update () {
+	void Update() {
 		//later on, this will be checking if upkeep resources used have exceeded maximum limits
 	}
 	

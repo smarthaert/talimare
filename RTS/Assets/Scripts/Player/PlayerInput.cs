@@ -48,7 +48,6 @@ public class PlayerInput : MonoBehaviour {
 		
 		// Handle mouse1 click (object action)
 		if(Input.GetMouseButtonDown(1) && currentSelection != null && CurrentSelectionIsMine()) {
-			Debug.Log ("hit");
 			// Make sure the current selection is owned by this player
 			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 			RaycastHit hit;
@@ -82,6 +81,6 @@ public class PlayerInput : MonoBehaviour {
 	}
 	
 	protected bool CurrentSelectionIsMine() {
-		return (currentSelection.GetComponent<Creatable>() != null && currentSelection.GetComponent<Creatable>().player == PlayerHub.myPlayer);
+		return (currentSelection.GetComponent<OwnedObjectControl>() != null && currentSelection.GetComponent<OwnedObjectControl>().player == PlayerHub.myPlayer);
 	}
 }

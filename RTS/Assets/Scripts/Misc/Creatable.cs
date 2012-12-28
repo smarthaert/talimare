@@ -10,9 +10,7 @@ public class Creatable : MonoBehaviour {
 	public List<Tech> techDependencies;
 	public BuildProgress buildProgressObject;
 	
-	// This is the object's major reference point to its Player object, aka the object's owner.
-	// All other scripts on the object should retrieve the Player reference from here
-	public Player player;
+	protected Player player;
 	
 	// Returns whether or not the given player meets all requirements to create this object.
 	// Note: this function is called before the Creatable is instantiated
@@ -52,13 +50,13 @@ public class Creatable : MonoBehaviour {
 		}
 	}
 	
-	void Start () {
-		if(player == null)
-			Debug.Log("Player was never set for the Creatable: "+name+". It should be set immediately after instantiating a Creatable.");
+	void Start() {
+		player = GetComponent<OwnedObjectControl>().player;
 		
 		// Capture a Creatable's upkeep resources when it is instantiated
 		foreach(ResourceAmount resourceCost in resourceCosts) {
 			if(resourceCost.IsUpkeepResource()) {
+				Debug.Log("capturing upkeeps from player: "+player.id);
 				player.playerStatus.CaptureUpkeepResource(resourceCost.resource, resourceCost.amount, this.gameObject);
 			}
 		}

@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 
 // Contains general building utility functions
-public class BuildingControl : SelectableControl {
+public class BuildingControl : OwnedObjectControl {
 	
 	// Units this building can train
 	public List<Creatable> units;
@@ -18,15 +18,11 @@ public class BuildingControl : SelectableControl {
 	
 	protected Vector3? rallyPoint = null;
 	
-	protected Player player;
-	
-	protected override void Start () {
+	protected override void Start() {
 		base.Start();
-		
-		player = GetComponent<Creatable>().player;
 	}
 	
-	protected override void Update () {
+	protected override void Update() {
 		base.Update();
 		// Advance creation queues
 		if(unitQueue.Count > 0) {
@@ -78,7 +74,7 @@ public class BuildingControl : SelectableControl {
 		Creatable unit = unitQueue.Dequeue();
 		float distance = this.collider.bounds.size.magnitude + unit.gameObject.collider.bounds.size.magnitude;
 		GameObject newUnit = (GameObject)Instantiate(unit.gameObject, transform.position + (transform.right * distance), Quaternion.identity);
-		newUnit.GetComponent<Creatable>().player = player;
+		newUnit.GetComponent<OwnedObjectControl>().player = player;
 		if(rallyPoint != null) {
 			newUnit.GetComponent<AIPathfinder>().Move(rallyPoint);
 		}

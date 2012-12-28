@@ -8,13 +8,13 @@ public class Game : MonoBehaviour {
 	public static bool multiplayer = true;
 	
 	// If the game is paused, no new commands should be able to be issued by the player
-	public static bool paused = false; //TODO implement pausing in update loop of most scripts
+	public static bool paused = false; //TODO ! implement pausing in update loop of most scripts
 	
-	// The next id to be assigned to a new object
-	protected static int nextObjectId = 1;
+	// The next id to be assigned to a new OwnedObject
+	protected static int nextOwnedObjectId = 1;
 	
-	// Keeps track of all the objects which have been created in the game, keyed by objectId
-	protected static Dictionary<int, GameObject> objects = new Dictionary<int, GameObject>();
+	// Keeps track of all the OwnedObjects which have been created in the game, keyed by objectId
+	protected static Dictionary<int, GameObject> ownedObjects = new Dictionary<int, GameObject>();
 	
 	void Start() {
 		if(multiplayer) {
@@ -36,13 +36,16 @@ public class Game : MonoBehaviour {
 		}
 	}
 	
-	public static void RegisterSelectable(SelectableControl selectable) {
-		selectable.objectId = nextObjectId;
-		objects.Add(selectable.objectId, selectable.gameObject);
-		nextObjectId++;
+	public static void RegisterOwnedObject(OwnedObjectControl ownedObject) {
+		ownedObject.ownedObjectId = nextOwnedObjectId;
+		ownedObjects.Add(ownedObject.ownedObjectId, ownedObject.gameObject);
+		nextOwnedObjectId++;
+		
+		//TODO ! dynamically add AIVision components with correct settings based on the owner of this object
+		//and PlayerHub.myPlayer.id
 	}
 	
-	public static GameObject GetObjectById(int id) {
-		return objects[id];
+	public static GameObject GetOwnedObjectById(int id) {
+		return ownedObjects[id];
 	}
 }
