@@ -5,7 +5,6 @@ using UnityEngine;
 public abstract class MessageHandler {
 	
 	public static void HandleMessage(NetIncomingMessage msg) {
-		Debug.Log("parsing msg: "+msg);
 		int messageType = msg.ReadInt32();
 		switch(messageType) {
 			case (int)MessageType.TurnDoneMessage:

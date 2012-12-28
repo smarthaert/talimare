@@ -31,18 +31,20 @@ public abstract class NetworkHub {
 		            break;
 				case NetIncomingMessageType.DiscoveryRequest:
 					NetOutgoingMessage response = peer.CreateMessage();
-					response.Write("Local Apocalyptia Server");
+					response.Write("Local Apocalyptia Peer");
 					peer.SendDiscoveryResponse(response, msg.SenderEndPoint);
 					break;
 				case NetIncomingMessageType.DiscoveryResponse:
-					Debug.Log("Found server at "+msg.SenderEndPoint+" with name: "+msg.ReadString()+". Attempting connection...");
+					Debug.Log("Found peer at "+msg.SenderEndPoint+" with name: "+msg.ReadString()+". Attempting connection...");
 					peer.Connect(msg.SenderEndPoint);
 					break;
 				case NetIncomingMessageType.ConnectionApproval:
 					Debug.Log("Connected to "+msg.SenderEndPoint);
 					break;
 				case NetIncomingMessageType.StatusChanged:
-					Debug.Log("Network status changed to: "+peer.Status);
+					if((NetConnectionStatus)msg.ReadByte() == NetConnectionStatus.Connected) {
+						ConnectedToPeer(msg.SenderConnection);
+					}
 					break;
 				case NetIncomingMessageType.Data:
 					MessageHandler.HandleMessage(msg);
@@ -53,6 +55,17 @@ public abstract class NetworkHub {
 		    }
 		    peer.Recycle(msg);
 		}
+	}
+	
+	public static void OnDestroy() {
+		peer.Shutdown("Peer shutting down.");
+	}
+	
+	protected static void ConnectedToPeer(NetConnection connection) {
+		Debug.Log("Connected to peer: "+connection.RemoteEndPoint);
+		// This is our first peer, so we can start the game
+		if(GetNumPeers() == 1)
+			Game.paused = false;
 	}
 	
 	// Returns the number of other peers we're communicating with
