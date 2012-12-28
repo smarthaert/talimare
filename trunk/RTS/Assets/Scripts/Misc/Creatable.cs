@@ -56,7 +56,6 @@ public class Creatable : MonoBehaviour {
 		// Capture a Creatable's upkeep resources when it is instantiated
 		foreach(ResourceAmount resourceCost in resourceCosts) {
 			if(resourceCost.IsUpkeepResource()) {
-				Debug.Log("capturing upkeeps from player: "+player.id);
 				player.playerStatus.CaptureUpkeepResource(resourceCost.resource, resourceCost.amount, this.gameObject);
 			}
 		}

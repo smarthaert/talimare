@@ -90,26 +90,22 @@ public class PlayerStatus : MonoBehaviour {
 	// Adds a supplied amount of an upkeep resource that may be used
 	public void AddSuppliedUpkeepResource(Resource resource, int amount) {
 		upkeepMaximums[resource] += amount;
-		Debug.Log("Player gained "+amount+" "+resource+" supply. Now has "+upkeepMaximums[resource]+" total");
 	}
 	
 	// Removes a supplied amount of an upkeep resource
 	public void RemoveSuppliedUpkeepResource(Resource resource, int amount) {
 		upkeepMaximums[resource] -= amount;
-		Debug.Log("Player lost "+amount+" "+resource+" supply. Now has "+upkeepMaximums[resource]+" total");
 	}
 	
 	// Captures an amount of an upkeep resource which is being used up by the given object (unit or building).
 	// This is called when a unit, tech, or building is actually instantiated
 	public void CaptureUpkeepResource(Resource resource, int amount, UnityEngine.Object user) {
 		capturedUpkeepResources[resource].Add(user, amount);
-		Debug.Log(user+" captured "+amount+" "+resource+" supply.");
 	}
 	
 	// Releases the given upkeep resource being used by the given object (unit or building).
 	// This is called when the object is destroyed
 	public void ReleaseUpkeepResource(Resource resource, UnityEngine.Object user) {
 		capturedUpkeepResources[resource].Remove(user);
-		Debug.Log(user+" released its "+resource+" supply.");
 	}
 }

@@ -25,9 +25,9 @@ public class UnitControl : OwnedObjectControl {
 	public override void MouseAction(RaycastHit hit) {
 		if(hit.collider.GetType() == typeof(TerrainCollider)) {
 			//TODO ! implement commands for all other actions
-			CommandHandler.AddCommandFromLocal(new MoveCommand(ownedObjectId, hit.point));
+			CommandHandler.AddCommandFromLocal(new MoveCommand(OwnedObjectId, hit.point));
 		} else if(hit.collider.gameObject.CompareTag("Unit") && hit.collider.gameObject.GetComponent<OwnedObjectControl>() != null && 
-				hit.collider.gameObject.GetComponent<OwnedObjectControl>().player.team != PlayerHub.myPlayer.team) {
+				hit.collider.gameObject.GetComponent<OwnedObjectControl>().player.team != Game.myPlayer.team) {
 			SendMessage("StopAllActions");
 			attacker.Attack(hit.collider.gameObject);
 		}

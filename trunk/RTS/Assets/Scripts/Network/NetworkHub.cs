@@ -65,7 +65,7 @@ public abstract class NetworkHub {
 		Debug.Log("Connected to peer: "+connection.RemoteEndPoint);
 		// This is our first peer, so we can start the game
 		if(GetNumPeers() == 1)
-			Game.paused = false;
+			Game.Paused = false;
 	}
 	
 	// Returns the number of other peers we're communicating with

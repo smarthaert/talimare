@@ -59,7 +59,6 @@ public class AIAttacker : MonoBehaviour {
 				if(IsInRange(currentAttackTarget.transform)) {
 					// Apply damage
 					currentAttackTarget.GetComponent<UnitStatus>().Damage(attackDamage);
-					//TODO i don't like getting a component here so often... see if we can find a way around this
 				}
 				// Start cooldown timer
 				attackCooldownTimer = attackCooldown;

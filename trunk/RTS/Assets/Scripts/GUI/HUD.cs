@@ -9,7 +9,7 @@ public class HUD : MonoBehaviour {
 	protected Rect resourceLevelsLocation;
 	
 	void Start() {
-		player = PlayerHub.myPlayer;
+		player = Game.myPlayer;
 		resourceLevelsLocation = new Rect(5, Screen.height-170, 100, 100);
 	}
 	
