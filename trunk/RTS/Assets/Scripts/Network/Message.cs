@@ -1,5 +1,6 @@
 using System;
 using Lidgren.Network;
+using UnityEngine;
 
 // This class is the base for synchronization or flow control messages between clients
 public abstract class Message {
@@ -16,10 +17,12 @@ public abstract class Message {
 	
 	public virtual void SerializeTo(NetOutgoingMessage msg) {
 		msg.Write((int)messageType);
+		Debug.Log("serializing message from player: "+fromPlayer);
 		msg.Write(fromPlayer);
 	}
 	
 	public virtual void DeserializeFrom(NetIncomingMessage msg) {
 		fromPlayer = msg.ReadInt32();
+		Debug.Log("deserialized message from player: "+fromPlayer);
 	}
 }

@@ -74,10 +74,8 @@ public abstract class NetworkHub {
 	}
 	
 	public static void SendMessage(Message message) {
-		if(GetNumPeers() > 0) {
-			NetOutgoingMessage msg = peer.CreateMessage();
-			message.SerializeTo(msg);
-			peer.SendMessage(msg, peer.Connections, NetDeliveryMethod.ReliableUnordered, sequenceChannel);
-		}
+		NetOutgoingMessage msg = peer.CreateMessage();
+		message.SerializeTo(msg);
+		peer.SendMessage(msg, peer.Connections, NetDeliveryMethod.ReliableUnordered, sequenceChannel);
 	}
 }
