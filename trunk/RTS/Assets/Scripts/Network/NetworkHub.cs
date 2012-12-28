@@ -16,7 +16,7 @@ public abstract class NetworkHub {
 		peer = new NetPeer(config);
 		peer.Start();
 		
-		peer.DiscoverKnownPeer("192.168.111.23", 12345);
+		//peer.DiscoverKnownPeer("192.168.111.23", 12345);
 	}
 	
 	public static void Update() {
@@ -45,7 +45,7 @@ public abstract class NetworkHub {
 					Debug.Log("Network status changed to: "+peer.Status);
 					break;
 				case NetIncomingMessageType.Data:
-					ParseData(msg);
+					MessageHandler.HandleMessage(msg);
 					break;
 		        default:
 		            Debug.Log("Unhandled type: " + msg.MessageType);
@@ -55,10 +55,6 @@ public abstract class NetworkHub {
 		}
 	}
 	
-	protected static void ParseData(NetIncomingMessage msg) {
-		Debug.Log("parsing msg: "+msg);
-	}
-	
 	// Returns the number of other peers we're communicating with
 	public static int GetNumPeers() {
 		return peer.ConnectionsCount;
@@ -66,8 +62,7 @@ public abstract class NetworkHub {
 	
 	public static void SendMessage(Message message) {
 		NetOutgoingMessage msg = peer.CreateMessage();
-		message.SerializeTo(out msg); //do we need this keyword 'out'?
-		// TODO ! figure out how to best serialize messages
+		message.SerializeTo(msg);
 		peer.SendMessage(msg, peer.Connections, NetDeliveryMethod.ReliableUnordered, sequenceChannel);
 	}
 }

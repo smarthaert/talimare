@@ -9,13 +9,13 @@ public abstract class Command : Message {
 	
 	public Command(MessageType messageType) : base(messageType) {}
 	
-	public virtual void SerializeTo(NetOutgoingMessage msg) {
-		msg.writeWriteVariableInt32(fromPlayer);
-		msg.WriteTime();
+	public override void SerializeTo(NetOutgoingMessage msg) {
+		base.SerializeTo(msg);
+		msg.Write(turnToExecute);
 	}
 	
-	public virtual void DeserializeFrom(NetIncomingMessage msg) {
-		fromPlayer = msg.ReadInt32();
-		timestamp = msg.ReadTime();
+	public override void DeserializeFrom(NetIncomingMessage msg) {
+		base.DeserializeFrom(msg);
+		turnToExecute = msg.ReadInt32();
 	}
 }
