@@ -136,7 +136,7 @@ public abstract class CommandHandler {
 	
 	// Tags a message with all required header values
 	protected static void TagMessage(Message message) {
-		message.fromPlayer = Game.myPlayer.id;
+		message.fromPlayer = Game.MyPlayer.id;
 	}
 	
 	// Queues a command to be executed some time in the future

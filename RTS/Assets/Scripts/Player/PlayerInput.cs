@@ -90,6 +90,6 @@ public class PlayerInput : MonoBehaviour {
 	}
 	
 	protected bool CurrentSelectionIsMine() {
-		return (currentSelection.GetComponent<OwnedObjectControl>() != null && currentSelection.GetComponent<OwnedObjectControl>().player == Game.myPlayer);
+		return (currentSelection.GetComponent<OwnedObjectControl>() != null && currentSelection.GetComponent<OwnedObjectControl>().player == Game.MyPlayer);
 	}
 }
