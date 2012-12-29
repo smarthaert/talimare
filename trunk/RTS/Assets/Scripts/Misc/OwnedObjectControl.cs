@@ -26,7 +26,7 @@ public abstract class OwnedObjectControl : SelectableControl {
 	protected void ConfigureVisionSettings() {
 		AIVision visionComponent = gameObject.GetComponentInChildren<AIVision>();
 		if(visionComponent != null) {
-			if(player == Game.myPlayer)
+			if(player == Game.MyPlayer)
 				visionComponent.RevealsFog = true;
 			else
 				visionComponent.RevealsFog = false;

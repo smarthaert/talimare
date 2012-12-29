@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public class Game : MonoBehaviour {
 	
 	// The player controlled by this instance of the game (this client's player)
-	public static Player myPlayer;
+	public static Player MyPlayer { get; set; }
 	[SerializeField]
 	private Player thisPlayer; //this is a workaround so we can basically show a static var in the Unity inspector
 	
@@ -27,7 +27,7 @@ public class Game : MonoBehaviour {
 	protected static Dictionary<int, GameObject> ownedObjects = new Dictionary<int, GameObject>();
 	
 	void Awake() {
-		myPlayer = thisPlayer;
+		MyPlayer = thisPlayer;
 		IsMultiplayer = multiplayerEnabled;
 	}
 	
