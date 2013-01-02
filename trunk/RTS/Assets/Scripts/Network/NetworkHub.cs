@@ -16,7 +16,7 @@ public abstract class NetworkHub {
 		peer = new NetPeer(config);
 		peer.Start();
 		
-		//peer.DiscoverKnownPeer("192.168.111.23", 12345);
+		peer.DiscoverKnownPeer("192.168.111.23", 12345);
 	}
 	
 	public static void Update() {

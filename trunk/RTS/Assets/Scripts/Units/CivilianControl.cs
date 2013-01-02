@@ -33,12 +33,16 @@ public class CivilianControl : UnitControl {
 	protected override void Update () {
 		base.Update();
 		
-		if(gatherTarget != null) {
-			UpdateGather();
-		} else if(queuedBuildTarget != null) {
+		if(!Game.Paused) {
+			if(gatherTarget != null) {
+				UpdateGather();
+			} else if(buildTarget != null) {
+				UpdateBuild();
+			}
+		}
+		
+		if(queuedBuildTarget != null) {
 			DrawQueuedBuildingAtMouse();
-		} else if(buildTarget != null) {
-			UpdateBuild();
 		}
 	}
 	
@@ -103,15 +107,17 @@ public class CivilianControl : UnitControl {
 	// Called when mouse action button is clicked on any object while this unit is selected
 	public override void MouseAction(RaycastHit hit) {
 		base.MouseAction(hit);
+		
+		//TODO ! gather and build commands
 		if(hit.collider.gameObject.CompareTag("Resource")) {
 			SendMessage("StopAllActions");
 			Gather(hit.collider.gameObject.GetComponent<ResourceNode>());
-		} else if(queuedBuildTarget != null) {
-			SendMessage("StopAllActions");
-			CommitQueuedBuilding(hit.point);
 		} else if(hit.collider.gameObject.CompareTag("BuildProgress")) {
 			SendMessage("StopAllActions");
 			Build(hit.collider.gameObject.GetComponent<BuildProgress>());
+		} else if(queuedBuildTarget != null) {
+			SendMessage("StopAllActions");
+			CommitQueuedBuilding(hit.point);
 		}
 	}
 	

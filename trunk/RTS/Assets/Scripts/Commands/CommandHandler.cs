@@ -106,7 +106,8 @@ public abstract class CommandHandler {
 	public static void AddCommandFromLocal(Command command) {
 		if(Game.IsMultiplayer) {
 			if(Game.Paused) {
-				Debug.Log("A local command was received between turns. This should never happen. Is some script unpaused?");
+				//TODO !! commands received between turns should be queued up and handled at the beginning of the next turn
+				Debug.Log("A local command was received between turns. Queueing it to be handled on the next turn...");
 			} else {
 				TagCommand(command);
 				QueueCommand(command);

@@ -251,22 +251,24 @@ public class AIPathfinder : MonoBehaviour {
 	}
 	
 	protected void FixedUpdate () {
-		if(path != null) {
-			Vector3 dir = CalculateVelocity (GetFeetPosition());
-			
-			//Rotate towards targetDirection (filled in by CalculateVelocity)
-			if (targetDirection != Vector3.zero) {
-				RotateTowards (targetDirection);
-			}
-			
-			if (navController != null) {
-				navController.SimpleMove (GetFeetPosition(),dir);
-			} else if (controller != null) {
-				controller.SimpleMove (dir);
-			} else if (rigid != null) {
-				rigid.AddForce (dir);
-			} else {
-				transform.Translate (dir);
+		if(!Game.Paused) {
+			if(path != null) {
+				Vector3 dir = CalculateVelocity (GetFeetPosition());
+				
+				//Rotate towards targetDirection (filled in by CalculateVelocity)
+				if (targetDirection != Vector3.zero) {
+					RotateTowards (targetDirection);
+				}
+				
+				if (navController != null) {
+					navController.SimpleMove (GetFeetPosition(),dir);
+				} else if (controller != null) {
+					controller.SimpleMove (dir);
+				} else if (rigid != null) {
+					rigid.AddForce (dir);
+				} else {
+					transform.Translate (dir);
+				}
 			}
 		}
 	}
