@@ -12,12 +12,10 @@ public class Player : MonoBehaviour {
 	[NonSerialized]
 	public PlayerInput playerInput;
 	
-	void Awake() {
+	void Start() {
 		playerStatus = GetComponent<PlayerStatus>();
 		playerInput = GetComponent<PlayerInput>();
-	}
-	
-	void Start() {
+			
 		if(team == null)
 			Debug.Log("Player: "+name+" has no team! Team must be set immediately after instantiating the player.");
 		Game.AddPlayer(this);

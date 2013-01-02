@@ -33,36 +33,38 @@ public class AIAttacker : MonoBehaviour {
 	}
 	
 	void Update() {
-		if(currentAttackTarget == null) {
-			// Not currently in an attack sequence (either due to being on cooldown, out of range, or have no target)
-			if(attackCooldownTimer > 0)
-				attackCooldownTimer -= Time.deltaTime;
-			if(target != null) {
-				// Have a target, so try to attack or move
-				if(IsInRange(target.transform)) {
-					pathfinder.StopMoving();
-					// In range, start attacking if cooldown is finished
-					if(attackCooldownTimer <= 0) {
-						attackTimer = attackTime;
-						currentAttackTarget = target;
+		if(!Game.Paused) {
+			if(currentAttackTarget == null) {
+				// Not currently in an attack sequence (either due to being on cooldown, out of range, or have no target)
+				if(attackCooldownTimer > 0)
+					attackCooldownTimer -= Time.deltaTime;
+				if(target != null) {
+					// Have a target, so try to attack or move
+					if(IsInRange(target.transform)) {
+						pathfinder.StopMoving();
+						// In range, start attacking if cooldown is finished
+						if(attackCooldownTimer <= 0) {
+							attackTimer = attackTime;
+							currentAttackTarget = target;
+						}
+					} else {
+						// Not in range, make sure we're moving into range
+						pathfinder.Move(target.transform);
 					}
-				} else {
-					// Not in range, make sure we're moving into range
-					pathfinder.Move(target.transform);
 				}
-			}
-		} else {
-			// Currently in an attack sequence
-			attackTimer -= Time.deltaTime;
-			if(attackTimer <= 0) {
-				// Check attack range at end of attack sequence
-				if(IsInRange(currentAttackTarget.transform)) {
-					// Apply damage
-					currentAttackTarget.GetComponent<UnitStatus>().Damage(attackDamage);
+			} else {
+				// Currently in an attack sequence
+				attackTimer -= Time.deltaTime;
+				if(attackTimer <= 0) {
+					// Check attack range at end of attack sequence
+					if(IsInRange(currentAttackTarget.transform)) {
+						// Apply damage
+						currentAttackTarget.GetComponent<UnitStatus>().Damage(attackDamage);
+					}
+					// Start cooldown timer
+					attackCooldownTimer = attackCooldown;
+					currentAttackTarget = null;
 				}
-				// Start cooldown timer
-				attackCooldownTimer = attackCooldown;
-				currentAttackTarget = null;
 			}
 		}
 	}

@@ -20,8 +20,6 @@ public class ResourceSupplier : MonoBehaviour {
 		}
 	}
 	
-	void Update () {}
-	
 	// Called when this object is destroyed. Removes the provided resource from the player's pool
 	void OnDestroy () {
 		foreach(ResourceAmount suppliedResource in suppliedResources) {

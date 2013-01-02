@@ -23,8 +23,8 @@ public class UnitControl : OwnedObjectControl {
 	
 	// Called when mouse action button is clicked on any object while this unit is selected
 	public override void MouseAction(RaycastHit hit) {
+		//TODO ! move and attack commands
 		if(hit.collider.GetType() == typeof(TerrainCollider)) {
-			//TODO ! implement commands for all other actions
 			CommandHandler.AddCommandFromLocal(new MoveCommand(OwnedObjectId, hit.point));
 		} else if(hit.collider.gameObject.CompareTag("Unit") && hit.collider.gameObject.GetComponent<OwnedObjectControl>() != null && 
 				hit.collider.gameObject.GetComponent<OwnedObjectControl>().player.team != Game.MyPlayer.team) {
@@ -35,6 +35,7 @@ public class UnitControl : OwnedObjectControl {
 	
 	// Called when any key is pressed while this unit is selected
 	public override void KeyPressed() {
+		//TODO ! stop command
 		if(Input.GetKeyDown(KeyCode.S)) {
 			SendMessage("StopAllActions");
 		}

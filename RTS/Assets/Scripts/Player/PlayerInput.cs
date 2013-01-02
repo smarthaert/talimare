@@ -23,7 +23,7 @@ public class PlayerInput : MonoBehaviour {
 				// Current selection is now hidden by fog
 				DeselectCurrent();
 			} else {
-				// Send and key pressed notifications to the currently selected object
+				// Send any key pressed notifications to the currently selected object
 				if(Input.GetKeyDown(KeyCode.Escape)) {
 					DeselectCurrent();
 				} else if(Input.anyKeyDown && CurrentSelectionIsMine()) {

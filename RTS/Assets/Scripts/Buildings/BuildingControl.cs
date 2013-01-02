@@ -24,46 +24,55 @@ public class BuildingControl : OwnedObjectControl {
 	
 	protected override void Update() {
 		base.Update();
-		// Advance creation queues
-		if(unitQueue.Count > 0) {
-			unitTimer += Time.deltaTime;
-			if(unitTimer >= unitQueue.Peek().creationTime)
-				CompleteUnit();
-		}
-		if(techQueue.Count > 0) {
-			techTimer += Time.deltaTime;
-			if(techTimer >= techQueue.Peek().creationTime)
-				CompleteTech();
+		
+		if(!Game.Paused) {
+			// Advance creation queues
+			if(unitQueue.Count > 0) {
+				unitTimer += Time.deltaTime;
+				if(unitTimer >= unitQueue.Peek().creationTime)
+					CompleteUnit();
+			}
+			if(techQueue.Count > 0) {
+				techTimer += Time.deltaTime;
+				if(techTimer >= techQueue.Peek().creationTime)
+					CompleteTech();
+			}
 		}
 	}
 	
 	// Called when mouse action button is clicked on any object while this building is selected
 	public override void MouseAction(RaycastHit hit) {
-		if(hit.collider.GetType() == typeof(TerrainCollider)) {
-			rallyPoint = hit.point;
-			Debug.Log("Rally point set to: "+rallyPoint);
-		} else if(hit.collider.gameObject == this.gameObject) {
-			rallyPoint = null;
-			Debug.Log("Rally point removed.");
+		if(!Game.Paused) {
+			//TODO ! rally point commands
+			if(hit.collider.GetType() == typeof(TerrainCollider)) {
+				rallyPoint = hit.point;
+				Debug.Log("Rally point set to: "+rallyPoint);
+			} else if(hit.collider.gameObject == this.gameObject) {
+				rallyPoint = null;
+				Debug.Log("Rally point removed.");
+			}
 		}
 	}
 	
 	// Called when any key is pressed while this building is selected
 	public override void KeyPressed() {
-		// See if pressed key exists in units or techs and if so, queue that Creatable
-		foreach(Creatable unit in units) {
-			if(Input.GetKeyDown(unit.creationKey)) {
-				if(unit.CanCreate(player)) {
-					unit.SpendResources(player);
-					unitQueue.Enqueue(unit);
+		if(!Game.Paused) {
+			//TODO ! unit queue commands
+			// See if pressed key exists in units or techs and if so, queue that Creatable
+			foreach(Creatable unit in units) {
+				if(Input.GetKeyDown(unit.creationKey)) {
+					if(unit.CanCreate(player)) {
+						unit.SpendResources(player);
+						unitQueue.Enqueue(unit);
+					}
 				}
 			}
-		}
-		foreach(Creatable tech in techs) {
-			if(Input.GetKeyDown(tech.creationKey)) {
-				if(!techQueue.Contains(tech) && tech.CanCreate(player)) {
-					tech.SpendResources(player);
-					techQueue.Enqueue(tech);
+			foreach(Creatable tech in techs) {
+				if(Input.GetKeyDown(tech.creationKey)) {
+					if(!techQueue.Contains(tech) && tech.CanCreate(player)) {
+						tech.SpendResources(player);
+						techQueue.Enqueue(tech);
+					}
 				}
 			}
 		}
