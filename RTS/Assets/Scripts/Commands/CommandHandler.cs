@@ -13,6 +13,8 @@ public abstract class CommandHandler {
 	protected static Dictionary<int, SortedList<int, SortedList<int, Command>>> commandQueue = new Dictionary<int, SortedList<int, SortedList<int, Command>>>();
 	// Holdes 'turn done' messages from other players (outer keyed by turn #)
 	protected static Dictionary<int, List<TurnDoneMessage>> turnDoneMessages = new Dictionary<int, List<TurnDoneMessage>>();
+	// Queue for any local commands which were issued while the game was paused
+	protected static Queue<Command> localCommandQueue = new Queue<Command>();
 	
 	// Current turn tracking variables
 	protected static int currentTurn = -1;
@@ -66,11 +68,21 @@ public abstract class CommandHandler {
 			currentTurnTimer = 0f;
 			currentTurnCommandSequence = 0;
 			Game.Paused = false;
+			
+			ProcessLocalCommandQueue();
 		} else {
 			// If waiting for another player's commands, pause our game and prevent issuing more commands
 			Game.Paused = true;
 			Debug.Log("waiting for commands, pausing game...");
 			//TODO Process drop and timeout checks, find out which player is holding us up
+		}
+	}
+	
+	// Issues any commands currently stored in the local command queue (commands received while the game was paused)
+	protected static void ProcessLocalCommandQueue() {
+		Debug.Log("Processing local command queue.");
+		while(localCommandQueue.Count > 0) {
+			AddCommandFromLocal(localCommandQueue.Dequeue());
 		}
 	}
 	
@@ -106,8 +118,9 @@ public abstract class CommandHandler {
 	public static void AddCommandFromLocal(Command command) {
 		if(Game.IsMultiplayer) {
 			if(Game.Paused) {
-				//TODO !! commands received between turns should be queued up and handled at the beginning of the next turn
-				Debug.Log("A local command was received between turns. Queueing it to be handled on the next turn...");
+				//UNTESTED
+				Debug.Log("A local command was received between turns. Queueing it to be handled on the next turn.");
+				localCommandQueue.Enqueue(command);
 			} else {
 				TagCommand(command);
 				QueueCommand(command);
