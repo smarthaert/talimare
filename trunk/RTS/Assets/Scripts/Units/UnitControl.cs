@@ -28,8 +28,7 @@ public class UnitControl : OwnedObjectControl {
 			CommandHandler.AddCommandFromLocal(new MoveCommand(OwnedObjectId, hit.point));
 		} else if(hit.collider.gameObject.CompareTag("Unit") && hit.collider.gameObject.GetComponent<OwnedObjectControl>() != null && 
 				hit.collider.gameObject.GetComponent<OwnedObjectControl>().player.team != Game.MyPlayer.team) {
-			SendMessage("StopAllActions");
-			attacker.Attack(hit.collider.gameObject);
+			CommandHandler.AddCommandFromLocal(new AttackCommand(OwnedObjectId, hit.collider.gameObject.GetComponent<OwnedObjectControl>().OwnedObjectId));
 		}
 	}
 	

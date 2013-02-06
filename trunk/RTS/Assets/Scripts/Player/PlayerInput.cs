@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-// Handles general player input unrelated to specific objects
+// Handles general player input unrelated to specific objects. Can be placed anywhere as long as it is in the scene
 public class PlayerInput : MonoBehaviour {
 	
 	// A visual marker for the current selection

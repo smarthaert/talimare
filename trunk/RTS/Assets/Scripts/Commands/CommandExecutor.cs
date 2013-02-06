@@ -4,9 +4,15 @@ using UnityEngine;
 public abstract class CommandExecutor {
 	
 	public static void ExecuteCommand(Command command) {
-		if(command.messageType == MessageType.MoveCommand) {
-			MoveCommand moveCommand = (MoveCommand)command;
-			Game.GetOwnedObjectById(moveCommand.ownedObjectId).SendMessage("ExecuteMove", moveCommand.target);
+		switch(command.messageType) {
+			case MessageType.MoveCommand:
+				MoveCommand moveCommand = (MoveCommand)command;
+				Game.GetOwnedObjectById(moveCommand.ownedObjectId).SendMessage("ExecuteMove", moveCommand.target);
+				break;
+			case MessageType.AttackCommand:
+				AttackCommand attackCommand = (AttackCommand)command;
+				Game.GetOwnedObjectById(attackCommand.ownedObjectId).SendMessage("ExecuteAttack", Game.GetOwnedObjectById(attackCommand.targetOwnedObjectId));
+				break;
 		}
 	}
 }

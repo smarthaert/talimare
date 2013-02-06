@@ -18,9 +18,9 @@ public abstract class MessageHandler {
 				CommandHandler.AddCommandFromNetwork(moveCommand);
 				break;
 			case (int)MessageType.AttackCommand:
-				/*AttackCommand attackCommand = new AttackCommand();
+				AttackCommand attackCommand = new AttackCommand();
 				attackCommand.DeserializeFrom(msg);
-				CommandHandler.AddCommandFromNetwork(attackCommand);*/
+				CommandHandler.AddCommandFromNetwork(attackCommand);
 				break;
 		}
 	}
