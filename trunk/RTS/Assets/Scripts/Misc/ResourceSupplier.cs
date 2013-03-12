@@ -13,9 +13,9 @@ public class ResourceSupplier : MonoBehaviour {
 		
 		// Add all supplied resources to the player's pool
 		foreach(ResourceAmount suppliedResource in suppliedResources) {
-			player.playerStatus.GainResource(suppliedResource.resource, suppliedResource.amount);
+			player.PlayerStatus.GainResource(suppliedResource.resource, suppliedResource.amount);
 			if(suppliedResource.IsUpkeepResource()) {
-				player.playerStatus.AddSuppliedUpkeepResource(suppliedResource.resource, suppliedResource.amount);
+				player.PlayerStatus.AddSuppliedUpkeepResource(suppliedResource.resource, suppliedResource.amount);
 			}
 		}
 	}
@@ -24,8 +24,8 @@ public class ResourceSupplier : MonoBehaviour {
 	void OnDestroy () {
 		foreach(ResourceAmount suppliedResource in suppliedResources) {
 			if(suppliedResource.IsUpkeepResource()) {
-				player.playerStatus.SpendResource(suppliedResource.resource, suppliedResource.amount);
-				player.playerStatus.RemoveSuppliedUpkeepResource(suppliedResource.resource, suppliedResource.amount);
+				player.PlayerStatus.SpendResource(suppliedResource.resource, suppliedResource.amount);
+				player.PlayerStatus.RemoveSuppliedUpkeepResource(suppliedResource.resource, suppliedResource.amount);
 			}
 		}
 	}

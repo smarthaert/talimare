@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+	<Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+	<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+	<ProductVersion>10.0.20506</ProductVersion>
+	<SchemaVersion>2.0</SchemaVersion>
+	<ProjectGuid>{D973CBAE-AF5C-67C8-9EC3-328FB0F61F9B}</ProjectGuid>
+	<OutputType>Library</OutputType>
+	<AppDesignerFolder>Properties</AppDesignerFolder>
+	<RootNamespace></RootNamespace>
+	<AssemblyName>Assembly-CSharp</AssemblyName>
+	<TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+	<FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+	<DebugSymbols>true</DebugSymbols>
+	<DebugType>full</DebugType>
+	<Optimize>false</Optimize>
+	<OutputPath>Temp\bin\Debug\</OutputPath>
+	<DefineConstants>DEBUG;TRACE;UNITY_STANDALONE;ENABLE_MICROPHONE;ENABLE_IMAGEEFFECTS;ENABLE_WEBCAM;ENABLE_AUDIO_FMOD;ENABLE_NETWORK;ENABLE_MONO;ENABLE_PHYSICS;ENABLE_TERRAIN;ENABLE_CACHING;ENABLE_SUBSTANCE;ENABLE_GENERICS;ENABLE_CLOTH;ENABLE_MOVIES;ENABLE_AUDIO;ENABLE_WWW;ENABLE_SHADOWS;ENABLE_DUCK_TYPING;UNITY_4_0_1;UNITY_4_0;UNITY_STANDALONE_WIN;ENABLE_PROFILER;UNITY_EDITOR</DefineConstants>
+	<ErrorReport>prompt</ErrorReport>
+	<WarningLevel>4</WarningLevel>
+	<NoWarn>0169</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+	<DebugType>pdbonly</DebugType>
+	<Optimize>true</Optimize>
+	<OutputPath>Temp\bin\Release\</OutputPath>
+	<DefineConstants>TRACE</DefineConstants>
+	<ErrorReport>prompt</ErrorReport>
+	<WarningLevel>4</WarningLevel>
+	<NoWarn>0169</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+	<Reference Include="System" />
+    <Reference Include="System.XML" />
+	<Reference Include="System.Core" />
+	<Reference Include="UnityEngine">
+	  <HintPath>C:/Program Files/Unity/Editor/Data/Managed/UnityEngine.dll</HintPath>
+	</Reference>
+	<Reference Include="UnityEditor">
+	  <HintPath>C:/Program Files/Unity/Editor/Data/Managed/UnityEditor.dll</HintPath>
+	</Reference>
+  </ItemGroup>
+  <ItemGroup>
+     <Compile Include="Assets\Scripts\Buildings\BuildProgress.cs" />
+     <Compile Include="Assets\Scripts\Buildings\BuildingControl.cs" />
+     <Compile Include="Assets\Scripts\Buildings\BuildingStatus.cs" />
+     <Compile Include="Assets\Scripts\Camera\CameraMove.cs" />
+     <Compile Include="Assets\Scripts\Camera\CameraRotate.cs" />
+     <Compile Include="Assets\Scripts\Camera\CameraZoom.cs" />
+     <Compile Include="Assets\Scripts\Commands\AttackCommand.cs" />
+     <Compile Include="Assets\Scripts\Commands\Command.cs" />
+     <Compile Include="Assets\Scripts\Commands\CommandExecutor.cs" />
+     <Compile Include="Assets\Scripts\Commands\CommandHandler.cs" />
+     <Compile Include="Assets\Scripts\Commands\MessageType.cs" />
+     <Compile Include="Assets\Scripts\Commands\MoveCommand.cs" />
+     <Compile Include="Assets\Scripts\GUI\HUD.cs" />
+     <Compile Include="Assets\Scripts\Misc\Creatable.cs" />
+     <Compile Include="Assets\Scripts\Misc\FogOfWar.cs" />
+     <Compile Include="Assets\Scripts\Misc\Game.cs" />
+     <Compile Include="Assets\Scripts\Misc\OwnedObjectControl.cs" />
+     <Compile Include="Assets\Scripts\Misc\ResourceSupplier.cs" />
+     <Compile Include="Assets\Scripts\Misc\SelectableControl.cs" />
+     <Compile Include="Assets\Scripts\Network\Message.cs" />
+     <Compile Include="Assets\Scripts\Network\MessageHandler.cs" />
+     <Compile Include="Assets\Scripts\Network\NetworkHub.cs" />
+     <Compile Include="Assets\Scripts\Network\TurnDoneMessage.cs" />
+     <Compile Include="Assets\Scripts\Player\ComputerPlayer.cs" />
+     <Compile Include="Assets\Scripts\Player\HumanPlayer.cs" />
+     <Compile Include="Assets\Scripts\Player\Player.cs" />
+     <Compile Include="Assets\Scripts\Player\PlayerInput.cs" />
+     <Compile Include="Assets\Scripts\Player\PlayerStatus.cs" />
+     <Compile Include="Assets\Scripts\Player\Team.cs" />
+     <Compile Include="Assets\Scripts\Resources\Resource.cs" />
+     <Compile Include="Assets\Scripts\Resources\ResourceAmount.cs" />
+     <Compile Include="Assets\Scripts\Resources\ResourceNode.cs" />
+     <Compile Include="Assets\Scripts\Techs\Electricity.cs" />
+     <Compile Include="Assets\Scripts\Techs\Tech.cs" />
+     <Compile Include="Assets\Scripts\Units\AIAttacker.cs" />
+     <Compile Include="Assets\Scripts\Units\AIPathfinder.cs" />
+     <Compile Include="Assets\Scripts\Units\AIVision.cs" />
+     <Compile Include="Assets\Scripts\Units\CivilianControl.cs" />
+     <Compile Include="Assets\Scripts\Units\UnitControl.cs" />
+     <Compile Include="Assets\Scripts\Units\UnitStatus.cs" />
+     <Compile Include="Assets\Terrain\TerrainToolkit\TerrainToolkit.cs" />
+     <None Include="Assets\Editor\Pathfinding\EditorAssets\Materials\Navmesh2.shader" />
+     <None Include="Assets\Plugins\Pathfinding\AstarPathfindingProject\Readme_upgrading.txt" />
+     <None Include="Assets\Plugins\Pathfinding\AstarPathfindingProject\Plugins\DotNetZip\License.txt" />
+     <None Include="Assets\Plugins\Pathfinding\AstarPathfindingProject\ExampleScenes\Materials\Projector Multiply.shader" />
+     <None Include="Assets\Plugins\Pathfinding\AstarPathfindingProject\ExampleScenes\Materials\DiffuseAlwaysVisible.shader" />
+     <None Include="Assets\Editor\Pathfinding\EditorAssets\Materials\Navmesh.shader" />
+     <None Include="Assets\Plugins\Pathfinding\AstarPathfindingProject\Plugins\dependencies.txt" />
+     <None Include="Assets\Plugins\Pathfinding\AstarPathfindingProject\ExampleScenes\_Example Scenes.txt" />
+     <None Include="Assets\Plugins\FogOfWar\FogOfWar.shader" />
+     <None Include="Assets\Standard Assets\Water (Basic)\Sources\Shaders\FX-Water Simple.shader" />
+     <None Include="Assets\Plugins\Pathfinding\AstarPathfindingProject\ExampleScenes\Materials\Projector Light.shader" />
+     <None Include="Assets\Plugins\Pathfinding\AstarPathfindingProject\Readme.txt" />
+     <None Include="Assets\Plugins\Pathfinding\AstarPathfindingProject\link.xml" />
+     <None Include="Assets\Plugins\Pathfinding\AstarPathfindingProject\Plugins\JsonFx\License.txt" />
+     <None Include="Assets\Plugins\Pathfinding\AstarPathfindingProject\Plugins\JsonFx\Readme.txt" />
+     <None Include="Assets\Terrain\TerrainToolkit\Read me.txt" />
+ <Reference Include="Lidgren.Network">
+ <HintPath>Assets\Plugins\Lidgren.Network.dll</HintPath>
+ </Reference>
+ <Reference Include="Ionic.Zip.Reduced">
+ <HintPath>Assets\Plugins\Pathfinding\AstarPathfindingProject\Plugins\DotNetZip\Ionic.Zip.Reduced.dll</HintPath>
+ </Reference>
+ <Reference Include="JsonFx.Json">
+ <HintPath>Assets\Plugins\Pathfinding\AstarPathfindingProject\Plugins\JsonFx\JsonFx.Json.dll</HintPath>
+ </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="Assembly-CSharp-firstpass.csproj">
+      <Project>{349864FF-9986-8100-DF07-45DB4E6DCD8C}</Project>      <Name>Assembly-CSharp-firstpass</Name>    </ProjectReference>
+    <ProjectReference Include="Assembly-UnityScript-firstpass.unityproj">
+      <Project>{3874E668-2D4F-A6F3-4F7A-48CB32F2C0BA}</Project>      <Name>Assembly-UnityScript-firstpass</Name>    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+	   Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  
+</Project>
