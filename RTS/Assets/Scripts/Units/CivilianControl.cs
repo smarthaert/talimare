@@ -33,12 +33,10 @@ public class CivilianControl : UnitControl {
 	protected override void Update () {
 		base.Update();
 		
-		if(!Game.Paused) {
-			if(gatherTarget != null) {
-				UpdateGather();
-			} else if(buildTarget != null) {
-				UpdateBuild();
-			}
+		if(gatherTarget != null) {
+			UpdateGather();
+		} else if(buildTarget != null) {
+			UpdateBuild();
 		}
 		
 		if(queuedBuildTarget != null) {
@@ -54,7 +52,7 @@ public class CivilianControl : UnitControl {
 				// Timer's up, trigger gather from node if still in range
 				if(IsInGatherRange()) {
 					gatherTarget.Gather(gatherAmount);
-					player.playerStatus.GainResource(gatherTarget.resource, gatherAmount);
+					player.PlayerStatus.GainResource(gatherTarget.resource, gatherAmount);
 					gatherTimer = gatherTime;
 				}
 			}
@@ -108,7 +106,7 @@ public class CivilianControl : UnitControl {
 	public override void MouseAction(RaycastHit hit) {
 		base.MouseAction(hit);
 		
-		//TODO ! gather and build commands
+		//TODO queue gather and build actions
 		if(hit.collider.gameObject.CompareTag("Resource")) {
 			SendMessage("StopAllActions");
 			Gather(hit.collider.gameObject.GetComponent<ResourceNode>());

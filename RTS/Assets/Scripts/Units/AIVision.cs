@@ -163,9 +163,9 @@ public class AIVision : MonoBehaviour {
 	// Called when another collider enters this vision range
 	void OnTriggerEnter(Collider other) {
 		if(other.transform.root != this.transform.root) {
-			if(other.GetComponent<OwnedObjectControl>() != null && other.GetComponent<OwnedObjectControl>().player.team != ownedObject.player.team) {
-				// Object is an OwnedObject on another team
-				transform.root.gameObject.SendMessage("EnemyEnteredVision", other.gameObject);
+			if(other.GetComponent<OwnedObjectControl>() != null && other.GetComponent<OwnedObjectControl>().player != ownedObject.player) {
+				// Object is an OwnedObject owned by another player
+				transform.root.gameObject.SendMessage("ObjectEnteredVision", other.gameObject);
 			}
 		}
 	}
@@ -173,9 +173,9 @@ public class AIVision : MonoBehaviour {
 	// Called when another collider exits this vision range
 	void OnTriggerExit(Collider other) {
 		if(other.transform.root != this.transform.root) {
-			if(other.GetComponent<OwnedObjectControl>() != null && other.GetComponent<OwnedObjectControl>().player.team != ownedObject.player.team) {
-				// Object is an OwnedObject on another team
-				transform.root.gameObject.SendMessage("EnemyLeftVision", other.gameObject);
+			if(other.GetComponent<OwnedObjectControl>() != null && other.GetComponent<OwnedObjectControl>().player != ownedObject.player) {
+				// Object is an OwnedObject owned by another player
+				transform.root.gameObject.SendMessage("ObjectLeftVision", other.gameObject);
 			}
 		}
 	}

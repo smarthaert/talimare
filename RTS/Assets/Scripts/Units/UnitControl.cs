@@ -23,20 +23,22 @@ public class UnitControl : OwnedObjectControl {
 	
 	// Called when mouse action button is clicked on any object while this unit is selected
 	public override void MouseAction(RaycastHit hit) {
-		//TODO ! move and attack commands
 		if(hit.collider.GetType() == typeof(TerrainCollider)) {
-			CommandHandler.AddCommandFromLocal(new MoveCommand(OwnedObjectId, hit.point));
-		} else if(hit.collider.gameObject.CompareTag("Unit") && hit.collider.gameObject.GetComponent<OwnedObjectControl>() != null && 
-				hit.collider.gameObject.GetComponent<OwnedObjectControl>().player.team != Game.MyPlayer.team) {
-			CommandHandler.AddCommandFromLocal(new AttackCommand(OwnedObjectId, hit.collider.gameObject.GetComponent<OwnedObjectControl>().OwnedObjectId));
+			//CommandHandler.AddCommandFromLocal(new MoveCommand(OwnedObjectId, hit.point));
+			//TODO queue move action
+		} else if(hit.collider.gameObject.CompareTag("Unit") && hit.collider.gameObject.GetComponent<OwnedObjectControl>() != null
+				//TODO check player relationship
+				) {
+			//CommandHandler.AddCommandFromLocal(new AttackCommand(OwnedObjectId, hit.collider.gameObject.GetComponent<OwnedObjectControl>().OwnedObjectId));
+			//TODO queue attack action
 		}
 	}
 	
 	// Called when any key is pressed while this unit is selected
 	public override void KeyPressed() {
-		//TODO ! stop command
 		if(Input.GetKeyDown(KeyCode.S)) {
 			SendMessage("StopAllActions");
+			//TODO empty action queue
 		}
 	}
 	
@@ -56,13 +58,13 @@ public class UnitControl : OwnedObjectControl {
 		pathfinder.StopMoving();
 	}
 	
-	// Called when an enemy object moves into visual range
-	public virtual void EnemyEnteredVision(GameObject obj) {
+	// Called when another object moves into visual range
+	public virtual void ObjectEnteredVision(GameObject obj) {
 		
 	}
 	
-	// Called when an oenemy object moves out of visual range
-	public virtual void EnemyLeftVision(GameObject obj) {
+	// Called when another object moves out of visual range
+	public virtual void ObjectLeftVision(GameObject obj) {
 		
 	}
 }

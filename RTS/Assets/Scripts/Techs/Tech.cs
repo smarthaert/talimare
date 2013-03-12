@@ -6,7 +6,7 @@ public class Tech : MonoBehaviour {
 	
 	// Executes this tech, adding it to the tech list for the given player and performing any other changes
 	public virtual void Execute(Player player) {
-		player.playerStatus.techs.Add(this);
+		player.PlayerStatus.techs.Add(this);
 		Debug.Log(this+" research completed!");
 	}
 }

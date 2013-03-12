@@ -9,7 +9,7 @@ public class HUD : MonoBehaviour {
 	protected Rect resourceLevelsLocation;
 	
 	void Start() {
-		player = Game.MyPlayer;
+		player = Game.ThisPlayer;
 		resourceLevelsLocation = new Rect(5, Screen.height-170, 100, 100);
 	}
 	
@@ -23,11 +23,11 @@ public class HUD : MonoBehaviour {
 	
 	void RenderResourceLevels() {
 		int offset = 0;
-		foreach(KeyValuePair<Resource, int> resourceLevel in player.playerStatus.resourceLevels) {
+		foreach(KeyValuePair<Resource, int> resourceLevel in player.PlayerStatus.resourceLevels) {
 			Rect tempLocation = resourceLevelsLocation;
 			tempLocation.y += offset;
 			if(resourceLevel.Key == Resource.Food || resourceLevel.Key == Resource.Water || resourceLevel.Key == Resource.Power) {
-				int resourceUpkeepMaximum = player.playerStatus.upkeepMaximums[resourceLevel.Key];
+				int resourceUpkeepMaximum = player.PlayerStatus.upkeepMaximums[resourceLevel.Key];
 				int resourceAmountUsed = resourceUpkeepMaximum - resourceLevel.Value;
 				GUI.Label(tempLocation, resourceLevel.Key.ToString()+": "+resourceAmountUsed+" / "+resourceUpkeepMaximum.ToString());
 			} else {

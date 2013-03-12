@@ -18,7 +18,7 @@ public class Creatable : MonoBehaviour {
 		bool canCreate = true;
 		if(gameObject.CompareTag("Tech")) {
 			// Creatable is a tech, check to make sure the player hasn't already researched it
-			if(player.playerStatus.techs.Contains(GetComponent<Tech>())) {
+			if(player.PlayerStatus.techs.Contains(GetComponent<Tech>())) {
 				canCreate = false;
 				Debug.Log("Player has already researched this technology: "+GetComponent<Tech>());
 			}
@@ -26,14 +26,14 @@ public class Creatable : MonoBehaviour {
 		if(canCreate) {
 			// Can still create, so continue checking resource levels
 			foreach(ResourceAmount resourceCost in resourceCosts) {
-				if(player.playerStatus.resourceLevels[resourceCost.resource] < resourceCost.amount) {
+				if(player.PlayerStatus.resourceLevels[resourceCost.resource] < resourceCost.amount) {
 					canCreate = false;
-					Debug.Log("Player does not have the required resource amount. Resource: "+resourceCost.resource+", Amount: "+resourceCost.amount+". Player has: "+player.playerStatus.resourceLevels[resourceCost.resource]);
+					Debug.Log("Player does not have the required resource amount. Resource: "+resourceCost.resource+", Amount: "+resourceCost.amount+". Player has: "+player.PlayerStatus.resourceLevels[resourceCost.resource]);
 					//show some nice error message to the player here
 				}
 			}
 			foreach(Tech techDependency in techDependencies) {
-				if(!player.playerStatus.techs.Contains(techDependency)) {
+				if(!player.PlayerStatus.techs.Contains(techDependency)) {
 					canCreate = false;
 					Debug.Log("Player does not have the required technology: "+techDependency);
 				}
@@ -46,7 +46,7 @@ public class Creatable : MonoBehaviour {
 	// Note: this function is called before the Creatable is instantiated
 	public void SpendResources(Player player) {
 		foreach(ResourceAmount resourceCost in resourceCosts) {
-			player.playerStatus.SpendResource(resourceCost.resource, resourceCost.amount);
+			player.PlayerStatus.SpendResource(resourceCost.resource, resourceCost.amount);
 		}
 	}
 	
@@ -56,7 +56,7 @@ public class Creatable : MonoBehaviour {
 		// Capture a Creatable's upkeep resources when it is instantiated
 		foreach(ResourceAmount resourceCost in resourceCosts) {
 			if(resourceCost.IsUpkeepResource()) {
-				player.playerStatus.CaptureUpkeepResource(resourceCost.resource, resourceCost.amount, this.gameObject);
+				player.PlayerStatus.CaptureUpkeepResource(resourceCost.resource, resourceCost.amount, this.gameObject);
 			}
 		}
 	}
@@ -65,8 +65,8 @@ public class Creatable : MonoBehaviour {
 	void OnDestroy() {
 		foreach(ResourceAmount resourceCost in resourceCosts) {
 			if(resourceCost.IsUpkeepResource()) {
-				player.playerStatus.GainResource(resourceCost.resource, resourceCost.amount);
-				player.playerStatus.ReleaseUpkeepResource(resourceCost.resource, this.gameObject);
+				player.PlayerStatus.GainResource(resourceCost.resource, resourceCost.amount);
+				player.PlayerStatus.ReleaseUpkeepResource(resourceCost.resource, this.gameObject);
 			}
 		}
 	}
