@@ -7,14 +7,10 @@ using Pathfinding;
 [RequireComponent(typeof(AIAttacker))]
 public class BaseUnitControl : Controllable {
 	
-	protected AIPathfinder pathfinder;
-	protected AIAttacker attacker;
+	//TODO create a tech that upgrades civilian HP. figure out how to do this
 
 	protected override void Start() {
 		base.Start();
-		
-		pathfinder = GetComponent<AIPathfinder>();
-		attacker = GetComponent<AIAttacker>();
 	}
 	
 	protected override void Update() {
@@ -24,13 +20,12 @@ public class BaseUnitControl : Controllable {
 	// Called when mouse action button is clicked on any object while this unit is selected
 	public override void MouseAction(RaycastHit hit) {
 		if(hit.collider.GetType() == typeof(TerrainCollider)) {
-			AbortActionQueue();
-			actionQueue.Enqueue(new MoveAction(hit.point, pathfinder));
-		} else if(hit.collider.gameObject.CompareTag("Unit") && hit.collider.gameObject.GetComponent<Controllable>() != null
-				//TODO check player relationship
-				) {
-			//CommandHandler.AddCommandFromLocal(new AttackCommand(OwnedObjectId, hit.collider.gameObject.GetComponent<OwnedObjectControl>().OwnedObjectId));
-			//TODO queue attack action
+			ReplaceQueueWithAction(new MoveAction(this, hit.point));
+		} else if(hit.collider.gameObject.CompareTag("Unit")) {
+			Controllable targetControl = hit.collider.gameObject.GetComponent<Controllable>();
+			if(targetControl != null && owner != targetControl.owner && owner.relationships[targetControl.owner] == PlayerRelationship.HOSTILE) {
+				ReplaceQueueWithAction(new AttackAction(this, targetControl));
+			}
 		}
 	}
 	
@@ -39,16 +34,5 @@ public class BaseUnitControl : Controllable {
 		if(Input.GetKeyDown(KeyCode.S)) {
 			AbortActionQueue();
 		}
-	}
-	
-	public void DoAttack(GameObject gameObject) {
-		SendMessage("StopAllActions");
-		attacker.Attack(gameObject);
-	}
-	
-	// Stops all actions the unit is performing. Keep in mind that it's likely that one of the stopped actions will be resumed immediately
-	public virtual void StopAllActions() {
-		attacker.StopAttacking();
-		pathfinder.StopMoving();
 	}
 }

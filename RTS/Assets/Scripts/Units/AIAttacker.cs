@@ -25,11 +25,9 @@ public class AIAttacker : MonoBehaviour {
 	protected GameObject currentAttackTarget;
 	
 	protected AIPathfinder pathfinder;
-	protected BaseUnitControl unitControl;
 	
 	void Start() {
 		pathfinder = GetComponent<AIPathfinder>();
-		unitControl = GetComponent<BaseUnitControl>();
 	}
 	
 	void Update() {

@@ -122,8 +122,10 @@ public class FogOfWar : MonoBehaviour {
 		for (int i = 0; i < revealedVerts.Count; ++i) {
 			int vertIdxToDarken = revealedVerts[i];
 			
-			//TODO to optimize, we could keep a dictionary of verts with a list of non-moving aivisions that can see them
-			// then ignore verts in that dictionary to darken. that way non-moving aivisions wouldn't have to recalculate their vision every frame
+			/*
+			 * to optimize, we could keep a dictionary of verts with a list of non-moving aivisions that can see them
+			 * then ignore verts in that dictionary to darken. that way non-moving aivisions wouldn't have to recalculate their vision every frame
+			 */
 			
 			// Except don't darken a vert if it is supposed to be revealed right now
 			if(!verticesToReveal.Contains(vertIdxToDarken)) {

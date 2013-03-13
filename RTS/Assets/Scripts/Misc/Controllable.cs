@@ -1,14 +1,14 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-// Defines the behavior of a Selectable which can be controlled, i.e. issued actions. Is assumed to have or provide vision
+// Defines the behavior of a Selectable which can be controlled, i.e. issued actions
 public abstract class Controllable : Selectable {
 	
 	// This is the object's major reference point to its Player object, aka the object's owner
 	public Player owner;
 	
 	// A queue to hold all current actions this object is tasked complete
-	public Queue<Action> actionQueue = new Queue<Action>();
+	private Queue<Action> actionQueue = new Queue<Action>();
 	
 	protected override void Start() {
 		base.Start();
@@ -23,7 +23,7 @@ public abstract class Controllable : Selectable {
 		ProcessActionQueue();
 	}
 	
-	protected void ProcessActionQueue() {
+	private void ProcessActionQueue() {
 		if(actionQueue.Count > 0) {
 			Action topAction = actionQueue.Peek();
 			if(!topAction.IsStarted) {
@@ -34,6 +34,15 @@ public abstract class Controllable : Selectable {
 				actionQueue.Dequeue();
 			}
 		}
+	}
+	
+	public void AddActionToQueue(Action action) {
+		actionQueue.Enqueue(action);
+	}
+	
+	public void ReplaceQueueWithAction(Action action) {
+		AbortActionQueue();
+		actionQueue.Enqueue(action);
 	}
 	
 	public void AbortActionQueue() {
