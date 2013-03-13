@@ -2,7 +2,7 @@ using UnityEngine;
 using System;
 
 // Handles the status of a building being placed and built
-public class BuildProgress : OwnedObjectControl {
+public class BuildProgress : Controllable {
 	
 	public GameObject finishedObject;
 	
@@ -26,7 +26,7 @@ public class BuildProgress : OwnedObjectControl {
 		if(pathfinding == null)
 			pathfinding = GameObject.Find("Pathfinding").GetComponent<AstarPath>();
 		pathfinding.Scan();
-		creatable.SpendResources(player);
+		creatable.SpendResources(owner);
 	}
 	
 	// Called at regular intervals while this building is being built to advance its completion
@@ -44,7 +44,7 @@ public class BuildProgress : OwnedObjectControl {
 		if(completed != true) {
 			completed = true;
 			GameObject newBuilding = (GameObject)Instantiate(finishedObject, this.transform.position, this.transform.rotation);
-			newBuilding.GetComponent<OwnedObjectControl>().player = player;
+			newBuilding.GetComponent<Controllable>().owner = owner;
 			Destroy(this.gameObject);
 		}
 	}

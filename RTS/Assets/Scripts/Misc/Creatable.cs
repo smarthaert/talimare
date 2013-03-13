@@ -51,7 +51,7 @@ public class Creatable : MonoBehaviour {
 	}
 	
 	void Start() {
-		player = GetComponent<OwnedObjectControl>().player;
+		player = GetComponent<Controllable>().owner;
 		
 		// Capture a Creatable's upkeep resources when it is instantiated
 		foreach(ResourceAmount resourceCost in resourceCosts) {

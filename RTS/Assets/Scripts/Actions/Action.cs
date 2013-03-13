@@ -1,16 +1,23 @@
-using UnityEngine;
-using System.Collections;
-
 // The base class for all actions which can be completed by in-game entities
-public class Action : MonoBehaviour {
-
-	// Use this for initialization
-	void Start () {
+public abstract class Action {
 	
+	public bool IsStarted { get; set; }
+	
+	public Action() {
+		IsStarted = false;
+	}
+
+	public virtual void Start() {
+		IsStarted = true;
 	}
 	
-	// Update is called once per frame
-	void Update () {
+	public virtual void Update() {}
 	
+	public virtual void Finish() {
+		IsStarted = false;
+	}
+	
+	public virtual void Abort() {
+		IsStarted = false;
 	}
 }

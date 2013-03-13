@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class ResourceNode : SelectableControl {
+public class ResourceNode : Selectable {
 	
 	public Resource resource;
 	public int amount;
