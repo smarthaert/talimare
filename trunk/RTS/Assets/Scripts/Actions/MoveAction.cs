@@ -5,9 +5,9 @@ public class MoveAction : Action {
 	public Vector3 Destination { get; set; }
 	public AIPathfinder Pathfinder { get; set; }
 	
-	public MoveAction(Vector3 destination, AIPathfinder pathfinder) {
+	public MoveAction(Controllable actor, Vector3 destination) : base(actor) {
 		Destination = destination;
-		Pathfinder = pathfinder;
+		Pathfinder = Actor.GetComponent<AIPathfinder>();
 	}
 	
 	public override void Start() {

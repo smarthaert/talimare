@@ -2,9 +2,11 @@
 public abstract class Action {
 	
 	public bool IsStarted { get; set; }
+	public Controllable Actor { get; set; }
 	
-	public Action() {
+	public Action(Controllable actor) {
 		IsStarted = false;
+		Actor = actor;
 	}
 
 	public virtual void Start() {
