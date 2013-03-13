@@ -16,7 +16,7 @@ public class RTSGameObjects {
 		unit.AddComponent<AIPathfinder>();
 		unit.AddComponent<AIAttacker>();
 		unit.AddComponent<UnitStatus>();
-		unit.AddComponent<UnitControl>();
+		unit.AddComponent<BaseUnitControl>();
 		
 		AddVision(unit);
 		
@@ -31,7 +31,7 @@ public class RTSGameObjects {
 		building.layer = LayerMask.NameToLayer("Building");
 		building.transform.localScale = new Vector3(2, 2, 2);
 		building.AddComponent<Creatable>();
-		building.AddComponent<BuildingControl>();
+		building.AddComponent<BaseBuildingControl>();
 		building.AddComponent<BuildingStatus>();
 		
 		AddVision(building);

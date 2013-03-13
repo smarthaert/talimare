@@ -12,7 +12,7 @@ public class AIVision : MonoBehaviour {
 	
 	protected FogOfWar fogOfWarScript;
 	protected AIPathfinder pathfinder;
-	protected OwnedObjectControl ownedObject;
+	protected Controllable controllable;
 	
 	protected bool isUnit = false;
 	public bool IsHiddenByFog { get; set; }
@@ -41,24 +41,39 @@ public class AIVision : MonoBehaviour {
 			isUnit = true;
 		
 		GameObject fogOfWar = GameObject.Find("FogOfWar");
-		fogOfWarScript = fogOfWar.GetComponent<FogOfWar>();
+		if(fogOfWar != null)
+			fogOfWarScript = fogOfWar.GetComponent<FogOfWar>();
 		if(isUnit)
 			pathfinder = transform.root.gameObject.GetComponent<AIPathfinder>();
-		ownedObject = transform.root.gameObject.GetComponent<OwnedObjectControl>();
+		controllable = transform.root.gameObject.GetComponent<Controllable>();
+		ConfigureVisionSettings();
 		
 		fogLayerMask = 1 << LayerMask.NameToLayer("FogOfWar");
 		LOSLayerMask = 1 << LayerMask.NameToLayer("Terrain");
 		
 		circleStep = ((2*Mathf.PI) / visionRange) - 0.0001f;
 		
-		if(RevealsFog) {
+		if(RevealsFog && fogOfWarScript != null) {
 			IsHiddenByFog = false;
 			CalculateRevealPoints();
 		}
 	}
 	
+	// Configures this object's vision settings based on its owner
+	protected void ConfigureVisionSettings() {
+		if(controllable.owner == Game.ThisPlayer)
+			RevealsFog = true;
+		else
+			RevealsFog = false;
+		
+		if(transform.root.gameObject.CompareTag("Unit"))
+			HidesInFog = true;
+		else
+			HidesInFog = false;
+	}
+	
 	void Update() {
-		if(RevealsFog) {
+		if(RevealsFog && fogOfWarScript != null) {
 		//if(isUnit && revealsFog) {
 			// If this script is too inefficient, we can improve FogOfWar so that AIVisions don't need to recalculate vision while non-moving
 			//if(pathfinder.IsMoving()) {
@@ -163,7 +178,7 @@ public class AIVision : MonoBehaviour {
 	// Called when another collider enters this vision range
 	void OnTriggerEnter(Collider other) {
 		if(other.transform.root != this.transform.root) {
-			if(other.GetComponent<OwnedObjectControl>() != null && other.GetComponent<OwnedObjectControl>().player != ownedObject.player) {
+			if(other.GetComponent<Controllable>() != null && other.GetComponent<Controllable>().owner != controllable.owner) {
 				// Object is an OwnedObject owned by another player
 				transform.root.gameObject.SendMessage("ObjectEnteredVision", other.gameObject);
 			}
@@ -173,7 +188,7 @@ public class AIVision : MonoBehaviour {
 	// Called when another collider exits this vision range
 	void OnTriggerExit(Collider other) {
 		if(other.transform.root != this.transform.root) {
-			if(other.GetComponent<OwnedObjectControl>() != null && other.GetComponent<OwnedObjectControl>().player != ownedObject.player) {
+			if(other.GetComponent<Controllable>() != null && other.GetComponent<Controllable>().owner != controllable.owner) {
 				// Object is an OwnedObject owned by another player
 				transform.root.gameObject.SendMessage("ObjectLeftVision", other.gameObject);
 			}

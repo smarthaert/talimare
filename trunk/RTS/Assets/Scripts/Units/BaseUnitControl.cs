@@ -5,7 +5,7 @@ using Pathfinding;
 // Contains general unit utility functions
 [RequireComponent(typeof(AIPathfinder))]
 [RequireComponent(typeof(AIAttacker))]
-public class UnitControl : OwnedObjectControl {
+public class BaseUnitControl : Controllable {
 	
 	protected AIPathfinder pathfinder;
 	protected AIAttacker attacker;
@@ -24,9 +24,9 @@ public class UnitControl : OwnedObjectControl {
 	// Called when mouse action button is clicked on any object while this unit is selected
 	public override void MouseAction(RaycastHit hit) {
 		if(hit.collider.GetType() == typeof(TerrainCollider)) {
-			//CommandHandler.AddCommandFromLocal(new MoveCommand(OwnedObjectId, hit.point));
-			//TODO queue move action
-		} else if(hit.collider.gameObject.CompareTag("Unit") && hit.collider.gameObject.GetComponent<OwnedObjectControl>() != null
+			AbortActionQueue();
+			actionQueue.Enqueue(new MoveAction(hit.point, pathfinder));
+		} else if(hit.collider.gameObject.CompareTag("Unit") && hit.collider.gameObject.GetComponent<Controllable>() != null
 				//TODO check player relationship
 				) {
 			//CommandHandler.AddCommandFromLocal(new AttackCommand(OwnedObjectId, hit.collider.gameObject.GetComponent<OwnedObjectControl>().OwnedObjectId));
@@ -37,17 +37,11 @@ public class UnitControl : OwnedObjectControl {
 	// Called when any key is pressed while this unit is selected
 	public override void KeyPressed() {
 		if(Input.GetKeyDown(KeyCode.S)) {
-			SendMessage("StopAllActions");
-			//TODO empty action queue
+			AbortActionQueue();
 		}
 	}
 	
-	public void ExecuteMove(Vector3 target) {
-		SendMessage("StopAllActions");
-		pathfinder.Move(target);
-	}
-	
-	public void ExecuteAttack(GameObject gameObject) {
+	public void DoAttack(GameObject gameObject) {
 		SendMessage("StopAllActions");
 		attacker.Attack(gameObject);
 	}
@@ -56,15 +50,5 @@ public class UnitControl : OwnedObjectControl {
 	public virtual void StopAllActions() {
 		attacker.StopAttacking();
 		pathfinder.StopMoving();
-	}
-	
-	// Called when another object moves into visual range
-	public virtual void ObjectEnteredVision(GameObject obj) {
-		
-	}
-	
-	// Called when another object moves out of visual range
-	public virtual void ObjectLeftVision(GameObject obj) {
-		
 	}
 }

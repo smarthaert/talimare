@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-public class CivilianControl : UnitControl {
+public class CivilianControl : BaseUnitControl {
 	
 	// The amount this unit gathers each time gathering triggers on a resource node
 	public int gatherAmount;
@@ -52,7 +52,7 @@ public class CivilianControl : UnitControl {
 				// Timer's up, trigger gather from node if still in range
 				if(IsInGatherRange()) {
 					gatherTarget.Gather(gatherAmount);
-					player.PlayerStatus.GainResource(gatherTarget.resource, gatherAmount);
+					owner.PlayerStatus.GainResource(gatherTarget.resource, gatherAmount);
 					gatherTimer = gatherTime;
 				}
 			}
@@ -126,9 +126,9 @@ public class CivilianControl : UnitControl {
 			// See if pressed key exists in buildings and if so, queue the BuildProgress object for that building, and also give it a Player
 			foreach(Creatable building in buildings) {
 				if(Input.GetKeyDown(building.creationKey)) {
-					if(building.CanCreate(player)) {
+					if(building.CanCreate(owner)) {
 						queuedBuildTarget = ((GameObject)Instantiate(building.buildProgressObject.gameObject)).GetComponent<BuildProgress>();
-						queuedBuildTarget.player = player;
+						queuedBuildTarget.owner = owner;
 					}
 				}
 			}
@@ -147,7 +147,7 @@ public class CivilianControl : UnitControl {
 	
 	// Commits the currently queued building at the given position and begins building
 	protected void CommitQueuedBuilding(Vector3 position) {
-		if(queuedBuildTarget.creatable.CanCreate(player)) {
+		if(queuedBuildTarget.creatable.CanCreate(owner)) {
 			queuedBuildTarget.Commit();
 			Build(queuedBuildTarget);
 		}

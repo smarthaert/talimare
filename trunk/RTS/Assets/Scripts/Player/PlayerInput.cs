@@ -9,7 +9,7 @@ public class PlayerInput : MonoBehaviour {
 	
 	protected int clickLayerMask;
 	
-	protected SelectableControl currentSelection;
+	protected Selectable currentSelection;
 	protected AIVision currentSelectionVision;
 	protected GameObject currentMarker;
 	
@@ -26,8 +26,19 @@ public class PlayerInput : MonoBehaviour {
 				// Send any key pressed notifications to the currently selected object
 				if(Input.GetKeyDown(KeyCode.Escape)) {
 					DeselectCurrent();
-				} else if(Input.anyKeyDown && CurrentSelectionIsMine()) {
-					currentSelection.KeyPressed();
+				} else if(Input.anyKeyDown && CurrentSelectionIsMyControllable()) {
+					((Controllable)currentSelection).KeyPressed();
+				}
+				
+				// Handle mouse1 click (object action)
+				if(Input.GetMouseButtonDown(1) && CurrentSelectionIsMyControllable()) {
+					// Make sure the current selection is owned by this player
+					Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+					RaycastHit hit;
+					
+					if(Physics.Raycast(ray, out hit, Mathf.Infinity, clickLayerMask)) {
+						((Controllable)currentSelection).MouseAction(hit);
+					}
 				}
 			}
 		}
@@ -41,7 +52,7 @@ public class PlayerInput : MonoBehaviour {
 				// Note: this currently only works if the collider we hit is the same gameobject
 				// in the hierarchy as has the Selectable script attached
 				GameObject clickedObject = hit.collider.gameObject;
-				SelectableControl selectable = clickedObject.GetComponent<SelectableControl>();
+				Selectable selectable = clickedObject.GetComponent<Selectable>();
 				AIVision vision = clickedObject.GetComponentInChildren<AIVision>();
 				if(selectable != null && (vision == null || !vision.IsHiddenByFog)) {
 					if(selectable != currentSelection) {
@@ -54,21 +65,10 @@ public class PlayerInput : MonoBehaviour {
 				DeselectCurrent();
 			}
 		}
-		
-		// Handle mouse1 click (object action)
-		if(Input.GetMouseButtonDown(1) && currentSelection != null && CurrentSelectionIsMine()) {
-			// Make sure the current selection is owned by this player
-			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-			RaycastHit hit;
-			
-			if(Physics.Raycast(ray, out hit, Mathf.Infinity, clickLayerMask)) {
-				currentSelection.MouseAction(hit);
-			}
-		}
 	}
 	
 	// Selects the given object, adding a visual marker
-	void Select(SelectableControl selectable) {
+	void Select(Selectable selectable) {
 		DeselectCurrent();
 		currentSelection = selectable;
 		currentMarker = (GameObject)Instantiate(selectionMarker, currentSelection.gameObject.transform.position, Quaternion.identity);
@@ -89,7 +89,7 @@ public class PlayerInput : MonoBehaviour {
 		currentSelectionVision = null;
 	}
 	
-	protected bool CurrentSelectionIsMine() {
-		return (currentSelection.GetComponent<OwnedObjectControl>() != null && currentSelection.GetComponent<OwnedObjectControl>().player == Game.ThisPlayer);
+	protected bool CurrentSelectionIsMyControllable() {
+		return (currentSelection is Controllable && ((Controllable)currentSelection).owner == Game.ThisPlayer);
 	}
 }

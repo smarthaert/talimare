@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 
 // Contains general building utility functions
-public class BuildingControl : OwnedObjectControl {
+public class BaseBuildingControl : Controllable {
 	
 	// Units this building can train
 	public List<Creatable> units;
@@ -54,20 +54,20 @@ public class BuildingControl : OwnedObjectControl {
 		// See if pressed key exists in units or techs and if so, queue that Creatable
 		foreach(Creatable unit in units) {
 			if(Input.GetKeyDown(unit.creationKey)) {
-				if(unit.CanCreate(player)) {
-					unit.SpendResources(player);
+				if(unit.CanCreate(owner)) {
+					unit.SpendResources(owner);
 					unitQueue.Enqueue(unit);
 				}
 			}
 		}
 		foreach(Creatable tech in techs) {
 			if(Input.GetKeyDown(tech.creationKey)) {
-				if(!techQueue.Contains(tech) && tech.CanCreate(player)) {
-					tech.SpendResources(player);
+				if(!techQueue.Contains(tech) && tech.CanCreate(owner)) {
+					tech.SpendResources(owner);
 					techQueue.Enqueue(tech);
 				}
 			}
-			}
+		}
 	}
 	
 	// Complete a unit, instantiating it at a proper location, assigning it a Player, and giving it a rally point if necessary
@@ -75,7 +75,7 @@ public class BuildingControl : OwnedObjectControl {
 		Creatable unit = unitQueue.Dequeue();
 		float distance = this.collider.bounds.size.magnitude + unit.gameObject.collider.bounds.size.magnitude;
 		GameObject newUnit = (GameObject)Instantiate(unit.gameObject, transform.position + (transform.right * distance), Quaternion.identity);
-		newUnit.GetComponent<OwnedObjectControl>().player = player;
+		newUnit.GetComponent<Controllable>().owner = owner;
 		if(rallyPoint != null) {
 			newUnit.GetComponent<AIPathfinder>().Move(rallyPoint);
 		}
@@ -85,16 +85,6 @@ public class BuildingControl : OwnedObjectControl {
 	// Complete a tech, adding it to the player's tech list and running
 	void CompleteTech() {
 		Tech tech = techQueue.Dequeue().GetComponent<Tech>();
-		tech.Execute(player);
-	}
-	
-	// Called when another object moves into visual range
-	public virtual void ObjectEnteredVision(GameObject obj) {
-		
-	}
-	
-	// Called when another object moves out of visual range
-	public virtual void ObjectLeftVision(GameObject obj) {
-		
+		tech.Execute(owner);
 	}
 }

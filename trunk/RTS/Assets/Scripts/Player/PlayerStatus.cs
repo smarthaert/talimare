@@ -58,12 +58,14 @@ public class PlayerStatus : MonoBehaviour {
 			resourceLevels.Add((Resource)resource, (int)this.GetType().GetField(resource.ToString().ToLower()).GetValue(this));
 			capturedUpkeepResources.Add((Resource)resource, new Dictionary<UnityEngine.Object, int>());
 		}
-		
+	}
+	
+	void Start() {
 		// Find all Creatables that currently exist and spend their upkeep resources.
 		// (This needs to be done since Creatables that exist when the game starts were never queued,
 		// and thus were never spent for)
 		foreach(Creatable creatable in FindObjectsOfType(typeof(Creatable)).Cast<Creatable>()) {
-			if(creatable.gameObject.GetComponent<OwnedObjectControl>().player == player) {
+			if(creatable.gameObject.GetComponent<Controllable>().owner == player) {
 				foreach(ResourceAmount resourceCost in creatable.resourceCosts) {
 					if(resourceCost.IsUpkeepResource()) {
 						SpendResource(resourceCost.resource, resourceCost.amount);
