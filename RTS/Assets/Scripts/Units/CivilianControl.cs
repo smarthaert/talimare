@@ -7,6 +7,7 @@ public class CivilianControl : BaseUnitControl {
 	
 	// Buildings this unit can build
 	public List<Creatable> buildings;
+	//TODO ! make building templates like unit templates
 	
 	protected bool buildMenuOpen = false;
 	protected BuildProgress queuedBuildTarget;
@@ -52,7 +53,7 @@ public class CivilianControl : BaseUnitControl {
 			// See if pressed key exists in buildings and if so, queue the BuildProgress object for that building, and also give it a Player
 			foreach(Creatable building in buildings) {
 				if(Input.GetKeyDown(building.creationKey)) {
-					if(building.CanCreate(owner)) {
+					if(building.CanCreate()) {
 						queuedBuildTarget = ((GameObject)Instantiate(building.buildProgressObject.gameObject)).GetComponent<BuildProgress>();
 						queuedBuildTarget.owner = owner;
 					}
@@ -80,7 +81,7 @@ public class CivilianControl : BaseUnitControl {
 	
 	// Commits the currently queued building at the given position and begins building
 	protected void CommitQueuedBuilding(Vector3 position) {
-		if(queuedBuildTarget.creatable.CanCreate(owner)) {
+		if(queuedBuildTarget.creatable.CanCreate()) {
 			queuedBuildTarget.Commit();
 			//TODO build action
 			//Build(queuedBuildTarget);
