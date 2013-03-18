@@ -6,8 +6,6 @@ using Pathfinding;
 [RequireComponent(typeof(AIPathfinder))]
 [RequireComponent(typeof(AIAttacker))]
 public class BaseUnitControl : Controllable {
-	
-	//TODO create a tech that upgrades civilian HP. figure out how to do this
 
 	protected override void Start() {
 		base.Start();

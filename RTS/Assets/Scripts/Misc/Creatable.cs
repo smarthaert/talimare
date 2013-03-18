@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-// Defines values for a Creatable object (unit, tech, or building)
+// Defines values for a Creatable object (unit, building, or tech)
 public class Creatable : MonoBehaviour {
 	
 	public KeyCode creationKey;
@@ -12,12 +12,11 @@ public class Creatable : MonoBehaviour {
 	
 	// Returns whether or not the given player meets all requirements to create this object.
 	// Note: this function is called before the Creatable is instantiated
-	public bool CanCreate() {
-		Player owner = GetComponent<Controllable>().owner;
+	public bool CanCreate(Player player) {
 		bool canCreate = true;
 		if(gameObject.CompareTag("Tech")) {
 			// Creatable is a tech, check to make sure the player hasn't already researched it
-			if(owner.PlayerStatus.techs.Contains(GetComponent<Tech>())) {
+			if(player.PlayerStatus.techs.Contains(GetComponent<Tech>())) {
 				canCreate = false;
 				Debug.Log("Player has already researched this technology: "+GetComponent<Tech>());
 			}
@@ -25,14 +24,14 @@ public class Creatable : MonoBehaviour {
 		if(canCreate) {
 			// Can still create, so continue checking resource levels
 			foreach(ResourceAmount resourceCost in resourceCosts) {
-				if(owner.PlayerStatus.resourceLevels[resourceCost.resource] < resourceCost.amount) {
+				if(player.PlayerStatus.resourceLevels[resourceCost.resource] < resourceCost.amount) {
 					canCreate = false;
-					Debug.Log("Player does not have the required resource amount. Resource: "+resourceCost.resource+", Amount: "+resourceCost.amount+". Player has: "+owner.PlayerStatus.resourceLevels[resourceCost.resource]);
+					Debug.Log("Player does not have the required resource amount. Resource: "+resourceCost.resource+", Amount: "+resourceCost.amount+". Player has: "+player.PlayerStatus.resourceLevels[resourceCost.resource]);
 					//show some nice error message to the player here
 				}
 			}
 			foreach(Tech techDependency in techDependencies) {
-				if(!owner.PlayerStatus.techs.Contains(techDependency)) {
+				if(!player.PlayerStatus.techs.Contains(techDependency)) {
 					canCreate = false;
 					Debug.Log("Player does not have the required technology: "+techDependency);
 				}
@@ -43,9 +42,9 @@ public class Creatable : MonoBehaviour {
 	
 	// Spends the resources required to create this object
 	// Note: this function is called before the Creatable is instantiated
-	public void SpendResources() {
+	public void SpendResources(Player player) {
 		foreach(ResourceAmount resourceCost in resourceCosts) {
-			GetComponent<Controllable>().owner.PlayerStatus.SpendResource(resourceCost.resource, resourceCost.amount);
+			player.PlayerStatus.SpendResource(resourceCost.resource, resourceCost.amount);
 		}
 	}
 	

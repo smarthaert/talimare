@@ -7,6 +7,9 @@ public abstract class Controllable : Selectable {
 	// This is the object's major reference point to its Player object, aka the object's owner
 	public Player owner;
 	
+	// A list of Techs which apply to this object when they are gained
+	public List<Tech> applicableTechs;
+	
 	// A queue to hold all current actions this object is tasked complete
 	private Queue<Action> actionQueue = new Queue<Action>();
 	

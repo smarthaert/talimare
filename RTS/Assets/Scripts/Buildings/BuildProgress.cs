@@ -26,7 +26,7 @@ public class BuildProgress : Controllable {
 		if(pathfinding == null)
 			pathfinding = GameObject.Find("Pathfinding").GetComponent<AstarPath>();
 		pathfinding.Scan();
-		creatable.SpendResources();
+		creatable.SpendResources(owner);
 	}
 	
 	// Called at regular intervals while this building is being built to advance its completion

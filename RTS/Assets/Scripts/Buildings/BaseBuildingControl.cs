@@ -20,23 +20,6 @@ public class BaseBuildingControl : Controllable {
 	
 	protected override void Start() {
 		base.Start();
-		
-		//TODO set the owner of all units and techs and buildings to this owner
-		
-		units = units.ConvertAll<Creatable>(MakePrefabRuntimeCopy); //TODO !! this doesn't work with multiple starting buildings (each building cloned from the same prefab needs to reference the same unit templates)
-																	//for every creatable: is there a template for me yet? if so, replace my reference to that one. if not, create a template for me
-	}
-	
-	// Used to create a copy of a prefab at runtime so that we can modify its values without modifying the underlying prefab asset.
-	// (For units, this copy is called the Unit Template. This Template is cloned to create individual units, so when a unit needs
-	// to be changed [upgraded, etc.] the Template can be changed and all new instances of that unit will receive the changes. Note
-	// that existing units which were cloned from the Template will not be automatically updated.)
-	protected Creatable MakePrefabRuntimeCopy(Creatable creatable) {
-		GameObject copy = (GameObject)Instantiate(creatable.gameObject);
-		copy.name = creatable.gameObject.name;
-		copy.GetComponent<Controllable>().owner = owner;
-		copy.SetActive(false);
-		return copy.GetComponent<Creatable>();
 	}
 	
 	protected override void Update() {
@@ -71,30 +54,27 @@ public class BaseBuildingControl : Controllable {
 		// See if pressed key exists in units or techs and if so, queue that Creatable
 		foreach(Creatable unit in units) {
 			if(Input.GetKeyDown(unit.creationKey)) {
-				if(unit.CanCreate()) {
-					unit.SpendResources();
+				if(unit.CanCreate(owner)) {
+					unit.SpendResources(owner);
 					unitQueue.Enqueue(unit);
 				}
 			}
 		}
 		foreach(Creatable tech in techs) {
 			if(Input.GetKeyDown(tech.creationKey)) {
-				if(!techQueue.Contains(tech) && tech.CanCreate()) {
-					tech.SpendResources();
+				if(!techQueue.Contains(tech) && tech.CanCreate(owner)) {
+					tech.SpendResources(owner);
 					techQueue.Enqueue(tech);
 				}
 			}
 		}
 	}
 	
-	// Complete a unit, instantiating it at a proper location, assigning it a Player, and giving it a rally point if necessary
+	// Complete a unit, instantiating it at a proper location, and giving it a rally point if necessary
 	void CompleteUnit() {
 		Creatable unit = unitQueue.Dequeue();
-		float distance = this.collider.bounds.size.magnitude + unit.gameObject.collider.bounds.size.magnitude;
-		GameObject newUnit = (GameObject)Instantiate(unit.gameObject, transform.position + (transform.right * distance), Quaternion.identity);
-		newUnit.name = unit.gameObject.name;
-		unit.GetComponent<UnitStatus>().maxHP = unit.GetComponent<UnitStatus>().maxHP + 2;
-		newUnit.SetActive(true);
+		float distance = collider.bounds.size.magnitude + unit.gameObject.collider.bounds.size.magnitude;
+		GameObject newUnit = Game.Instantiate(unit.GetComponent<Controllable>(), gameObject.GetComponent<Controllable>().owner, transform.position + (transform.right * distance));
 		if(rallyPoint != null) {
 			newUnit.GetComponent<AIPathfinder>().Move(rallyPoint);
 		}
@@ -104,6 +84,6 @@ public class BaseBuildingControl : Controllable {
 	// Complete a tech, adding it to the player's tech list and running
 	void CompleteTech() {
 		Tech tech = techQueue.Dequeue().GetComponent<Tech>();
-		tech.Execute(owner);
+		tech.AddTechForPlayer(owner);
 	}
 }
