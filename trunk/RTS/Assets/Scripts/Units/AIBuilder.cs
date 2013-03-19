@@ -6,7 +6,7 @@ using System.Collections.Generic;
 public class AIBuilder : MonoBehaviour {
 	
 	// The building this unit is currently building
-	protected BuildProgress buildTarget;
+	protected BuildProgressControl buildTarget;
 	protected bool hasStartedBuilding = false;
 	
 	protected AIPathfinder pathfinder;
@@ -40,7 +40,7 @@ public class AIBuilder : MonoBehaviour {
 	}
 	
 	// Sets this unit to build the given building
-	public void Build(BuildProgress buildProgress) {
+	public void Build(BuildProgressControl buildProgress) {
 		if(buildProgress != buildTarget) {
 			buildTarget = buildProgress;
 		}

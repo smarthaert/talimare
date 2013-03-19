@@ -9,7 +9,7 @@ public class CivilianControl : BaseUnitControl {
 	public List<Creatable> buildings;
 	
 	protected bool buildMenuOpen = false;
-	protected BuildProgress queuedBuildTarget;
+	protected BuildProgressControl queuedBuildTarget;
 	
 	protected static int? terrainLayer;
 
@@ -49,12 +49,12 @@ public class CivilianControl : BaseUnitControl {
 	public override void KeyPressed() {
 		base.KeyPressed();
 		if(buildMenuOpen) {
-			// See if pressed key exists in buildings and if so, queue the BuildProgress object for that building, and also give it a Player
+			// See if pressed key exists in buildings and if so, queue the BuildProgress object for that building
 			foreach(Creatable building in buildings) {
 				if(Input.GetKeyDown(building.creationKey)) {
 					if(building.CanCreate(owner)) {
-						queuedBuildTarget = ((GameObject)Instantiate(building.buildProgressObject.gameObject)).GetComponent<BuildProgress>();
-						queuedBuildTarget.owner = owner;
+						queuedBuildTarget = (Game.InstantiateControllable(building.buildProgressObject, owner, Vector3.zero)).GetComponent<BuildProgressControl>();
+						queuedBuildTarget.name = building.gameObject.name;
 					}
 				}
 			}
@@ -64,6 +64,7 @@ public class CivilianControl : BaseUnitControl {
 	}
 	
 	//TODO move all this queued building stuff out of this control
+	//TODO turn on some grid while placing buildings
 	
 	// Moves the queued building to where the mouse hits the ground
 	protected void DrawQueuedBuildingAtMouse() {
