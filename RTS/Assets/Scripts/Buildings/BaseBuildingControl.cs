@@ -74,7 +74,7 @@ public class BaseBuildingControl : Controllable {
 	void CompleteUnit() {
 		Creatable unit = unitQueue.Dequeue();
 		float distance = collider.bounds.size.magnitude + unit.gameObject.collider.bounds.size.magnitude;
-		GameObject newUnit = Game.Instantiate(unit.GetComponent<Controllable>(), gameObject.GetComponent<Controllable>().owner, transform.position + (transform.right * distance));
+		GameObject newUnit = Game.InstantiateControllable(unit.GetComponent<Controllable>(), gameObject.GetComponent<Controllable>().owner, transform.position + (transform.right * distance));
 		if(rallyPoint != null) {
 			newUnit.GetComponent<AIPathfinder>().Move(rallyPoint);
 		}

@@ -2,7 +2,8 @@ using UnityEngine;
 using System;
 
 // Handles the status of a building being placed and built
-public class BuildProgress : Controllable {
+[RequireComponent(typeof(BuildingStatus))]
+public class BuildProgressControl : Controllable {
 	
 	public GameObject finishedObject;
 	
@@ -19,6 +20,8 @@ public class BuildProgress : Controllable {
 		base.Start();
 		
 		creatable = finishedObject.GetComponent<Creatable>();
+		
+		gameObject.GetComponent<BuildingStatus>().maxHP = finishedObject.GetComponent<BuildingStatus>().maxHP;
 	}
 	
 	// Called when this building is committed (goes from a queued/placement state to actually being in the world)
@@ -31,6 +34,7 @@ public class BuildProgress : Controllable {
 	
 	// Called at regular intervals while this building is being built to advance its completion
 	public void Building(float timeSpent) {
+		//TODO increase buildprogress's HP as it's built
 		timeSpentCreating += timeSpent;
 		Mathf.Clamp(timeSpentCreating, 0, creatable.creationTime);
 		if(timeSpentCreating >= creatable.creationTime) {

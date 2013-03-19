@@ -8,7 +8,7 @@ public class Creatable : MonoBehaviour {
 	public float creationTime;
 	public List<ResourceAmount> resourceCosts;
 	public List<Tech> techDependencies;
-	public BuildProgress buildProgressObject;
+	public BuildProgressControl buildProgressObject;
 	
 	// Returns whether or not the given player meets all requirements to create this object.
 	// Note: this function is called before the Creatable is instantiated
