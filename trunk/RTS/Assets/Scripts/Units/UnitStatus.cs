@@ -19,7 +19,7 @@ public class UnitStatus : MonoBehaviour {
 		hpText.text = currentHP.ToString();
 	}
 	
-	public int getCurrentHP() {
+	public int GetCurrentHP() {
 		return currentHP;
 	}
 	

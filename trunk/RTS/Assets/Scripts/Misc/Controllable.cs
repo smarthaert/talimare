@@ -39,12 +39,11 @@ public abstract class Controllable : Selectable {
 		}
 	}
 	
-	public void AddActionToQueue(Action action) {
-		actionQueue.Enqueue(action);
-	}
-	
-	public void ReplaceQueueWithAction(Action action) {
-		AbortActionQueue();
+	// Adds the given action to the action queue. If appendToQueue is false, the entire queue is aborted and the new action will be the only one remaining
+	public void AddAction(Action action, bool appendToQueue) {
+		if(!appendToQueue) {
+			AbortActionQueue();
+		}
 		actionQueue.Enqueue(action);
 	}
 	
@@ -55,6 +54,11 @@ public abstract class Controllable : Selectable {
 				abortedAction.Abort();
 			}
 		}
+	}
+	
+	// Returns whether or not the multi-key is pressed (default shift, or the key that allows you to operate on multiple things at once)
+	public bool IsMultiKeyPressed() {
+		return Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
 	}
 	
 	// Called when mouse action button is clicked on any object while this Controllable is selected
