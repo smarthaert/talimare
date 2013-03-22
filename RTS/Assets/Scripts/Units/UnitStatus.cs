@@ -4,7 +4,7 @@ using System.Collections;
 // Keeps information about a unit's current status
 public class UnitStatus : MonoBehaviour {
 	
-	public int maxHP = 0;
+	public int maxHP;
 	protected int currentHP;
 	
 	protected TextMesh hpText;
@@ -23,10 +23,13 @@ public class UnitStatus : MonoBehaviour {
 		return currentHP;
 	}
 	
+	public void SetCurrentHP(int amount) {
+		currentHP = amount;
+	}
+	
 	public void Damage(int amount) {
 		currentHP -= amount;
 		Mathf.Clamp(currentHP, 0, maxHP);
-		Debug.Log(this+" took damage. currentHP: "+currentHP);
 		if(currentHP <= 0) {
 			Die();
 		}

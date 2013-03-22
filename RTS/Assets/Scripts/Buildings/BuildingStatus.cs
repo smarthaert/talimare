@@ -6,17 +6,25 @@ public class BuildingStatus : MonoBehaviour {
 	
 	public int maxHP;
 	protected int currentHP;
+	
+	protected TextMesh hpText;
 
 	void Start () {
 		currentHP = maxHP;
+		
+		hpText = GetComponentInChildren<TextMesh>();
 	}
 	
 	void Update () {
-		
+		hpText.text = currentHP.ToString();
 	}
 	
-	public int getCurrentHP() {
+	public int GetCurrentHP() {
 		return currentHP;
+	}
+	
+	public void SetCurrentHP(int amount) {
+		currentHP = amount;
 	}
 	
 	public void Damage(int amount) {
@@ -33,6 +41,6 @@ public class BuildingStatus : MonoBehaviour {
 	}
 	
 	protected void Die() {
-		Destroy(this);
+		Destroy(this.gameObject);
 	}
 }
