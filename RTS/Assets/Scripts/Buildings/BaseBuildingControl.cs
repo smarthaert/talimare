@@ -85,5 +85,6 @@ public class BaseBuildingControl : Controllable {
 	void CompleteTech() {
 		Tech tech = techQueue.Dequeue().GetComponent<Tech>();
 		tech.AddTechForPlayer(owner);
+		techTimer = 0;
 	}
 }

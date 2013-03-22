@@ -5,7 +5,7 @@ using System;
 [RequireComponent(typeof(BuildingStatus))]
 public class BuildProgressControl : Controllable {
 	
-	public GameObject finishedObject;
+	public Controllable finishedObject;
 	
 	protected static AstarPath pathfinding;
 	[NonSerialized]
@@ -47,8 +47,7 @@ public class BuildProgressControl : Controllable {
 		// If multiple civs are building this, there's a chance that Complete gets called more than once
 		if(completed != true) {
 			completed = true;
-			GameObject newBuilding = (GameObject)Instantiate(finishedObject, this.transform.position, this.transform.rotation);
-			newBuilding.GetComponent<Controllable>().owner = owner;
+			Game.InstantiateControllable(finishedObject, owner, this.transform.position); //might also need to pass this.transform.rotation
 			Destroy(this.gameObject);
 		}
 	}

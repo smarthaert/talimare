@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-// Root class for all tech scripts. Note: Even though this is a MonoBehaviour, this class is never instantiated
+// Root class for all tech scripts. Note: even though this script derives from MonoBahaviour, it is never actually instantiated
 public class Tech : MonoBehaviour {
 	
 	// Adds this tech to the given Player's tech list and calls ApplyTech for all existing instances of affected objects
