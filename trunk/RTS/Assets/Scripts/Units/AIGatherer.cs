@@ -66,7 +66,7 @@ public class AIGatherer : MonoBehaviour {
 	}
 	
 	public bool IsGathering() {
-		return gatherTarget = null;
+		return gatherTarget != null;
 	}
 	
 	protected bool IsInGatherRange() {

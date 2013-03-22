@@ -7,14 +7,15 @@ public class PlayerInput : MonoBehaviour {
 	// A visual marker for the current selection
 	public GameObject selectionMarker;
 	
-	protected int clickLayerMask;
+	protected int ClickLayerMask { get; set; }
 	
 	protected Selectable currentSelection;
 	protected AIVision currentSelectionVision;
 	protected GameObject currentMarker;
+	public bool DeselectDisabled { get; set; }
 	
 	void Start () {
-		clickLayerMask = ~((1 << LayerMask.NameToLayer("FogOfWar")) + (1 << LayerMask.NameToLayer("Ignore Raycast")));
+		ClickLayerMask = ~((1 << LayerMask.NameToLayer("FogOfWar")) + (1 << LayerMask.NameToLayer("Ignore Raycast")));
 	}
 	
 	void Update () {
@@ -24,7 +25,7 @@ public class PlayerInput : MonoBehaviour {
 				DeselectCurrent();
 			} else {
 				// Send any key pressed notifications to the currently selected object
-				if(Input.GetKeyDown(KeyCode.Escape)) {
+				if(!DeselectDisabled && Input.GetKeyDown(KeyCode.Escape)) {
 					DeselectCurrent();
 				} else if(Input.anyKeyDown && CurrentSelectionIsMyControllable()) {
 					((Controllable)currentSelection).KeyPressed();
@@ -36,7 +37,7 @@ public class PlayerInput : MonoBehaviour {
 					Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 					RaycastHit hit;
 					
-					if(Physics.Raycast(ray, out hit, Mathf.Infinity, clickLayerMask)) {
+					if(Physics.Raycast(ray, out hit, Mathf.Infinity, ClickLayerMask)) {
 						((Controllable)currentSelection).MouseAction(hit);
 					}
 				}
@@ -48,7 +49,7 @@ public class PlayerInput : MonoBehaviour {
 			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 			RaycastHit hit;
 			
-			if(Physics.Raycast(ray, out hit, Mathf.Infinity, clickLayerMask)) {
+			if(Physics.Raycast(ray, out hit, Mathf.Infinity, ClickLayerMask)) {
 				// Note: this currently only works if the collider we hit is the same gameobject
 				// in the hierarchy as has the Selectable script attached
 				GameObject clickedObject = hit.collider.gameObject;
@@ -73,8 +74,11 @@ public class PlayerInput : MonoBehaviour {
 		currentSelection = selectable;
 		currentMarker = (GameObject)Instantiate(selectionMarker, currentSelection.gameObject.transform.position, Quaternion.identity);
 		currentMarker.transform.parent = currentSelection.gameObject.transform;
+		
 		currentSelection.Selected();
 		currentSelectionVision = currentSelection.GetComponentInChildren<AIVision>();
+		
+		DeselectDisabled = false;
 	}
 	
 	// Deselects the currently selected object
@@ -87,6 +91,8 @@ public class PlayerInput : MonoBehaviour {
 			currentSelection.Deselected();
 		currentSelection = null;
 		currentSelectionVision = null;
+		
+		DeselectDisabled = false;
 	}
 	
 	protected bool CurrentSelectionIsMyControllable() {

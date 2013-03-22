@@ -7,11 +7,15 @@ public class Game : MonoBehaviour {
 	// The human player controlled by this instance of the game
 	public static Player ThisPlayer { get; set; }
 	
+	// A reference to the PlayerInput component in case any other scripts need it
+	public static PlayerInput PlayerInput { get; set; }
+	
 	// Set of all players
 	protected static HashSet<Player> players = new HashSet<Player>();
 	
 	void Awake() {
 		ThisPlayer = (Player)GameObject.FindSceneObjectsOfType(typeof(HumanPlayer))[0];
+		PlayerInput = GetComponent<PlayerInput>();
 	}
 	
 	// Adds a player to the game

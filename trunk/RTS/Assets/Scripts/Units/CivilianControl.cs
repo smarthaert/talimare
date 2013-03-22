@@ -45,30 +45,31 @@ public class CivilianControl : BaseUnitControl {
 	public override void KeyPressed() {
 		base.KeyPressed();
 		
-		if(queuedBuildTarget != null && Input.GetKeyDown(KeyCode.Escape)) {
-			Destroy(queuedBuildTarget.gameObject);
-			queuedBuildTarget = null;
-		} else if(buildMenuOpen) {
-			// See if pressed key exists in buildings and if so, queue the BuildProgress object for that building
-			foreach(Creatable building in buildings) {
-				if(Input.GetKeyDown(building.creationKey)) {
-					if(building.CanCreate(owner)) {
+		if(queuedBuildTarget != null) {
+			if(Input.GetKeyDown(KeyCode.Escape)) {
+				RemoveQueuedBuildTarget(true);
+			}
+		} else {
+			if(buildMenuOpen) {
+				// See if pressed key exists in buildings and if so, queue the BuildProgress object for that building
+				foreach(Creatable building in buildings) {
+					if(Input.GetKeyDown(building.creationKey) && building.CanCreate(owner)) {
 						InstantiateBuildProgress(building);
 					}
 				}
+			} else if(Input.GetKeyDown(KeyCode.B)) {
+				buildMenuOpen = true;
 			}
-		} else if(Input.GetKeyDown(KeyCode.B)) {
-			buildMenuOpen = true;
 		}
 	}
 	
 	protected void InstantiateBuildProgress(Creatable building) {
 		queuedBuildTarget = (Game.InstantiateControllable(building.buildProgressObject, owner, Vector3.zero)).GetComponent<BuildProgressControl>();
 		queuedBuildTarget.name = building.gameObject.name+" (in progress)";
+		Game.PlayerInput.DeselectDisabled = true;
 	}
 	
-	//TODO move all this queued building stuff out of this control
-	//TODO turn on some grid while placing buildings
+	//TODO turn on some grid while placing buildings?
 	
 	// Moves the queued building to where the mouse hits the ground
 	protected void DrawQueuedBuildingAtMouse() {
@@ -88,14 +89,14 @@ public class CivilianControl : BaseUnitControl {
 	
 	// Commits the currently queued building at its current position and begins building
 	protected void CommitQueuedBuilding() {
-		if(queuedBuildTarget.creatable.CanCreate(owner)) {
+		if(queuedBuildTarget.Creatable.CanCreate(owner)) {
 			queuedBuildTarget.Commit(); //TODO commiting multiple queued buildings is clearing the action queue
 			AddAction(new BuildAction(this, queuedBuildTarget), IsMultiKeyPressed());
 		}
-		if(IsMultiKeyPressed() && queuedBuildTarget.creatable.CanCreate(owner)) {
-			InstantiateBuildProgress(queuedBuildTarget.creatable);
+		if(IsMultiKeyPressed() && queuedBuildTarget.Creatable.CanCreate(owner)) {
+			InstantiateBuildProgress(queuedBuildTarget.Creatable);
 		} else {
-			queuedBuildTarget = null;
+			RemoveQueuedBuildTarget(false);
 		}
 	}
 	
@@ -103,8 +104,17 @@ public class CivilianControl : BaseUnitControl {
 	public override void Deselected() {
 		buildMenuOpen = false;
 		if(queuedBuildTarget != null) {
+			RemoveQueuedBuildTarget(true);
+		}
+	}
+	
+	// Removes the currently queued build target reference. If true is passed, the target will be completely destroyed
+	protected void RemoveQueuedBuildTarget(bool andDestroyIt) {
+		if(andDestroyIt) {
 			Destroy(queuedBuildTarget.gameObject);
+		} else {
 			queuedBuildTarget = null;
 		}
+		Game.PlayerInput.DeselectDisabled = false;
 	}
 }

@@ -52,7 +52,7 @@ public class AIBuilder : MonoBehaviour {
 	}
 	
 	public bool IsBuilding() {
-		return buildTarget == null;
+		return buildTarget != null;
 	}
 	
 	protected bool IsInBuildRange() {
