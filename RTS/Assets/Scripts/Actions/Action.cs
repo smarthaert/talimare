@@ -1,25 +1,26 @@
-// The base class for all actions which can be completed by in-game entities
-public abstract class Action {
+// This class is used to link ActionScripts with targets, and to queue those links inside Controllables
+public class Action {
 	
+	public ActionScript ActionScript { get; set; }
+	public object Target { get; set; }
 	public bool IsStarted { get; set; }
-	public Controllable Actor { get; set; }
 	
-	public Action(Controllable actor) {
+	public Action(ActionScript actionScript, object target) {
+		ActionScript = actionScript;
+		Target = target;
 		IsStarted = false;
-		Actor = actor;
 	}
 
-	public virtual void Start() {
+	public void Start() {
+		ActionScript.StartAction(Target);
 		IsStarted = true;
 	}
 	
-	public virtual void Update() {}
-	
-	public virtual void Finish() {
-		IsStarted = false;
+	public bool IsRunning() {
+		return ActionScript.IsActing();
 	}
 	
-	public virtual void Abort() {
-		IsStarted = false;
+	public void Abort() {
+		ActionScript.StopAction();
 	}
 }

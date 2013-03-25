@@ -32,7 +32,7 @@ using Pathfinding;
  * it will use Transform.Translate which is guaranteed to always work.
  */
 [RequireComponent(typeof(Seeker))]
-public class AIPathfinder : MonoBehaviour {
+public class AIPathfinder : ActionScript {
 	
 	/** Determines how often it will search for new paths. 
 	 * If you have fast moving targets or AIs, you might want to set it to a lower value.

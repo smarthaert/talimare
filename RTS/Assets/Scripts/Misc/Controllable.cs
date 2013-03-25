@@ -26,14 +26,13 @@ public abstract class Controllable : Selectable {
 		ProcessActionQueue();
 	}
 	
+	// Processes the action queue by starting the top action or removing it if it has completed
 	private void ProcessActionQueue() {
 		if(actionQueue.Count > 0) {
 			Action topAction = actionQueue.Peek();
 			if(!topAction.IsStarted) {
 				topAction.Start();
-			}
-			topAction.Update();
-			if(!topAction.IsStarted) {
+			} else if(!topAction.IsRunning()) {
 				actionQueue.Dequeue();
 			}
 		}
@@ -47,6 +46,7 @@ public abstract class Controllable : Selectable {
 		actionQueue.Enqueue(action);
 	}
 	
+	// Aborts the entire action queue by aborting and removing each action
 	public void AbortActionQueue() {
 		while(actionQueue.Count > 0) {
 			Action abortedAction = actionQueue.Dequeue();

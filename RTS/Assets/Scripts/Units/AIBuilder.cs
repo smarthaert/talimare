@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 // Handles unit building
 [RequireComponent(typeof(AIPathfinder))]
-public class AIBuilder : MonoBehaviour {
+public class AIBuilder : ActionScript {
 	
 	// The building this unit is currently building
 	protected BuildProgressControl buildTarget;
@@ -11,7 +11,7 @@ public class AIBuilder : MonoBehaviour {
 	
 	protected AIPathfinder pathfinder;
 	
-	protected void Start() {
+	protected void Awake() {
 		pathfinder = GetComponent<AIPathfinder>();
 	}
 	
@@ -26,7 +26,7 @@ public class AIBuilder : MonoBehaviour {
 			// Currently building
 			buildTarget.Building(Time.deltaTime);
 			if(buildTarget.Completed()) {
-				StopBuilding();
+				StopAction();
 			}
 		} else {
 			// Haven't started building yet
@@ -39,20 +39,17 @@ public class AIBuilder : MonoBehaviour {
 		}
 	}
 	
-	// Sets this unit to build the given building
-	public void Build(BuildProgressControl buildProgress) {
-		if(buildProgress != buildTarget) {
-			buildTarget = buildProgress;
-		}
-	}
-	
-	public void StopBuilding() {
-		buildTarget = null;
+	public override void StartAction(object target) {
+		buildTarget = (BuildProgressControl)target;
 		hasStartedBuilding = false;
 	}
 	
-	public bool IsBuilding() {
+	public override bool IsActing() {
 		return buildTarget != null;
+	}
+	
+	public override void StopAction() {
+		buildTarget = null;
 	}
 	
 	protected bool IsInBuildRange() {
