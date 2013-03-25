@@ -3,7 +3,7 @@ using System.Collections;
 
 // Handles unit attacking
 [RequireComponent(typeof(AIPathfinder))]
-public class AIAttacker : MonoBehaviour {
+public class AIAttacker : ActionScript {
 	
 	public float attackRange = 0;
 	public int attackDamage = 0;
@@ -26,7 +26,7 @@ public class AIAttacker : MonoBehaviour {
 	
 	protected AIPathfinder pathfinder;
 	
-	void Start() {
+	void Awake() {
 		pathfinder = GetComponent<AIPathfinder>();
 	}
 	
@@ -65,16 +65,16 @@ public class AIAttacker : MonoBehaviour {
 		}
 	}
 	
-	public void Attack(GameObject target) {
-		this.target = target;
+	public override void StartAction(object target) {
+		this.target = (GameObject)target;
 	}
 	
-	public void StopAttacking() {
-		target = null;
-	}
-	
-	public bool IsAttacking() {
+	public override bool IsActing() {
 		return currentAttackTarget != null;
+	}
+	
+	public override void StopAction() {
+		target = null;
 	}
 	
 	protected bool IsInRange(Transform targetTransform) {

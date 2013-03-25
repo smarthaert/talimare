@@ -2,7 +2,7 @@ using UnityEngine;
 
 // Handles unit gathering
 [RequireComponent(typeof(AIPathfinder))]
-public class AIGatherer : MonoBehaviour {
+public class AIGatherer : ActionScript {
 	
 	// The amount this unit gathers each time gathering triggers on a resource node
 	public int gatherAmount;
