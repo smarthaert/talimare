@@ -31,10 +31,10 @@ public class AIBuilder : ActionScript {
 		} else {
 			// Haven't started building yet
 			if(IsInBuildRange()) {
-				Pathfinder.StopMoving();
+				Pathfinder.StopAction();
 				HasStartedBuilding = true;
 			} else {
-				Pathfinder.Move(BuildTarget.transform);
+				Pathfinder.StartAction(BuildTarget.transform);
 			}
 		}
 	}

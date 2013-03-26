@@ -35,9 +35,9 @@ public class CivilianControl : BaseUnitControl {
 		if(queuedBuildTarget != null) {
 			CommitQueuedBuilding();
 		} else if(hit.collider.gameObject.CompareTag("Resource")) {
-			AddAction(new GatherAction(this, hit.collider.gameObject.GetComponent<ResourceNode>()), IsMultiKeyPressed());
+			AddAction(new Action(GetComponent<AIGatherer>(), hit.collider.gameObject.GetComponent<ResourceNode>()), IsMultiKeyPressed());
 		} else if(hit.collider.gameObject.CompareTag("BuildProgress")) {
-			AddAction(new BuildAction(this, hit.collider.gameObject.GetComponent<BuildProgressControl>()), IsMultiKeyPressed());
+			AddAction(new Action(GetComponent<AIBuilder>(), hit.collider.gameObject.GetComponent<BuildProgressControl>()), IsMultiKeyPressed());
 		} 
 	}
 	
@@ -91,7 +91,7 @@ public class CivilianControl : BaseUnitControl {
 	protected void CommitQueuedBuilding() {
 		if(queuedBuildTarget.Creatable.CanCreate(owner)) {
 			queuedBuildTarget.Commit(); //TODO commiting multiple queued buildings is clearing the action queue
-			AddAction(new BuildAction(this, queuedBuildTarget), IsMultiKeyPressed());
+			AddAction(new Action(GetComponent<AIBuilder>(), queuedBuildTarget), IsMultiKeyPressed());
 		}
 		if(IsMultiKeyPressed() && queuedBuildTarget.Creatable.CanCreate(owner)) {
 			InstantiateBuildProgress(queuedBuildTarget.Creatable);

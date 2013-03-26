@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class AIVision : MonoBehaviour {
+public class Vision : MonoBehaviour {
 
 	public float visionRange = 10.0f;
 	//public int visionCasts = 6; trying out using visionRange for this instead

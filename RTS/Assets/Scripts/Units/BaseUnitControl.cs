@@ -18,11 +18,11 @@ public class BaseUnitControl : Controllable {
 	// Called when mouse action button is clicked on any object while this unit is selected
 	public override void MouseAction(RaycastHit hit) {
 		if(hit.collider.GetType() == typeof(TerrainCollider)) {
-			AddAction(new MoveAction(this, hit.point), IsMultiKeyPressed());
+			AddAction(new Action(GetComponent<AIPathfinder>(), hit.point), IsMultiKeyPressed());
 		} else if(hit.collider.gameObject.CompareTag("Unit")) {
 			Controllable targetControl = hit.collider.gameObject.GetComponent<Controllable>();
 			if(targetControl != null && owner != targetControl.owner && owner.relationships[targetControl.owner] == PlayerRelationship.HOSTILE) {
-				AddAction(new AttackAction(this, targetControl), IsMultiKeyPressed());
+				AddAction(new Action(GetComponent<AIAttacker>(), targetControl), IsMultiKeyPressed());
 			}
 		}
 	}

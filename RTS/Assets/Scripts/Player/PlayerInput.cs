@@ -10,7 +10,7 @@ public class PlayerInput : MonoBehaviour {
 	protected int ClickLayerMask { get; set; }
 	
 	protected Selectable currentSelection;
-	protected AIVision currentSelectionVision;
+	protected Vision currentSelectionVision;
 	protected GameObject currentMarker;
 	public bool DeselectDisabled { get; set; }
 	
@@ -54,7 +54,7 @@ public class PlayerInput : MonoBehaviour {
 				// in the hierarchy as has the Selectable script attached
 				GameObject clickedObject = hit.collider.gameObject;
 				Selectable selectable = clickedObject.GetComponent<Selectable>();
-				AIVision vision = clickedObject.GetComponentInChildren<AIVision>();
+				Vision vision = clickedObject.GetComponentInChildren<Vision>();
 				if(selectable != null && (vision == null || !vision.IsHiddenByFog)) {
 					if(selectable != currentSelection) {
 						Select(selectable);
@@ -76,7 +76,7 @@ public class PlayerInput : MonoBehaviour {
 		currentMarker.transform.parent = currentSelection.gameObject.transform;
 		
 		currentSelection.Selected();
-		currentSelectionVision = currentSelection.GetComponentInChildren<AIVision>();
+		currentSelectionVision = currentSelection.GetComponentInChildren<Vision>();
 		
 		DeselectDisabled = false;
 	}
