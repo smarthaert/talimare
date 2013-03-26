@@ -117,7 +117,7 @@ public class AIPathfinder : ActionScript {
 	/** Only when the previous path has been returned should be search for a new path */
 	protected bool canSearchAgain = true;
 	
-	void Awake () {
+	protected void Awake () {
 		seeker = GetComponent<Seeker>();
 		//This is a simple optimization, cache the transform component lookup
 		tr = transform;
@@ -128,45 +128,50 @@ public class AIPathfinder : ActionScript {
 		rigid = rigidbody;
 	}
 	
-	public void Move(Transform target) {
-		if(target != null && !target.Equals(targetTransform)) {
-			targetTransform = target;
-			targetReached = false;
-			
-			//Make some adjustments to allow immediate repathing
-			lastRepath = -9999;
-			canSearchAgain = true;
-			
-			TrySearchPath();
-		}
+	public override void StartAction(object target) {
+		if(target is Transform)
+			MoveTo((Transform)target);
+		else if(target is Vector3?)
+			MoveTo((Vector3?) target);
 	}
 	
-	public void Move(Vector3? target) {
-		if(target != null && !target.Equals(targetPoint)) {
-			targetPoint = target;
-			targetReached = false;
-			
-			//Make some adjustments to allow immediate repathing
-			lastRepath = -9999;
-			canSearchAgain = true;
-			
-			TrySearchPath();
-		}
-	}
-	
-	public void StopMoving() {
-		if(!targetReached) {
-			targetReached = true;
-			OnTargetReached();
-		}
-	}
-	
-	public bool IsMoving() {
+	public override bool IsActing() {
 		if(targetPoint != null || targetTransform != null) {
 			return !targetReached;
 		} else {
 			return false;
 		}
+	}
+	
+	public override void StopAction() {
+		targetReached = true;
+		OnTargetReached();
+	}
+	
+	protected void MoveTo(Transform target) {
+		if(target != null && targetTransform != target) {
+			SetUpNewMove();
+			targetTransform = target;
+			TrySearchPath();
+		}
+	}
+	
+	protected void MoveTo(Vector3? target) {
+		if(target != null && targetPoint != target) {
+			SetUpNewMove();
+			targetPoint = target;
+			TrySearchPath();
+		}
+	}
+	
+	protected void SetUpNewMove() {
+		targetTransform = null;
+		targetPoint = null;
+		targetReached = false;
+			
+		//Make some adjustments to allow immediate repathing
+		lastRepath = -9999;
+		canSearchAgain = true;
 	}
 	
 	protected void TrySearchPath () {
@@ -341,7 +346,7 @@ public class AIPathfinder : ActionScript {
 		this.targetPointDir = targetPointDir;
 		
 		if (currentWaypointIndex == vPath.Length-1 && targetDist <= endReachedDistance) {
-			if (!targetReached) { targetReached = true; OnTargetReached (); }
+			if (!targetReached) { targetReached = true; OnTargetReached(); }
 			
 			//Send a move request, this ensures gravity is applied
 			return Vector3.zero;

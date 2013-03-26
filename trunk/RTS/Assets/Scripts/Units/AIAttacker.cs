@@ -20,33 +20,33 @@ public class AIAttacker : ActionScript {
 	protected float heightBonusPercentCap = 15;
 	
 	// The unit's attack target. If this is set, the unit should be actively trying to attack the target
-	protected GameObject target;
+	protected GameObject Target { get; set; }
 	// An internal var to track who we're targeting for each individual attack sequence
-	protected GameObject currentAttackTarget;
+	protected GameObject CurrentAttackTarget { get; set; }
 	
-	protected AIPathfinder pathfinder;
+	protected AIPathfinder Pathfinder { get; set; }
 	
 	void Awake() {
-		pathfinder = GetComponent<AIPathfinder>();
+		Pathfinder = GetComponent<AIPathfinder>();
 	}
 	
 	void Update() {
-		if(currentAttackTarget == null) {
+		if(CurrentAttackTarget == null) {
 			// Not currently in an attack sequence (either due to being on cooldown, out of range, or have no target)
 			if(attackCooldownTimer > 0)
 				attackCooldownTimer -= Time.deltaTime;
-			if(target != null) {
+			if(Target != null) {
 				// Have a target, so try to attack or move
-				if(IsInRange(target.transform)) {
-					pathfinder.StopMoving();
+				if(IsInRange(Target.transform)) {
+					Pathfinder.StopAction();
 					// In range, start attacking if cooldown is finished
 					if(attackCooldownTimer <= 0) {
 						attackTimer = attackTime;
-						currentAttackTarget = target;
+						CurrentAttackTarget = Target;
 					}
 				} else {
 					// Not in range, make sure we're moving into range
-					pathfinder.Move(target.transform);
+					Pathfinder.StartAction(Target.transform);
 				}
 			}
 		} else {
@@ -54,27 +54,29 @@ public class AIAttacker : ActionScript {
 			attackTimer -= Time.deltaTime;
 			if(attackTimer <= 0) {
 				// Check attack range at end of attack sequence
-				if(IsInRange(currentAttackTarget.transform)) {
+				if(IsInRange(CurrentAttackTarget.transform)) {
 					// Apply damage
-					currentAttackTarget.GetComponent<UnitStatus>().Damage(attackDamage);
+					CurrentAttackTarget.GetComponent<UnitStatus>().Damage(attackDamage);
 				}
 				// Start cooldown timer
 				attackCooldownTimer = attackCooldown;
-				currentAttackTarget = null;
+				CurrentAttackTarget = null;
 			}
 		}
 	}
 	
 	public override void StartAction(object target) {
-		this.target = (GameObject)target;
+		if(Target != (GameObject)target) {
+			Target = (GameObject)target;
+		}
 	}
 	
 	public override bool IsActing() {
-		return currentAttackTarget != null;
+		return CurrentAttackTarget != null;
 	}
 	
 	public override void StopAction() {
-		target = null;
+		Target = null;
 	}
 	
 	protected bool IsInRange(Transform targetTransform) {
