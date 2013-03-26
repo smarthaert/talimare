@@ -6,54 +6,56 @@ using System.Collections.Generic;
 public class AIBuilder : ActionScript {
 	
 	// The building this unit is currently building
-	protected BuildProgressControl buildTarget;
-	protected bool hasStartedBuilding = false;
+	protected BuildProgressControl BuildTarget { get; set; }
+	protected bool HasStartedBuilding { get; set; }
 	
-	protected AIPathfinder pathfinder;
+	protected AIPathfinder Pathfinder { get; set; }
 	
 	protected void Awake() {
-		pathfinder = GetComponent<AIPathfinder>();
+		Pathfinder = GetComponent<AIPathfinder>();
 	}
 	
 	protected void Update () {
-		if(buildTarget != null) {
+		if(BuildTarget != null) {
 			UpdateBuild();
 		}
 	}
 	
 	protected void UpdateBuild() {
-		if(hasStartedBuilding) {
+		if(HasStartedBuilding) {
 			// Currently building
-			buildTarget.Building(Time.deltaTime);
-			if(buildTarget.Completed()) {
+			BuildTarget.Building(Time.deltaTime);
+			if(BuildTarget.Completed()) {
 				StopAction();
 			}
 		} else {
 			// Haven't started building yet
 			if(IsInBuildRange()) {
-				pathfinder.StopMoving();
-				hasStartedBuilding = true;
+				Pathfinder.StopMoving();
+				HasStartedBuilding = true;
 			} else {
-				pathfinder.Move(buildTarget.transform);
+				Pathfinder.Move(BuildTarget.transform);
 			}
 		}
 	}
 	
 	public override void StartAction(object target) {
-		buildTarget = (BuildProgressControl)target;
-		hasStartedBuilding = false;
+		if(BuildTarget != (BuildProgressControl)target) {
+			BuildTarget = (BuildProgressControl)target;
+			HasStartedBuilding = false;
+		}
 	}
 	
 	public override bool IsActing() {
-		return buildTarget != null;
+		return BuildTarget != null;
 	}
 	
 	public override void StopAction() {
-		buildTarget = null;
+		BuildTarget = null;
 	}
 	
 	protected bool IsInBuildRange() {
-		float buildRange = this.collider.bounds.size.magnitude/2 + buildTarget.collider.bounds.size.magnitude/2 + 0.5f;
-		return (buildTarget.transform.position - this.transform.position).magnitude <= buildRange;
+		float buildRange = this.collider.bounds.size.magnitude/2 + BuildTarget.collider.bounds.size.magnitude/2 + 0.5f;
+		return (BuildTarget.transform.position - this.transform.position).magnitude <= buildRange;
 	}
 }

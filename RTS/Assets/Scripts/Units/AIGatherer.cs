@@ -11,66 +11,68 @@ public class AIGatherer : ActionScript {
 	protected float gatherTime = 5;
 	
 	// The resource node this unit is currently gathering
-	protected ResourceNode gatherTarget;
-	protected float gatherTimer = 0;
+	protected ResourceNode GatherTarget { get; set; }
+	protected float GatherTimer { get; set; }
 	
-	protected Player player;
-	protected AIPathfinder pathfinder;
+	protected Player Player { get; set; }
+	protected AIPathfinder Pathfinder { get; set; }
+	
+	protected void Awake() {
+		Pathfinder = GetComponent<AIPathfinder>();
+	}
 	
 	protected void Start() {
-		player = GetComponent<Controllable>().owner;
-		pathfinder = GetComponent<AIPathfinder>();
+		Player = GetComponent<Controllable>().owner;
 	}
 	
 	protected void Update () {
-		if(gatherTarget != null) {
+		if(GatherTarget != null) {
 			UpdateGather();
 		}
 	}
 	
 	protected void UpdateGather() {
-		if(gatherTimer > 0) {
+		if(GatherTimer > 0) {
 			// Currently gathering
-			gatherTimer -= Time.deltaTime;
-			if(gatherTimer <= 0) {
+			GatherTimer -= Time.deltaTime;
+			if(GatherTimer <= 0) {
 				// Timer's up, trigger gather from node if still in range
 				if(IsInGatherRange()) {
-					gatherTarget.Gather(gatherAmount);
-					player.PlayerStatus.GainResource(gatherTarget.resource, gatherAmount);
-					gatherTimer = gatherTime;
+					GatherTarget.Gather(gatherAmount);
+					Player.PlayerStatus.GainResource(GatherTarget.resource, gatherAmount);
+					GatherTimer = gatherTime;
 				}
 			}
 		} else {
 			// Not currently gathering (either due to being out of range, or just haven't started yet)
 			if(IsInGatherRange()) {
 				// In range, start gathering
-				pathfinder.StopMoving();
-				gatherTimer = gatherTime;
+				Pathfinder.StopMoving();
+				GatherTimer = gatherTime;
 			} else {
 				// Not in range, make sure we're moving toward node
-				pathfinder.Move(gatherTarget.transform);
+				Pathfinder.Move(GatherTarget.transform);
 			}
 		}
 	}
 	
-	// Sets this unit to gather from the given resource node
-	public void Gather(ResourceNode node) {
-		if(node != gatherTarget) {
-			gatherTimer = 0;
-			gatherTarget = node;
+	public override void StartAction(object target) {
+		if(GatherTarget != (ResourceNode)target) {
+			GatherTarget = (ResourceNode)target;
+			GatherTimer = 0;
 		}
 	}
 	
-	public void StopGathering() {
-		gatherTarget = null;
+	public override bool IsActing() {
+		return GatherTarget != null;
 	}
 	
-	public bool IsGathering() {
-		return gatherTarget != null;
+	public override void StopAction() {
+		GatherTarget = null;
 	}
 	
 	protected bool IsInGatherRange() {
-		float gatherRange = this.collider.bounds.size.magnitude/2 + gatherTarget.collider.bounds.size.magnitude/2 + 0.5f;
-		return (gatherTarget.transform.position - this.transform.position).magnitude <= gatherRange;
+		float gatherRange = this.collider.bounds.size.magnitude/2 + GatherTarget.collider.bounds.size.magnitude/2 + 0.5f;
+		return (GatherTarget.transform.position - this.transform.position).magnitude <= gatherRange;
 	}
 }
