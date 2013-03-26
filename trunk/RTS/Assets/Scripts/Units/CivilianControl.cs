@@ -90,7 +90,7 @@ public class CivilianControl : BaseUnitControl {
 	// Commits the currently queued building at its current position and begins building
 	protected void CommitQueuedBuilding() {
 		if(queuedBuildTarget.Creatable.CanCreate(owner)) {
-			queuedBuildTarget.Commit(); //TODO commiting multiple queued buildings is clearing the action queue
+			queuedBuildTarget.Commit();
 			AddAction(new Action(GetComponent<AIBuilder>(), queuedBuildTarget), IsMultiKeyPressed());
 		}
 		if(IsMultiKeyPressed() && queuedBuildTarget.Creatable.CanCreate(owner)) {
