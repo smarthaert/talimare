@@ -43,6 +43,6 @@ public class RTSGameObjects {
 		GameObject vision = new GameObject("Vision");
 		vision.transform.parent = obj.transform;
 		vision.layer = LayerMask.NameToLayer("Ignore Raycast");
-		vision.AddComponent<AIVision>();
+		vision.AddComponent<Vision>();
 	}
 }

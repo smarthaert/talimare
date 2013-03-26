@@ -47,11 +47,11 @@ public class AIGatherer : ActionScript {
 			// Not currently gathering (either due to being out of range, or just haven't started yet)
 			if(IsInGatherRange()) {
 				// In range, start gathering
-				Pathfinder.StopMoving();
+				Pathfinder.StopAction();
 				GatherTimer = gatherTime;
 			} else {
 				// Not in range, make sure we're moving toward node
-				Pathfinder.Move(GatherTarget.transform);
+				Pathfinder.StartAction(GatherTarget.transform);
 			}
 		}
 	}
