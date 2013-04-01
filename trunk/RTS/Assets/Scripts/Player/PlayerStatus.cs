@@ -20,7 +20,6 @@ public class PlayerStatus : MonoBehaviour {
 	public int steel = 0;
 	public int oil = 0;
 	public int uranium = 0;
-	public int unobtanium = 0;
 	
 	// Current upkeep resource maximums - use these fields only for the initial setting of values in the editor
 	public int maxFood = 0;

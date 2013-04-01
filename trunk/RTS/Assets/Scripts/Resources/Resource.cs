@@ -9,6 +9,5 @@ public enum Resource {
 	Coal,
 	Steel,
 	Oil,
-	Uranium,
-	Unobtanium
+	Uranium
 }

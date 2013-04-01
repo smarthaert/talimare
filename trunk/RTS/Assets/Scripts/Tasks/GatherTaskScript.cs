@@ -14,15 +14,10 @@ public class GatherTaskScript : TaskScript {
 	protected ResourceNode GatherTarget { get; set; }
 	protected float GatherTimer { get; set; }
 	
-	protected Player Player { get; set; }
 	protected MoveTaskScript MoveTaskScript { get; set; }
 	
 	protected void Awake() {
 		MoveTaskScript = GetComponent<MoveTaskScript>();
-	}
-	
-	protected void Start() {
-		Player = GetComponent<Controllable>().owner;
 	}
 	
 	protected void Update () {
@@ -38,8 +33,9 @@ public class GatherTaskScript : TaskScript {
 			if(GatherTimer <= 0) {
 				// Timer's up, trigger gather from node if still in range
 				if(IsInGatherRange()) {
-					GatherTarget.Gather(gatherAmount);
-					Player.PlayerStatus.GainResource(GatherTarget.resource, gatherAmount);
+					GatherTarget.GatherFrom(gatherAmount);
+					//TODO return resource to depot
+					//Player.PlayerStatus.GainResource(GatherTarget.resource, gatherAmount);
 					GatherTimer = gatherTime;
 				}
 			}

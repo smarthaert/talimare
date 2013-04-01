@@ -6,15 +6,15 @@ public class ResourceNode : Selectable {
 	public Resource resource;
 	public int amount;
 	
-	protected static AstarPath pathfinding;
+	protected static AstarPath Pathfinding { get; set; }
 	
 	protected override void Start() {
 		base.Start();
-		if(pathfinding == null)
-			pathfinding = GameObject.Find("Pathfinding").GetComponent<AstarPath>();
+		if(Pathfinding == null)
+			Pathfinding = (AstarPath)GameObject.FindObjectOfType(typeof(AstarPath));
 	}
 	
-	public void Gather(int amount) {
+	public void GatherFrom(int amount) {
 		this.amount -= amount;
 		if(this.amount <= 0) {
 			Die();
@@ -26,6 +26,6 @@ public class ResourceNode : Selectable {
 	}
 	
 	void OnDestroy() {
-		pathfinding.Scan();
+		Pathfinding.Scan();
 	}
 }
