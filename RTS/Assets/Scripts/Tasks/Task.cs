@@ -1,4 +1,4 @@
-// This class is used to link TaskScripts with targets, and to queue those links inside Controllables
+// A Task is a TaskScript linked with a target, and can be queued inside Controllables
 public class Task {
 	
 	public TaskScript TaskScript { get; set; }
