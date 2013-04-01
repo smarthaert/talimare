@@ -32,7 +32,7 @@ using Pathfinding;
  * it will use Transform.Translate which is guaranteed to always work.
  */
 [RequireComponent(typeof(Seeker))]
-public class AIPathfinder : ActionScript {
+public class MoveTaskScript : TaskScript {
 	
 	/** Determines how often it will search for new paths. 
 	 * If you have fast moving targets or AIs, you might want to set it to a lower value.
@@ -128,14 +128,14 @@ public class AIPathfinder : ActionScript {
 		rigid = rigidbody;
 	}
 	
-	public override void StartAction(object target) {
+	public override void StartTask(object target) {
 		if(target is Transform)
 			MoveTo((Transform)target);
 		else if(target is Vector3?)
 			MoveTo((Vector3?) target);
 	}
 	
-	public override bool IsActing() {
+	public override bool IsTaskRunning() {
 		if(targetPoint != null || targetTransform != null) {
 			return !targetReached;
 		} else {
@@ -143,7 +143,7 @@ public class AIPathfinder : ActionScript {
 		}
 	}
 	
-	public override void StopAction() {
+	public override void StopTask() {
 		targetReached = true;
 		OnTargetReached();
 	}

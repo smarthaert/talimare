@@ -10,8 +10,8 @@ public abstract class Controllable : Selectable {
 	// A list of Techs which apply to this object when they are gained
 	public List<Tech> applicableTechs;
 	
-	// A queue to hold all current actions this object is tasked complete
-	private Queue<Action> actionQueue = new Queue<Action>();
+	// A queue to hold all current tasks this object is tasked complete
+	private Queue<Task> taskQueue = new Queue<Task>();
 	
 	protected override void Start() {
 		base.Start();
@@ -23,35 +23,35 @@ public abstract class Controllable : Selectable {
 	protected override void Update() {
 		base.Update();
 		
-		ProcessActionQueue();
+		ProcessTaskQueue();
 	}
 	
 	// Processes the action queue by starting the top action or removing it if it has completed
-	private void ProcessActionQueue() {
-		if(actionQueue.Count > 0) {
-			Action topAction = actionQueue.Peek();
-			if(!topAction.IsStarted) {
-				topAction.Start();
-			} else if(!topAction.IsRunning()) {
-				actionQueue.Dequeue();
+	private void ProcessTaskQueue() {
+		if(taskQueue.Count > 0) {
+			Task topTask = taskQueue.Peek();
+			if(!topTask.IsStarted) {
+				topTask.Start();
+			} else if(!topTask.IsRunning()) {
+				taskQueue.Dequeue();
 			}
 		}
 	}
 	
-	// Adds the given action to the action queue. If appendToQueue is false, the entire queue is aborted and the new action will be the only one remaining
-	public void AddAction(Action action, bool appendToQueue) {
+	// Adds the given task to the task queue. If appendToQueue is false, the entire queue is aborted and the new task will be the only one remaining
+	public void AddTask(Task task, bool appendToQueue) {
 		if(!appendToQueue) {
-			AbortActionQueue();
+			AbortTaskQueue();
 		}
-		actionQueue.Enqueue(action);
+		taskQueue.Enqueue(task);
 	}
 	
-	// Aborts the entire action queue by aborting and removing each action
-	public void AbortActionQueue() {
-		while(actionQueue.Count > 0) {
-			Action abortedAction = actionQueue.Dequeue();
-			if(abortedAction.IsStarted) {
-				abortedAction.Abort();
+	// Aborts the entire task queue by aborting and removing each task
+	public void AbortTaskQueue() {
+		while(taskQueue.Count > 0) {
+			Task abortedTask = taskQueue.Dequeue();
+			if(abortedTask.IsStarted) {
+				abortedTask.Abort();
 			}
 		}
 	}

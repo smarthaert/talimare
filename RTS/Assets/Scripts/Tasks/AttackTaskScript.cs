@@ -2,8 +2,8 @@ using UnityEngine;
 using System.Collections;
 
 // Handles unit attacking
-[RequireComponent(typeof(AIPathfinder))]
-public class AIAttacker : ActionScript {
+[RequireComponent(typeof(MoveTaskScript))]
+public class AttackTaskScript : TaskScript {
 	
 	public float attackRange = 0;
 	public int attackDamage = 0;
@@ -24,10 +24,10 @@ public class AIAttacker : ActionScript {
 	// An internal var to track who we're targeting for each individual attack sequence
 	protected GameObject CurrentAttackTarget { get; set; }
 	
-	protected AIPathfinder Pathfinder { get; set; }
+	protected MoveTaskScript MoveTaskScript { get; set; }
 	
 	void Awake() {
-		Pathfinder = GetComponent<AIPathfinder>();
+		MoveTaskScript = GetComponent<MoveTaskScript>();
 	}
 	
 	void Update() {
@@ -38,7 +38,7 @@ public class AIAttacker : ActionScript {
 			if(Target != null) {
 				// Have a target, so try to attack or move
 				if(IsInRange(Target.transform)) {
-					Pathfinder.StopAction();
+					MoveTaskScript.StopTask();
 					// In range, start attacking if cooldown is finished
 					if(attackCooldownTimer <= 0) {
 						attackTimer = attackTime;
@@ -46,7 +46,7 @@ public class AIAttacker : ActionScript {
 					}
 				} else {
 					// Not in range, make sure we're moving into range
-					Pathfinder.StartAction(Target.transform);
+					MoveTaskScript.StartTask(Target.transform);
 				}
 			}
 		} else {
@@ -65,17 +65,17 @@ public class AIAttacker : ActionScript {
 		}
 	}
 	
-	public override void StartAction(object target) {
+	public override void StartTask(object target) {
 		if(Target != (GameObject)target) {
 			Target = (GameObject)target;
 		}
 	}
 	
-	public override bool IsActing() {
+	public override bool IsTaskRunning() {
 		return CurrentAttackTarget != null;
 	}
 	
-	public override void StopAction() {
+	public override void StopTask() {
 		Target = null;
 	}
 	

@@ -11,7 +11,7 @@ public class Vision : MonoBehaviour {
 	protected float LOSHeight = 0.0f;
 	
 	protected FogOfWar fogOfWarScript;
-	protected AIPathfinder pathfinder;
+	protected MoveTaskScript pathfinder;
 	protected Controllable controllable;
 	
 	protected bool isUnit = false;
@@ -44,7 +44,7 @@ public class Vision : MonoBehaviour {
 		if(fogOfWar != null)
 			fogOfWarScript = fogOfWar.GetComponent<FogOfWar>();
 		if(isUnit)
-			pathfinder = transform.root.gameObject.GetComponent<AIPathfinder>();
+			pathfinder = transform.root.gameObject.GetComponent<MoveTaskScript>();
 		controllable = transform.root.gameObject.GetComponent<Controllable>();
 		ConfigureVisionSettings();
 		
