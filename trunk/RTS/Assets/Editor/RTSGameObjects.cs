@@ -13,8 +13,8 @@ public class RTSGameObjects {
 		unit.GetComponent<CharacterController>().radius = 0.5f;
 		unit.GetComponent<CharacterController>().height = 2.0f;
 		unit.AddComponent<Creatable>();
-		unit.AddComponent<AIPathfinder>();
-		unit.AddComponent<AIAttacker>();
+		unit.AddComponent<MoveTaskScript>();
+		unit.AddComponent<AttackTaskScript>();
 		unit.AddComponent<UnitStatus>();
 		unit.AddComponent<BaseUnitControl>();
 		

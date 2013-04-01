@@ -10,37 +10,23 @@ public class Game : MonoBehaviour {
 	// A reference to the PlayerInput component in case any other scripts need it
 	public static PlayerInput PlayerInput { get; set; }
 	
-	// Set of all players
+	// Set of all players currently active in the game
 	protected static HashSet<Player> players = new HashSet<Player>();
 	
-	void Awake() {
-		ThisPlayer = (Player)GameObject.FindSceneObjectsOfType(typeof(HumanPlayer))[0];
+	protected void Awake() {
 		PlayerInput = GetComponent<PlayerInput>();
 	}
 	
-	// Adds a player to the game
+	protected void Start() {
+		ThisPlayer = (Player)GameObject.FindSceneObjectsOfType(typeof(HumanPlayer))[0];
+	}
+	
+	// Adds a player to the game, complete with player relationships
 	public static void AddPlayer(Player newPlayer) {
 		foreach(Player existingPlayer in players) {
 			existingPlayer.relationships.Add(newPlayer, PlayerRelationship.HOSTILE);
 			newPlayer.relationships.Add(existingPlayer, PlayerRelationship.HOSTILE);
 		}
 		players.Add(newPlayer);
-	}
-	
-	// Creates a new instance of the given Controllable for the given Player at the given position.
-	// Also applies applicable techs to this new object
-	public static GameObject InstantiateControllable(Controllable controllable, Player player, Vector3 position) {
-		GameObject newObject = (GameObject)Instantiate(controllable.gameObject, position, Quaternion.identity);
-		Controllable newControllable = newObject.GetComponent<Controllable>();
-		newControllable.owner = player;
-		newControllable.name = controllable.gameObject.name;
-		//apply all applicable techs to the new object
-		PlayerStatus playerStatus = player.GetComponent<PlayerStatus>();
-		foreach(Tech appliedTech in newControllable.applicableTechs) {
-			if(playerStatus.techs.Contains(appliedTech)) {
-				appliedTech.ApplyTechTo(newObject);
-			}
-		}
-		return newObject;
 	}
 }

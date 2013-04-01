@@ -11,11 +11,11 @@ public class Player : MonoBehaviour {
 	// A map of relationships to every other player in the game
 	public Dictionary<Player, PlayerRelationship> relationships = new Dictionary<Player, PlayerRelationship>();
 	
-	void Awake() {
+	protected virtual void Awake() {
 		PlayerStatus = GetComponent<PlayerStatus>();
 	}
 	
-	void Start() {
+	protected virtual void Start() {
 		Game.AddPlayer(this);
 	}
 }

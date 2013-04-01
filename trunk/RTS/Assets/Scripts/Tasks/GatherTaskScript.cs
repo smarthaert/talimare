@@ -1,8 +1,8 @@
 using UnityEngine;
 
 // Handles unit gathering
-[RequireComponent(typeof(AIPathfinder))]
-public class AIGatherer : ActionScript {
+[RequireComponent(typeof(MoveTaskScript))]
+public class GatherTaskScript : TaskScript {
 	
 	// The amount this unit gathers each time gathering triggers on a resource node
 	public int gatherAmount;
@@ -15,10 +15,10 @@ public class AIGatherer : ActionScript {
 	protected float GatherTimer { get; set; }
 	
 	protected Player Player { get; set; }
-	protected AIPathfinder Pathfinder { get; set; }
+	protected MoveTaskScript MoveTaskScript { get; set; }
 	
 	protected void Awake() {
-		Pathfinder = GetComponent<AIPathfinder>();
+		MoveTaskScript = GetComponent<MoveTaskScript>();
 	}
 	
 	protected void Start() {
@@ -47,27 +47,27 @@ public class AIGatherer : ActionScript {
 			// Not currently gathering (either due to being out of range, or just haven't started yet)
 			if(IsInGatherRange()) {
 				// In range, start gathering
-				Pathfinder.StopAction();
+				MoveTaskScript.StopTask();
 				GatherTimer = gatherTime;
 			} else {
 				// Not in range, make sure we're moving toward node
-				Pathfinder.StartAction(GatherTarget.transform);
+				MoveTaskScript.StartTask(GatherTarget.transform);
 			}
 		}
 	}
 	
-	public override void StartAction(object target) {
+	public override void StartTask(object target) {
 		if(GatherTarget != (ResourceNode)target) {
 			GatherTarget = (ResourceNode)target;
 			GatherTimer = 0;
 		}
 	}
 	
-	public override bool IsActing() {
+	public override bool IsTaskRunning() {
 		return GatherTarget != null;
 	}
 	
-	public override void StopAction() {
+	public override void StopTask() {
 		GatherTarget = null;
 	}
 	

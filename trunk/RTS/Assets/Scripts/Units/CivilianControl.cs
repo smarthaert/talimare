@@ -1,8 +1,8 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-[RequireComponent(typeof(AIBuilder))]
-[RequireComponent(typeof(AIGatherer))]
+[RequireComponent(typeof(BuildTaskScript))]
+[RequireComponent(typeof(GatherTaskScript))]
 public class CivilianControl : BaseUnitControl {
 	
 	// Buildings this unit can build
@@ -35,9 +35,9 @@ public class CivilianControl : BaseUnitControl {
 		if(queuedBuildTarget != null) {
 			CommitQueuedBuilding();
 		} else if(hit.collider.gameObject.CompareTag("Resource")) {
-			AddAction(new Action(GetComponent<AIGatherer>(), hit.collider.gameObject.GetComponent<ResourceNode>()), IsMultiKeyPressed());
+			AddTask(new Task(GetComponent<GatherTaskScript>(), hit.collider.gameObject.GetComponent<ResourceNode>()), IsMultiKeyPressed());
 		} else if(hit.collider.gameObject.CompareTag("BuildProgress")) {
-			AddAction(new Action(GetComponent<AIBuilder>(), hit.collider.gameObject.GetComponent<BuildProgressControl>()), IsMultiKeyPressed());
+			AddTask(new Task(GetComponent<BuildTaskScript>(), hit.collider.gameObject.GetComponent<BuildProgressControl>()), IsMultiKeyPressed());
 		} 
 	}
 	
@@ -64,7 +64,7 @@ public class CivilianControl : BaseUnitControl {
 	}
 	
 	protected void InstantiateBuildProgress(Creatable building) {
-		queuedBuildTarget = (Game.InstantiateControllable(building.buildProgressObject, owner, Vector3.zero)).GetComponent<BuildProgressControl>();
+		queuedBuildTarget = (GameUtil.InstantiateControllable(building.buildProgressObject, owner, Vector3.zero)).GetComponent<BuildProgressControl>();
 		queuedBuildTarget.name = building.gameObject.name+" (in progress)";
 		Game.PlayerInput.DeselectDisabled = true;
 	}
@@ -91,7 +91,7 @@ public class CivilianControl : BaseUnitControl {
 	protected void CommitQueuedBuilding() {
 		if(queuedBuildTarget.Creatable.CanCreate(owner)) {
 			queuedBuildTarget.Commit();
-			AddAction(new Action(GetComponent<AIBuilder>(), queuedBuildTarget), IsMultiKeyPressed());
+			AddTask(new Task(GetComponent<BuildTaskScript>(), queuedBuildTarget), IsMultiKeyPressed());
 		}
 		if(IsMultiKeyPressed() && queuedBuildTarget.Creatable.CanCreate(owner)) {
 			InstantiateBuildProgress(queuedBuildTarget.Creatable);
