@@ -26,11 +26,13 @@ public class AttackTaskScript : TaskScript {
 	
 	protected MoveTaskScript MoveTaskScript { get; set; }
 	
-	void Awake() {
+	protected override void Awake() {
+		base.Awake();
+		
 		MoveTaskScript = GetComponent<MoveTaskScript>();
 	}
 	
-	void Update() {
+	protected void Update() {
 		if(CurrentAttackTarget == null) {
 			// Not currently in an attack sequence (either due to being on cooldown, out of range, or have no target)
 			if(attackCooldownTimer > 0)

@@ -117,7 +117,9 @@ public class MoveTaskScript : TaskScript {
 	/** Only when the previous path has been returned should be search for a new path */
 	protected bool canSearchAgain = true;
 	
-	protected void Awake () {
+	protected override void Awake () {
+		base.Awake();
+		
 		seeker = GetComponent<Seeker>();
 		//This is a simple optimization, cache the transform component lookup
 		tr = transform;
