@@ -11,7 +11,9 @@ public class BuildTaskScript : TaskScript {
 	
 	protected MoveTaskScript MoveTaskScript { get; set; }
 	
-	protected void Awake() {
+	protected override void Awake() {
+		base.Awake();
+		
 		MoveTaskScript = GetComponent<MoveTaskScript>();
 	}
 	

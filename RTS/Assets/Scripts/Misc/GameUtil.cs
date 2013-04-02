@@ -18,4 +18,21 @@ public abstract class GameUtil : Component {
 		}
 		return newObject;
 	}
+	
+	// Returns the instance of the given Component type (on a GameObject) that is nearest to the given point in space
+	// and owned by the given player.
+	public static T FindNearestInstanceOf<T>(Vector3 point, Player player) where T : Component {
+		float minDist = Mathf.Infinity;
+		T minComp = null;
+		T[] components = (T[])GameObject.FindObjectsOfType(typeof(T));
+		foreach(T component in components) {
+			if(component.GetComponent<Controllable>() != null && component.GetComponent<Controllable>().owner == player) {
+				float dist = Vector3.Distance(point, component.transform.position);
+				if(dist < minDist) {
+					minComp = component;
+				}
+			}
+		}
+		return minComp;
+	}
 }

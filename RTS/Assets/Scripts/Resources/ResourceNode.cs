@@ -14,11 +14,13 @@ public class ResourceNode : Selectable {
 			Pathfinding = (AstarPath)GameObject.FindObjectOfType(typeof(AstarPath));
 	}
 	
-	public void GatherFrom(int amount) {
+	public int GatherFrom(int amount) {
 		this.amount -= amount;
 		if(this.amount <= 0) {
 			Die();
+			return amount + this.amount;
 		}
+		return amount;
 	}
 	
 	public void Die() {

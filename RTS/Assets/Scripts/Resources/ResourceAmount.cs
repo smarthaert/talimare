@@ -6,6 +6,13 @@ public class ResourceAmount {
 	public Resource resource;
 	public int amount;
 	
+	public ResourceAmount() {}
+	
+	public ResourceAmount(Resource resource, int amount) {
+		this.resource = resource;
+		this.amount = amount;
+	}
+	
 	// Convenience method to determine if this resource is an upkeep resource
 	public bool IsUpkeepResource() {
 		if(resource == Resource.Food || resource == Resource.Water || resource == Resource.Power)

@@ -6,23 +6,45 @@ public class GatherTaskScript : TaskScript {
 	
 	// The amount this unit gathers each time gathering triggers on a resource node
 	public int gatherAmount;
+	// The maximum amount of one resource this unit can gather before returning to a depot
+	public int gatherLimit;
 	
 	// Gathering triggers once per this many seconds
 	protected float gatherTime = 5;
+	// Resource amount this unit is currently holding
+	protected ResourceAmount HeldResource { get; set; }
 	
-	// The resource node this unit is currently gathering
+	// The resource node this unit is currently gathering from
 	protected ResourceNode GatherTarget { get; set; }
 	protected float GatherTimer { get; set; }
+	// The depot this unit is currently returning resources to
+	protected ResourceDepot DepotTarget { get; set; }
 	
 	protected MoveTaskScript MoveTaskScript { get; set; }
 	
-	protected void Awake() {
+	protected override void Awake() {
+		base.Awake();
+		
 		MoveTaskScript = GetComponent<MoveTaskScript>();
 	}
 	
 	protected void Update () {
-		if(GatherTarget != null) {
+		if(DepotTarget != null) {
+			UpdateDepotReturn();
+		} else if(GatherTarget != null) {
 			UpdateGather();
+		}
+	}
+	
+	protected void UpdateDepotReturn() {
+		if(IsInRange(DepotTarget.gameObject)) {
+			// In range, deposit resources
+			MoveTaskScript.StopTask();
+			DepotTarget.DepositResource(HeldResource.resource, HeldResource.amount); //TODO something wrong on this line??
+			HeldResource = null;
+		} else {
+			// Not in range, make sure we're moving toward depot
+			MoveTaskScript.StartTask(DepotTarget.transform);
 		}
 	}
 	
@@ -32,16 +54,23 @@ public class GatherTaskScript : TaskScript {
 			GatherTimer -= Time.deltaTime;
 			if(GatherTimer <= 0) {
 				// Timer's up, trigger gather from node if still in range
-				if(IsInGatherRange()) {
-					GatherTarget.GatherFrom(gatherAmount);
-					//TODO return resource to depot
-					//Player.PlayerStatus.GainResource(GatherTarget.resource, gatherAmount);
+				if(IsInRange(GatherTarget.gameObject)) {
 					GatherTimer = gatherTime;
+					int gatheredAmount = GatherTarget.GatherFrom(gatherAmount);
+					if(HeldResource == null) {
+						HeldResource = new ResourceAmount();
+						HeldResource.resource = GatherTarget.resource;
+						HeldResource.amount = 0;
+					}
+					HeldResource.amount += gatheredAmount;
+					if(HeldResource.amount >= gatherLimit) {
+						DepotTarget = ResourceDepot.FindNearestDepotForResource(transform.position, Controllable.owner, HeldResource.resource);
+					}
 				}
 			}
 		} else {
 			// Not currently gathering (either due to being out of range, or just haven't started yet)
-			if(IsInGatherRange()) {
+			if(IsInRange(GatherTarget.gameObject)) {
 				// In range, start gathering
 				MoveTaskScript.StopTask();
 				GatherTimer = gatherTime;
@@ -56,6 +85,9 @@ public class GatherTaskScript : TaskScript {
 		if(GatherTarget != (ResourceNode)target) {
 			GatherTarget = (ResourceNode)target;
 			GatherTimer = 0;
+			if(HeldResource != null && HeldResource.resource != GatherTarget.resource) {
+				HeldResource = null;
+			}
 		}
 	}
 	
@@ -65,10 +97,11 @@ public class GatherTaskScript : TaskScript {
 	
 	public override void StopTask() {
 		GatherTarget = null;
+		DepotTarget = null;
 	}
 	
-	protected bool IsInGatherRange() {
-		float gatherRange = this.collider.bounds.size.magnitude/2 + GatherTarget.collider.bounds.size.magnitude/2 + 0.5f;
-		return (GatherTarget.transform.position - this.transform.position).magnitude <= gatherRange;
+	protected bool IsInRange(GameObject gameObject) {
+		float range = this.collider.bounds.size.magnitude/2 + gameObject.collider.bounds.size.magnitude/2 + 0.5f;
+		return (gameObject.transform.position - this.transform.position).magnitude <= range;
 	}
 }
