@@ -40,7 +40,8 @@ public class GatherTaskScript : TaskScript {
 		if(IsInRange(DepotTarget.gameObject)) {
 			// In range, deposit resources
 			MoveTaskScript.StopTask();
-			DepotTarget.DepositResource(HeldResource.resource, HeldResource.amount); //TODO something wrong on this line??
+			DepotTarget.DepositResource(HeldResource.resource, HeldResource.amount);
+			DepotTarget = null;
 			HeldResource = null;
 		} else {
 			// Not in range, make sure we're moving toward depot
@@ -55,7 +56,6 @@ public class GatherTaskScript : TaskScript {
 			if(GatherTimer <= 0) {
 				// Timer's up, trigger gather from node if still in range
 				if(IsInRange(GatherTarget.gameObject)) {
-					GatherTimer = gatherTime;
 					int gatheredAmount = GatherTarget.GatherFrom(gatherAmount);
 					if(HeldResource == null) {
 						HeldResource = new ResourceAmount();
@@ -65,6 +65,8 @@ public class GatherTaskScript : TaskScript {
 					HeldResource.amount += gatheredAmount;
 					if(HeldResource.amount >= gatherLimit) {
 						DepotTarget = ResourceDepot.FindNearestDepotForResource(transform.position, Controllable.owner, HeldResource.resource);
+					} else {
+						GatherTimer = gatherTime;
 					}
 				}
 			}
