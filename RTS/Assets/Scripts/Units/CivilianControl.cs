@@ -69,7 +69,7 @@ public class CivilianControl : BaseUnitControl {
 		Game.PlayerInput.DeselectDisabled = true;
 	}
 	
-	//TODO turn on some grid while placing buildings?
+	//TODO low: turn on some grid while placing buildings?
 	
 	// Moves the queued building to where the mouse hits the ground
 	protected void DrawQueuedBuildingAtMouse() {
@@ -84,7 +84,7 @@ public class CivilianControl : BaseUnitControl {
 			position.z = Mathf.RoundToInt(position.z);
 			queuedBuildTarget.transform.position = position;
 		}
-		//TODO finish drawing queued buildings (can't intersect other objects, etc.)
+		//TODO low: finish drawing queued buildings (can't intersect other objects, etc.)
 	}
 	
 	// Commits the currently queued building at its current position and begins building
