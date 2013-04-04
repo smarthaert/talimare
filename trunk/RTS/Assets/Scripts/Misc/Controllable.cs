@@ -56,6 +56,13 @@ public abstract class Controllable : Selectable {
 		}
 	}
 	
+	public Task GetCurrentTask() {
+		if(taskQueue.Count > 0)
+			return taskQueue.Peek();
+		else
+			return null;
+	}
+	
 	// Returns whether or not the multi-key is pressed (default shift, or the key that allows you to operate on multiple things at once)
 	public bool IsMultiKeyPressed() {
 		return Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
@@ -66,11 +73,5 @@ public abstract class Controllable : Selectable {
 	
 	// Called when any key is pressed while this Controllable is selected
 	public virtual void KeyPressed() {}
-	
-	// Called when another object moves into visual range
-	public virtual void ObjectEnteredVision(GameObject obj) {}
-	
-	// Called when another object moves out of visual range
-	public virtual void ObjectLeftVision(GameObject obj) {}
 }
 
