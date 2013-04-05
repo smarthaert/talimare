@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using Wintellect.PowerCollections;
 
 // Defines the behavior of a Selectable which can be controlled, i.e. issued actions
 public abstract class Controllable : Selectable {
@@ -11,7 +12,7 @@ public abstract class Controllable : Selectable {
 	public List<Tech> applicableTechs;
 	
 	// A queue to hold all current tasks this object is tasked complete
-	private Queue<Task> taskQueue = new Queue<Task>();
+	private Deque<Task> taskQueue = new Deque<Task>();
 	
 	protected override void Start() {
 		base.Start();
@@ -29,11 +30,11 @@ public abstract class Controllable : Selectable {
 	// Processes the action queue by starting the top action or removing it if it has completed
 	private void ProcessTaskQueue() {
 		if(taskQueue.Count > 0) {
-			Task topTask = taskQueue.Peek();
-			if(!topTask.IsStarted) {
-				topTask.Start();
-			} else if(!topTask.IsRunning()) {
-				taskQueue.Dequeue();
+			Task frontTask = taskQueue.GetAtFront();
+			if(!frontTask.IsStarted) {
+				frontTask.Start();
+			} else if(!frontTask.IsRunning()) {
+				taskQueue.RemoveFromFront();
 			}
 		}
 	}
@@ -43,13 +44,20 @@ public abstract class Controllable : Selectable {
 		if(!appendToQueue) {
 			AbortTaskQueue();
 		}
-		taskQueue.Enqueue(task);
+		taskQueue.AddToBack(task);
+	}
+	
+	public void AddTaskInterrupt(Task task) {
+		if(taskQueue.Count > 0) {
+			taskQueue.GetAtFront().Pause();
+		}
+		taskQueue.AddToFront(task);
 	}
 	
 	// Aborts the entire task queue by aborting and removing each task
 	public void AbortTaskQueue() {
 		while(taskQueue.Count > 0) {
-			Task abortedTask = taskQueue.Dequeue();
+			Task abortedTask = taskQueue.RemoveFromFront();
 			if(abortedTask.IsStarted) {
 				abortedTask.Abort();
 			}
@@ -58,7 +66,7 @@ public abstract class Controllable : Selectable {
 	
 	public Task GetCurrentTask() {
 		if(taskQueue.Count > 0)
-			return taskQueue.Peek();
+			return taskQueue.GetAtFront();
 		else
 			return null;
 	}

@@ -1,3 +1,3 @@
 public enum AIStance {
-	Aggressive, Defensive, Passive
+	Aggressive, Defensive, Passive, Avoidive
 }

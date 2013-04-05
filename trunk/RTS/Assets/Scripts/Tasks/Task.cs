@@ -23,4 +23,9 @@ public class Task {
 	public void Abort() {
 		TaskScript.StopTask();
 	}
+	
+	public void Pause() {
+		TaskScript.StopTask();
+		IsStarted = false;
+	}
 }
