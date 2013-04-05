@@ -57,8 +57,7 @@ public class AttackTaskScript : TaskScript {
 			if(attackTimer <= 0) {
 				// Check attack range at end of attack sequence
 				if(IsInRange(CurrentAttackTarget.transform)) {
-					// Apply damage
-					CurrentAttackTarget.GetComponent<UnitStatus>().Damage(attackDamage);
+					CombatRouter.DealDamage(this.gameObject, CurrentAttackTarget, attackDamage);
 				}
 				// Start cooldown timer
 				attackCooldownTimer = attackCooldown;

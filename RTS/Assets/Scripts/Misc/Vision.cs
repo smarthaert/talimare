@@ -180,7 +180,7 @@ public class Vision : MonoBehaviour {
 		if(other.transform.root != this.transform.root) {
 			if(other.GetComponent<Controllable>() != null && other.GetComponent<Controllable>().owner != controllable.owner) {
 				// Object is a Controllable owned by another player
-				transform.root.gameObject.SendMessage("ObjectEnteredVision", other.gameObject);
+				transform.root.gameObject.SendMessage("ObjectEnteredVision", other.gameObject, SendMessageOptions.DontRequireReceiver);
 			}
 		}
 	}
@@ -190,7 +190,7 @@ public class Vision : MonoBehaviour {
 		if(other.transform.root != this.transform.root) {
 			if(other.GetComponent<Controllable>() != null && other.GetComponent<Controllable>().owner != controllable.owner) {
 				// Object is a Controllable owned by another player
-				transform.root.gameObject.SendMessage("ObjectLeftVision", other.gameObject);
+				transform.root.gameObject.SendMessage("ObjectLeftVision", other.gameObject, SendMessageOptions.DontRequireReceiver);
 			}
 		}
 	}
