@@ -9,6 +9,7 @@ public class PersonalAI : MonoBehaviour {
 	public AIState targetStateOnIdle = AIState.Idle;
 	public AIStance stance = AIStance.Defensive;
 	public bool combatOverridesWork = false;
+	public bool autoAttackBuildings = false;
 	
 	public AIState State { get; set; }
 	// Tracks how long the AI has been in its current state
@@ -69,8 +70,8 @@ public class PersonalAI : MonoBehaviour {
 	public virtual void ObjectEnteredVision(GameObject obj) {
 		visibleObjects.Add(obj);
 		
-		// Determine if other object is an enemy
-		if(Controllable.owner.relationships[obj.GetComponent<Controllable>().owner] == PlayerRelationship.HOSTILE) {
+		// Determine if other object is an enemy unit
+		if(obj.CompareTag("Unit") && Controllable.owner.relationships[obj.GetComponent<Controllable>().owner] == PlayerRelationship.HOSTILE) {
 			// Determine if object is in a state to respond
 			if(State == AIState.Idle || (State == AIState.Working && combatOverridesWork)) {
 				// Act based on object's stance
