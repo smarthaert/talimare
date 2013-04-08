@@ -50,35 +50,37 @@ public class GatherTaskScript : TaskScript {
 	}
 	
 	protected void UpdateGather() {
-		if(GatherTimer > 0) {
-			// Currently gathering
-			GatherTimer -= Time.deltaTime;
-			if(GatherTimer <= 0) {
-				// Timer's up, trigger gather from node if still in range
-				if(IsInRange(GatherTarget.gameObject)) {
-					int gatheredAmount = GatherTarget.GatherFrom(gatherAmount);
-					if(HeldResource == null) {
-						HeldResource = new ResourceAmount();
-						HeldResource.resource = GatherTarget.resource;
-						HeldResource.amount = 0;
-					}
-					HeldResource.amount += gatheredAmount;
-					if(HeldResource.amount >= gatherLimit) {
-						DepotTarget = ResourceDepot.FindNearestDepotForResource(transform.position, Controllable.owner, HeldResource.resource);
-					} else {
-						GatherTimer = gatherTime;
+		if(HeldResource == null || HeldResource.amount < gatherLimit) {
+			if(GatherTimer > 0) {
+				// Currently gathering
+				GatherTimer -= Time.deltaTime;
+				if(GatherTimer <= 0) {
+					// Timer's up, trigger gather from node if still in range
+					if(IsInRange(GatherTarget.gameObject)) {
+						int gatheredAmount = GatherTarget.GatherFrom(gatherAmount);
+						if(HeldResource == null) {
+							HeldResource = new ResourceAmount();
+							HeldResource.resource = GatherTarget.resource;
+							HeldResource.amount = 0;
+						}
+						HeldResource.amount += gatheredAmount;
+						if(HeldResource.amount >= gatherLimit) {
+							DepotTarget = ResourceDepot.FindNearestDepotForResource(transform.position, Controllable.owner, HeldResource.resource);
+						} else {
+							GatherTimer = gatherTime;
+						}
 					}
 				}
-			}
-		} else {
-			// Not currently gathering (either due to being out of range, or just haven't started yet)
-			if(IsInRange(GatherTarget.gameObject)) {
-				// In range, start gathering
-				MoveTaskScript.StopTask();
-				GatherTimer = gatherTime;
 			} else {
-				// Not in range, make sure we're moving toward node
-				MoveTaskScript.StartTask(GatherTarget.transform);
+				// Not currently gathering (either due to being out of range, or just haven't started yet)
+				if(IsInRange(GatherTarget.gameObject)) {
+					// In range, start gathering
+					MoveTaskScript.StopTask();
+					GatherTimer = gatherTime;
+				} else {
+					// Not in range, make sure we're moving toward node
+					MoveTaskScript.StartTask(GatherTarget.transform);
+				}
 			}
 		}
 	}
