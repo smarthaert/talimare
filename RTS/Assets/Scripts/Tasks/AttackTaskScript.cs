@@ -73,7 +73,7 @@ public class AttackTaskScript : TaskScript {
 	}
 	
 	public override bool IsTaskRunning() {
-		return CurrentAttackTarget != null;
+		return Target != null;
 	}
 	
 	public override void StopTask() {

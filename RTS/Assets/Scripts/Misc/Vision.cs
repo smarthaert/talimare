@@ -24,7 +24,7 @@ public class Vision : MonoBehaviour {
 	// This determines how many rays we cast evenly around in a circle around this object
 	protected float circleStep;
 	
-	void Start() {
+	protected void Start() {
 		// A capsule collider provides a trigger for the vision range
 		gameObject.AddComponent<CapsuleCollider>();
 		CapsuleCollider visionCollider = GetComponent<CapsuleCollider>();
@@ -36,16 +36,16 @@ public class Vision : MonoBehaviour {
 		gameObject.AddComponent<Rigidbody>();
 		GetComponent<Rigidbody>().isKinematic = true;
 		
-		// Determine if this a unit (the alternative would be a building)
-		if(transform.root.gameObject.CompareTag("Unit"))
+		// Determine if this is a unit (the alternative would be a building)
+		if(transform.parent.gameObject.CompareTag("Unit"))
 			isUnit = true;
 		
 		GameObject fogOfWar = GameObject.Find("FogOfWar");
 		if(fogOfWar != null)
 			fogOfWarScript = fogOfWar.GetComponent<FogOfWar>();
 		if(isUnit)
-			pathfinder = transform.root.gameObject.GetComponent<MoveTaskScript>();
-		controllable = transform.root.gameObject.GetComponent<Controllable>();
+			pathfinder = transform.parent.gameObject.GetComponent<MoveTaskScript>();
+		controllable = transform.parent.gameObject.GetComponent<Controllable>();
 		ConfigureVisionSettings();
 		
 		fogLayerMask = 1 << LayerMask.NameToLayer("FogOfWar");
@@ -66,7 +66,7 @@ public class Vision : MonoBehaviour {
 		else
 			RevealsFog = false;
 		
-		if(transform.root.gameObject.CompareTag("Unit"))
+		if(transform.parent.gameObject.CompareTag("Unit"))
 			HidesInFog = true;
 		else
 			HidesInFog = false;
@@ -159,7 +159,7 @@ public class Vision : MonoBehaviour {
 	
 	// Hides this object, disabling all renderers
 	void Hide() {
-		Renderer[] allRenderer = transform.root.gameObject.GetComponentsInChildren<Renderer>();
+		Renderer[] allRenderer = transform.parent.gameObject.GetComponentsInChildren<Renderer>();
 		foreach(Renderer rendR in allRenderer) {
 			rendR.enabled = false;
 		}
@@ -168,7 +168,7 @@ public class Vision : MonoBehaviour {
 	
 	// Shows this object, enabling all renderers
 	void Show() {
-		Renderer[] allRenderer = transform.root.gameObject.GetComponentsInChildren<Renderer>();
+		Renderer[] allRenderer = transform.parent.gameObject.GetComponentsInChildren<Renderer>();
 		foreach(Renderer rendR in allRenderer) {
 			rendR.enabled = true;
 		}
@@ -177,20 +177,20 @@ public class Vision : MonoBehaviour {
 	
 	// Called when another collider enters this vision range
 	void OnTriggerEnter(Collider other) {
-		if(other.transform.root != this.transform.root) {
+		if(other.transform.parent != this.transform.parent) {
 			if(other.GetComponent<Controllable>() != null && other.GetComponent<Controllable>().owner != controllable.owner) {
 				// Object is a Controllable owned by another player
-				transform.root.gameObject.SendMessage("ObjectEnteredVision", other.gameObject, SendMessageOptions.DontRequireReceiver);
+				transform.parent.gameObject.SendMessage("ObjectEnteredVision", other.gameObject, SendMessageOptions.DontRequireReceiver);
 			}
 		}
 	}
 	
 	// Called when another collider exits this vision range
 	void OnTriggerExit(Collider other) {
-		if(other.transform.root != this.transform.root) {
+		if(other.transform.parent != this.transform.parent) {
 			if(other.GetComponent<Controllable>() != null && other.GetComponent<Controllable>().owner != controllable.owner) {
 				// Object is a Controllable owned by another player
-				transform.root.gameObject.SendMessage("ObjectLeftVision", other.gameObject, SendMessageOptions.DontRequireReceiver);
+				transform.parent.gameObject.SendMessage("ObjectLeftVision", other.gameObject, SendMessageOptions.DontRequireReceiver);
 			}
 		}
 	}
