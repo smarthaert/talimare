@@ -47,6 +47,7 @@ public abstract class Controllable : Selectable {
 		taskQueue.AddToBack(task);
 	}
 	
+	// Adds a task as an interrupt, which will execute immediately and any current task becomes paused
 	public void AddTaskInterrupt(Task task) {
 		if(taskQueue.Count > 0) {
 			taskQueue.GetAtFront().Pause();
@@ -65,10 +66,11 @@ public abstract class Controllable : Selectable {
 	}
 	
 	public Task GetCurrentTask() {
-		if(taskQueue.Count > 0)
+		if(taskQueue.Count > 0) {
 			return taskQueue.GetAtFront();
-		else
+		} else {
 			return null;
+		}
 	}
 	
 	// Returns whether or not the multi-key is pressed (default shift, or the key that allows you to operate on multiple things at once)

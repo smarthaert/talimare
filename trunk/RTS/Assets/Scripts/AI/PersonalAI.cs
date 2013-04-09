@@ -28,9 +28,6 @@ public class PersonalAI : MonoBehaviour {
 	
 	protected virtual void Update() {
 		UpdateState();
-		if(State == AIState.Idle) {
-			HandleIdleState();
-		}
 	}
 	
 	// Sets the current AIState based on the object's current task
@@ -38,6 +35,7 @@ public class PersonalAI : MonoBehaviour {
 		AIState savedState = State;
 		if(Controllable.GetCurrentTask() == null) {
 			State = AIState.Idle;
+			HandleIdleStateChange();
 		} else if(Controllable.GetCurrentTask().TaskScript is AttackTaskScript) {
 			State = AIState.Fighting;
 		} else {
@@ -50,19 +48,19 @@ public class PersonalAI : MonoBehaviour {
 		}
 	}
 	
-	// Decides what actions to take on AIState.IDLE
-	protected virtual void HandleIdleState() {
+	// Decides what action to take when state changes to AIState.IDLE
+	protected virtual void HandleIdleStateChange() {
 		if(targetStateOnIdle == AIState.Idle)
 			ContinueIdleState();
 		else if(targetStateOnIdle == AIState.Working)
 			ForceWorkingState();
 	}
 	
-	// Decides what actions to take to continue being in AIState.IDLE.
+	// Decides what action to take to continue being in AIState.IDLE.
 	// Default implementation is to just do nothing.
 	protected virtual void ContinueIdleState() {}
 	
-	// Decides what actions to take to get to AIState.WORKING.
+	// Decides what action to take to get to AIState.WORKING.
 	// Intended to be overridden if needed, this method would be responsible for deciding what task to take to stay busy
 	protected virtual void ForceWorkingState() {}
 	
@@ -70,15 +68,15 @@ public class PersonalAI : MonoBehaviour {
 	public virtual void ObjectEnteredVision(GameObject obj) {
 		visibleObjects.Add(obj);
 		
-		// Determine if other object is an enemy unit
-		if(obj.CompareTag("Unit") && Controllable.owner.relationships[obj.GetComponent<Controllable>().owner] == PlayerRelationship.HOSTILE) {
-			// Determine if object is in a state to respond
-			if(State == AIState.Idle || (State == AIState.Working && combatOverridesWork)) {
+		// Determine if object is in a state to respond
+		if(State == AIState.Idle || (State == AIState.Working && combatOverridesWork)) {
+			// Determine if other object is an enemy unit
+			if(obj.CompareTag("Unit") && Controllable.owner.relationships[obj.GetComponent<Controllable>().owner] == PlayerRelationship.HOSTILE) {
 				// Act based on object's stance
 				if(stance == AIStance.Aggressive) {
 					Fight(obj);
 				} else if(stance == AIStance.Avoidive) {
-					//TODO low: flee
+					Flee(obj);
 				}
 			}
 		}
@@ -91,15 +89,15 @@ public class PersonalAI : MonoBehaviour {
 	
 	// Called whenever this object takes damage
 	public virtual void TookDamage(GameObject source) {
-		// Determine if other object is an enemy
-		if(Controllable.owner.relationships[source.GetComponent<Controllable>().owner] == PlayerRelationship.HOSTILE) {
-			// Determine if object is in a state to respond
-			if(State == AIState.Idle || (State == AIState.Working && combatOverridesWork)) {
+		// Determine if object is in a state to respond
+		if(State == AIState.Idle || (State == AIState.Working && combatOverridesWork)) {
+			// Determine if other object is an enemy
+			if(Controllable.owner.relationships[source.GetComponent<Controllable>().owner] == PlayerRelationship.HOSTILE) {
 				// Act based on object's stance
 				if(stance == AIStance.Aggressive || stance == AIStance.Defensive) {
 					Fight(source);
 				} else if(stance == AIStance.Passive || stance == AIStance.Avoidive) {
-					//TODO low: flee
+					Flee(source);
 				}
 			}
 		}
@@ -107,5 +105,9 @@ public class PersonalAI : MonoBehaviour {
 	
 	protected virtual void Fight(GameObject target) {
 		Controllable.AddTaskInterrupt(new Task(GetComponent<AttackTaskScript>(), target));
+	}
+	
+	protected virtual void Flee(GameObject fleeFrom) {
+		//TODO low: flee
 	}
 }
