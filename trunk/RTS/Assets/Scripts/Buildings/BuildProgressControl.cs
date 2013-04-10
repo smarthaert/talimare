@@ -30,8 +30,8 @@ public class BuildProgressControl : Controllable {
 	
 	// Called when this building is committed (goes from a queued/placement state to actually being in the world)
 	public void Commit() {
-		BuildingStatus.SetCurrentHP(0);
 		BuildingStatus.maxHP = finishedObject.GetComponent<BuildingStatus>().maxHP;
+		BuildingStatus.SetHPToZero();
 		if(pathfinding == null)
 			pathfinding = GameObject.Find("Pathfinding").GetComponent<AstarPath>();
 		pathfinding.Scan();

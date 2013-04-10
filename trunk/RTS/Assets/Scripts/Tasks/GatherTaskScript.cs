@@ -12,7 +12,7 @@ public class GatherTaskScript : TaskScript {
 	// Gathering triggers once per this many seconds
 	protected float gatherTime = 5;
 	// Resource amount this unit is currently holding
-	protected ResourceAmount HeldResource { get; set; }
+	public ResourceAmount HeldResource { get; protected set; }
 	
 	// The resource node this unit is currently gathering from
 	protected ResourceNode GatherTarget { get; set; }

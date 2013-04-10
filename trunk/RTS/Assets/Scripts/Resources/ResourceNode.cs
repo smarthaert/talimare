@@ -4,21 +4,24 @@ using System.Collections;
 public class ResourceNode : Selectable {
 	
 	public Resource resource;
-	public int amount;
+	
+	public int startingAmount;
+	public int CurrentAmount { get; protected set; }
 	
 	protected static AstarPath Pathfinding { get; set; }
 	
 	protected override void Start() {
 		base.Start();
+		CurrentAmount = startingAmount;
 		if(Pathfinding == null)
 			Pathfinding = (AstarPath)GameObject.FindObjectOfType(typeof(AstarPath));
 	}
 	
 	public int GatherFrom(int amount) {
-		this.amount -= amount;
-		if(this.amount <= 0) {
+		CurrentAmount -= amount;
+		if(CurrentAmount <= 0) {
 			Die();
-			return amount + this.amount;
+			return amount + CurrentAmount;
 		}
 		return amount;
 	}

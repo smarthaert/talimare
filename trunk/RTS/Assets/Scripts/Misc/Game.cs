@@ -5,10 +5,10 @@ using System.Collections.Generic;
 public class Game : MonoBehaviour {
 	
 	// The human player controlled by this instance of the game
-	public static Player ThisPlayer { get; set; }
+	public static Player ThisPlayer { get; protected set; }
 	
 	// A reference to the PlayerInput component in case any other scripts need it
-	public static PlayerInput PlayerInput { get; set; }
+	public static PlayerInput PlayerInput { get; protected set; }
 	
 	// Set of all players currently active in the game
 	protected static HashSet<Player> players = new HashSet<Player>();

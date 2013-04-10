@@ -53,7 +53,7 @@ public class BaseBuildingControl : Controllable {
 	public override void KeyPressed() {
 		// See if pressed key exists in units or techs and if so, queue that Creatable
 		foreach(Creatable unit in units) {
-			if(Input.GetKeyDown(unit.creationKey)) {
+			if(Input.GetKeyDown(unit.KeyControl.Key)) {
 				if(unit.CanCreate(owner)) {
 					unit.SpendResources(owner);
 					unitQueue.Enqueue(unit);
@@ -61,7 +61,7 @@ public class BaseBuildingControl : Controllable {
 			}
 		}
 		foreach(Creatable tech in techs) {
-			if(Input.GetKeyDown(tech.creationKey)) {
+			if(Input.GetKeyDown(tech.KeyControl.Key)) {
 				if(!techQueue.Contains(tech) && tech.CanCreate(owner)) {
 					tech.SpendResources(owner);
 					techQueue.Enqueue(tech);
