@@ -8,20 +8,21 @@ public class HUD : MonoBehaviour {
 	protected Player player;
 	protected Rect resourceLevelsLocation;
 	
-	void Start() {
+	protected void Start() {
 		player = Game.ThisPlayer;
 		resourceLevelsLocation = new Rect(5, Screen.height-170, 100, 100);
 	}
 	
-	void OnGUI() {
+	protected void OnGUI() {
 		GUI.skin = skin;
 		// Use this if/when we need to scale the gui to other resolutions
 		//GUI.matrix = Matrix4x4.TRS(Vector3.zero, Quaternion.identity, Vector3(Screen.width / 1920.0, Screen.height / 1200.0, 1));
 		
 		RenderResourceLevels();
+		RenderLowerPane();
 	}
 	
-	void RenderResourceLevels() {
+	protected void RenderResourceLevels() {
 		int offset = 0;
 		foreach(KeyValuePair<Resource, int> resourceLevel in player.PlayerStatus.resourceLevels) {
 			Rect tempLocation = resourceLevelsLocation;
@@ -35,5 +36,26 @@ public class HUD : MonoBehaviour {
 			}
 			offset += 16;
 		}
+	}
+	
+	protected void RenderLowerPane() {
+		GUI.BeginGroup(new Rect(0, Screen.height-Screen.height/4, Screen.width, Screen.height/4));
+		RenderMapPane();
+		RenderSelectedPane();
+		RenderControlsPane();
+		GUI.EndGroup();
+	}
+	
+	protected void RenderMapPane() {
+		GUI.Box(new Rect(0, 0, Screen.width/3, Screen.height/4), "");
+	}
+	
+	protected void RenderSelectedPane() {
+		GUI.Box(new Rect(Screen.width/3, 0, Screen.width/3, Screen.height/4), "");
+		//TODO high: pull details of currently-selected Selectable from PlayerInput and display them... somehow
+	}
+	
+	protected void RenderControlsPane() {
+		GUI.Box(new Rect((Screen.width/3)*2, 0, Screen.width/3, Screen.height/4), "");
 	}
 }
