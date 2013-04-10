@@ -5,39 +5,29 @@ using System.Collections;
 public class ControllableStatus : MonoBehaviour {
 
 	public int maxHP;
-	protected int currentHP;
-	
-	protected TextMesh hpText;
+	public int HP { get; protected set; }
 
-	void Start () {
-		currentHP = maxHP;
-		
-		hpText = GetComponentInChildren<TextMesh>();
+	protected void Start () {
+		HP = maxHP;
 	}
 	
-	void Update () {
-		hpText.text = currentHP.ToString();
-	}
+	protected void Update () {}
 	
-	public int GetCurrentHP() {
-		return currentHP;
-	}
-	
-	public void SetCurrentHP(int amount) {
-		currentHP = amount;
+	public void SetHPToZero() {
+		HP = 0;
 	}
 	
 	public void Damage(int amount) {
-		currentHP -= amount;
-		Mathf.Clamp(currentHP, 0, maxHP);
-		if(currentHP <= 0) {
+		HP -= amount;
+		Mathf.Clamp(HP, 0, maxHP);
+		if(HP <= 0) {
 			Die();
 		}
 	}
 	
 	public void Heal(int amount) {
-		currentHP += amount;
-		Mathf.Clamp(currentHP, 0, maxHP);
+		HP += amount;
+		Mathf.Clamp(HP, 0, maxHP);
 	}
 	
 	protected void Die() {

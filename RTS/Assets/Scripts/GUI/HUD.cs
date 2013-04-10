@@ -5,12 +5,15 @@ public class HUD : MonoBehaviour {
 	
 	public GUISkin skin;
 	
-	protected Player player;
-	protected Rect resourceLevelsLocation;
+	protected Player Player { get; set; }
+	protected Rect ResourceLevelsLocation { get; set; }
+	protected PlayerInput PlayerInput { get; set; }
+	protected Selectable CurrentSelection { get; set; }
 	
 	protected void Start() {
-		player = Game.ThisPlayer;
-		resourceLevelsLocation = new Rect(5, Screen.height-170, 100, 100);
+		Player = Game.ThisPlayer;
+		PlayerInput = Game.PlayerInput;
+		ResourceLevelsLocation = new Rect(5, Screen.height-170, 100, 100);
 	}
 	
 	protected void OnGUI() {
@@ -24,11 +27,11 @@ public class HUD : MonoBehaviour {
 	
 	protected void RenderResourceLevels() {
 		int offset = 0;
-		foreach(KeyValuePair<Resource, int> resourceLevel in player.PlayerStatus.resourceLevels) {
-			Rect tempLocation = resourceLevelsLocation;
+		foreach(KeyValuePair<Resource, int> resourceLevel in Player.PlayerStatus.resourceLevels) {
+			Rect tempLocation = ResourceLevelsLocation;
 			tempLocation.y += offset;
 			if(resourceLevel.Key == Resource.Food || resourceLevel.Key == Resource.Water || resourceLevel.Key == Resource.Power) {
-				int resourceUpkeepMaximum = player.PlayerStatus.upkeepMaximums[resourceLevel.Key];
+				int resourceUpkeepMaximum = Player.PlayerStatus.upkeepMaximums[resourceLevel.Key];
 				int resourceAmountUsed = resourceUpkeepMaximum - resourceLevel.Value;
 				GUI.Label(tempLocation, resourceLevel.Key.ToString()+": "+resourceAmountUsed+" / "+resourceUpkeepMaximum.ToString());
 			} else {
@@ -39,6 +42,8 @@ public class HUD : MonoBehaviour {
 	}
 	
 	protected void RenderLowerPane() {
+		CurrentSelection = PlayerInput.CurrentSelection;
+		
 		GUI.BeginGroup(new Rect(0, Screen.height-Screen.height/4, Screen.width, Screen.height/4));
 		RenderMapPane();
 		RenderSelectedPane();
@@ -47,15 +52,53 @@ public class HUD : MonoBehaviour {
 	}
 	
 	protected void RenderMapPane() {
+		GUI.BeginGroup(new Rect(0, 0, Screen.width/3, Screen.height/4));
 		GUI.Box(new Rect(0, 0, Screen.width/3, Screen.height/4), "");
+		GUI.EndGroup();
 	}
 	
 	protected void RenderSelectedPane() {
-		GUI.Box(new Rect(Screen.width/3, 0, Screen.width/3, Screen.height/4), "");
-		//TODO high: pull details of currently-selected Selectable from PlayerInput and display them... somehow
+		GUI.BeginGroup(new Rect(Screen.width/3, 0, Screen.width/3, Screen.height/4));
+		GUI.Box(new Rect(0, 0, Screen.width/3, Screen.height/4), "");
+		if(CurrentSelection != null) {
+			GUILayout.Label(CurrentSelection.name);
+			if(CurrentSelection.GetComponent<ControllableStatus>() != null) {
+				RenderSelectedControllable();
+			} else if(CurrentSelection.GetComponent<ResourceNode>() != null) {
+				RenderSelectedResource();
+			}
+		}
+		GUI.EndGroup();
+	}
+	
+	protected void RenderSelectedControllable() {
+		ControllableStatus status = CurrentSelection.GetComponent<ControllableStatus>();
+		GUILayout.Label("HP: " + status.HP + " / " + status.maxHP);
+		//check if civilian carrying resources
+		if(CurrentSelection.GetComponent<GatherTaskScript>() != null) {
+			ResourceAmount heldResource = CurrentSelection.GetComponent<GatherTaskScript>().HeldResource;
+			if(heldResource != null) {
+				GUILayout.Label("Carrying: " + heldResource.resource + " x " + heldResource.amount);
+			}
+		}
+	}
+	
+	protected void RenderSelectedResource() {
+		ResourceNode resource = CurrentSelection.GetComponent<ResourceNode>();
+		GUILayout.Label(resource.CurrentAmount + " / " + resource.startingAmount);
 	}
 	
 	protected void RenderControlsPane() {
-		GUI.Box(new Rect((Screen.width/3)*2, 0, Screen.width/3, Screen.height/4), "");
+		GUI.BeginGroup(new Rect((Screen.width/3)*2, 0, Screen.width/3, Screen.height/4));
+		GUI.Box(new Rect(0, 0, Screen.width/3, Screen.height/4), "");
+		if(CurrentSelection is Controllable) {
+			RenderControls();
+		}
+		GUI.EndGroup();
+	}
+	
+	protected void RenderControls() {
+		Controllable controllable = (Controllable)CurrentSelection;
+		
 	}
 }

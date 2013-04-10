@@ -9,18 +9,18 @@ public class PlayerInput : MonoBehaviour {
 	
 	protected int ClickLayerMask { get; set; }
 	
-	protected Selectable currentSelection;
-	protected Vision currentSelectionVision;
-	protected GameObject currentMarker;
+	public Selectable CurrentSelection { get; protected set; }
 	public bool DeselectDisabled { get; set; }
+	protected Vision CurrentSelectionVision { get; set; }
+	protected GameObject CurrentMarker { get; set; }
 	
-	void Start () {
+	protected void Start () {
 		ClickLayerMask = ~((1 << LayerMask.NameToLayer("FogOfWar")) + (1 << LayerMask.NameToLayer("Ignore Raycast")));
 	}
 	
-	void Update () {
-		if(currentSelection != null) {
-			if(currentSelectionVision != null && currentSelectionVision.IsHiddenByFog) {
+	protected void Update () {
+		if(CurrentSelection != null) {
+			if(CurrentSelectionVision != null && CurrentSelectionVision.IsHiddenByFog) {
 				// Current selection is now hidden by fog
 				DeselectCurrent();
 			} else {
@@ -28,7 +28,7 @@ public class PlayerInput : MonoBehaviour {
 				if(!DeselectDisabled && Input.GetKeyDown(KeyCode.Escape)) {
 					DeselectCurrent();
 				} else if(Input.anyKeyDown && CurrentSelectionIsMyControllable()) {
-					((Controllable)currentSelection).KeyPressed();
+					((Controllable)CurrentSelection).KeyPressed();
 				}
 				
 				// Handle mouse1 click (object action)
@@ -38,7 +38,7 @@ public class PlayerInput : MonoBehaviour {
 					RaycastHit hit;
 					
 					if(Physics.Raycast(ray, out hit, Mathf.Infinity, ClickLayerMask)) {
-						((Controllable)currentSelection).MouseAction(hit);
+						((Controllable)CurrentSelection).MouseAction(hit);
 					}
 				}
 			}
@@ -56,7 +56,7 @@ public class PlayerInput : MonoBehaviour {
 				Selectable selectable = clickedObject.GetComponent<Selectable>();
 				Vision vision = clickedObject.GetComponentInChildren<Vision>();
 				if(selectable != null && (vision == null || !vision.IsHiddenByFog)) {
-					if(selectable != currentSelection) {
+					if(selectable != CurrentSelection) {
 						Select(selectable);
 					}
 				} else {
@@ -69,33 +69,38 @@ public class PlayerInput : MonoBehaviour {
 	}
 	
 	// Selects the given object, adding a visual marker
-	void Select(Selectable selectable) {
+	protected void Select(Selectable selectable) {
 		DeselectCurrent();
-		currentSelection = selectable;
-		currentMarker = (GameObject)Instantiate(selectionMarker, currentSelection.gameObject.transform.position, Quaternion.identity);
-		currentMarker.transform.parent = currentSelection.gameObject.transform;
+		CurrentSelection = selectable;
+		CurrentMarker = (GameObject)Instantiate(selectionMarker, CurrentSelection.gameObject.transform.position, Quaternion.identity);
+		CurrentMarker.transform.parent = CurrentSelection.gameObject.transform;
 		
-		currentSelection.Selected();
-		currentSelectionVision = currentSelection.GetComponentInChildren<Vision>();
+		CurrentSelection.Selected();
+		CurrentSelectionVision = CurrentSelection.GetComponentInChildren<Vision>();
 		
 		DeselectDisabled = false;
 	}
 	
 	// Deselects the currently selected object
-	void DeselectCurrent() {
-		if(currentMarker != null)
-			Destroy(currentMarker);
-		currentMarker = null;
+	protected void DeselectCurrent() {
+		if(CurrentMarker != null)
+			Destroy(CurrentMarker);
+		CurrentMarker = null;
 		
-		if(currentSelection != null)
-			currentSelection.Deselected();
-		currentSelection = null;
-		currentSelectionVision = null;
+		if(CurrentSelection != null)
+			CurrentSelection.Deselected();
+		CurrentSelection = null;
+		CurrentSelectionVision = null;
 		
 		DeselectDisabled = false;
 	}
 	
 	protected bool CurrentSelectionIsMyControllable() {
-		return (currentSelection is Controllable && ((Controllable)currentSelection).owner == Game.ThisPlayer);
+		return (CurrentSelection is Controllable && ((Controllable)CurrentSelection).owner == Game.ThisPlayer);
+	}
+	
+	// Returns whether or not the multi-key is pressed (default shift, or the key that allows you to operate on multiple things at once)
+	public bool IsMultiKeyPressed() {
+		return Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
 	}
 }

@@ -35,9 +35,9 @@ public class CivilianControl : BaseUnitControl {
 		if(queuedBuildTarget != null) {
 			CommitQueuedBuilding();
 		} else if(hit.collider.gameObject.CompareTag("Resource")) {
-			AddTask(new Task(GetComponent<GatherTaskScript>(), hit.collider.gameObject.GetComponent<ResourceNode>()), IsMultiKeyPressed());
+			AddTask(new Task(GetComponent<GatherTaskScript>(), hit.collider.gameObject.GetComponent<ResourceNode>()), Game.PlayerInput.IsMultiKeyPressed());
 		} else if(hit.collider.gameObject.CompareTag("BuildProgress")) {
-			AddTask(new Task(GetComponent<BuildTaskScript>(), hit.collider.gameObject.GetComponent<BuildProgressControl>()), IsMultiKeyPressed());
+			AddTask(new Task(GetComponent<BuildTaskScript>(), hit.collider.gameObject.GetComponent<BuildProgressControl>()), Game.PlayerInput.IsMultiKeyPressed());
 		} 
 	}
 	
@@ -53,7 +53,7 @@ public class CivilianControl : BaseUnitControl {
 			if(buildMenuOpen) {
 				// See if pressed key exists in buildings and if so, queue the BuildProgress object for that building
 				foreach(Creatable building in buildings) {
-					if(Input.GetKeyDown(building.creationKey) && building.CanCreate(owner)) {
+					if(Input.GetKeyDown(building.KeyControl.Key) && building.CanCreate(owner)) {
 						InstantiateBuildProgress(building);
 					}
 				}
@@ -91,9 +91,9 @@ public class CivilianControl : BaseUnitControl {
 	protected void CommitQueuedBuilding() {
 		if(queuedBuildTarget.Creatable.CanCreate(owner)) {
 			queuedBuildTarget.Commit();
-			AddTask(new Task(GetComponent<BuildTaskScript>(), queuedBuildTarget), IsMultiKeyPressed());
+			AddTask(new Task(GetComponent<BuildTaskScript>(), queuedBuildTarget), Game.PlayerInput.IsMultiKeyPressed());
 		}
-		if(IsMultiKeyPressed() && queuedBuildTarget.Creatable.CanCreate(owner)) {
+		if(Game.PlayerInput.IsMultiKeyPressed() && queuedBuildTarget.Creatable.CanCreate(owner)) {
 			InstantiateBuildProgress(queuedBuildTarget.Creatable);
 		} else {
 			RemoveQueuedBuildTarget(false);

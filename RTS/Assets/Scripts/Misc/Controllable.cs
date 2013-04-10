@@ -11,6 +11,10 @@ public abstract class Controllable : Selectable {
 	// A list of Techs which apply to this object when they are gained
 	public List<Tech> applicableTechs;
 	
+	// A set of KeyControlCodes which this Controllable uses and should be displayed on the HUD
+	//TODO high: make this a multi-layer list so that hitting certain keys opens up a new set of keys (like for the build menu)
+	public OrderedSet<KeyControlCode> keyControlCodes = new OrderedSet<KeyControlCode>();
+	
 	// A queue to hold all current tasks this object is tasked complete
 	private Deque<Task> taskQueue = new Deque<Task>();
 	
@@ -71,11 +75,6 @@ public abstract class Controllable : Selectable {
 		} else {
 			return null;
 		}
-	}
-	
-	// Returns whether or not the multi-key is pressed (default shift, or the key that allows you to operate on multiple things at once)
-	public bool IsMultiKeyPressed() {
-		return Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
 	}
 	
 	// Called when mouse action button is clicked on any object while this Controllable is selected
