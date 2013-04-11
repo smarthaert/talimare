@@ -31,6 +31,7 @@ public class BuildTaskScript : TaskScript {
 				StopTask();
 			}
 		} else {
+			//TODO high: gather build materials from depots
 			// Haven't started building yet
 			if(IsInBuildRange()) {
 				MoveTaskScript.StopTask();

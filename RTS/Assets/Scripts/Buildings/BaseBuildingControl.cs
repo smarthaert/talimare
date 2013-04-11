@@ -22,6 +22,29 @@ public class BaseBuildingControl : Controllable {
 		base.Start();
 	}
 	
+	protected override void PopulateControlMenuList() {
+		ControlMenu baseBuildingMenu = new ControlMenu("baseBuilding");
+		baseBuildingMenu.MenuItems.Add(new ControlMenuItem(ControlStore.MENU_UNITS, "createUnit"));
+		baseBuildingMenu.MenuItems.Add(new ControlMenuItem(ControlStore.MENU_TECHS, "createTech"));
+		ControlMenuList.Add(baseBuildingMenu);
+		
+		ControlMenu createUnitMenu = new ControlMenu("createUnit");
+		foreach(Creatable unit in units) {
+			createUnitMenu.MenuItems.Add(new ControlMenuItem(unit.ControlCode, null));
+		}
+		createUnitMenu.MenuItems.Add(new ControlMenuItem(ControlStore.MENU_BACK, "baseBuilding"));
+		ControlMenuList.Add(createUnitMenu);
+		
+		ControlMenu createTechMenu = new ControlMenu("createTech");
+		foreach(Creatable tech in techs) {
+			createTechMenu.MenuItems.Add(new ControlMenuItem(tech.ControlCode, null));
+		}
+		createUnitMenu.MenuItems.Add(new ControlMenuItem(ControlStore.MENU_BACK, "baseBuilding"));
+		ControlMenuList.Add(createTechMenu);
+		
+		CurrentControlMenu = baseBuildingMenu;
+	}
+	
 	protected override void Update() {
 		base.Update();
 		
@@ -38,7 +61,6 @@ public class BaseBuildingControl : Controllable {
 		}
 	}
 	
-	// Called when mouse action button is clicked on any object while this building is selected
 	public override void MouseAction(RaycastHit hit) {
 		if(hit.collider.GetType() == typeof(TerrainCollider)) {
 			rallyPoint = hit.point;
@@ -49,23 +71,20 @@ public class BaseBuildingControl : Controllable {
 		}
 	}
 	
-	// Called when any key is pressed while this building is selected
-	public override void KeyPressed() {
-		// See if pressed key exists in units or techs and if so, queue that Creatable
+	public override void ReceiveControlCode(string controlCode) {
+		base.ReceiveControlCode(controlCode);
+		
+		// See if ControlCode exists in units or techs and if so, queue that Creatable
 		foreach(Creatable unit in units) {
-			if(Input.GetKeyDown(unit.KeyControl.Key)) {
-				if(unit.CanCreate(owner)) {
-					unit.SpendResources(owner);
-					unitQueue.Enqueue(unit);
-				}
+			if(unit.ControlCode.Equals(controlCode) && unit.CanCreate(owner)) {
+				unit.SpendResources(owner);
+				unitQueue.Enqueue(unit);
 			}
 		}
 		foreach(Creatable tech in techs) {
-			if(Input.GetKeyDown(tech.KeyControl.Key)) {
-				if(!techQueue.Contains(tech) && tech.CanCreate(owner)) {
-					tech.SpendResources(owner);
-					techQueue.Enqueue(tech);
-				}
+			if(tech.ControlCode.Equals(controlCode) && !techQueue.Contains(tech) && tech.CanCreate(owner)) {
+				tech.SpendResources(owner);
+				techQueue.Enqueue(tech);
 			}
 		}
 	}

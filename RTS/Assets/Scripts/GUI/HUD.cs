@@ -99,6 +99,8 @@ public class HUD : MonoBehaviour {
 	
 	protected void RenderControls() {
 		Controllable controllable = (Controllable)CurrentSelection;
-		
+		foreach(ControlMenuItem controlMenuItem in controllable.CurrentControlMenu.MenuItems) {
+			GUILayout.Label(ControlStore.ControlMap[controlMenuItem.ControlCode].Name);
+		}
 	}
 }

@@ -11,18 +11,28 @@ public abstract class Controllable : Selectable {
 	// A list of Techs which apply to this object when they are gained
 	public List<Tech> applicableTechs;
 	
-	// A set of KeyControlCodes which this Controllable uses and should be displayed on the HUD
-	//TODO high: make this a multi-layer list so that hitting certain keys opens up a new set of keys (like for the build menu)
-	public OrderedSet<KeyControlCode> keyControlCodes = new OrderedSet<KeyControlCode>();
+	// A list of ControlMenus which this Controllable has and can be displayed on the HUD
+	protected List<ControlMenu> ControlMenuList { get; set; }
+	// The current ControlMenu which is selected and should be displayed on the HUD
+	public ControlMenu CurrentControlMenu { get; protected set; }
 	
 	// A queue to hold all current tasks this object is tasked complete
 	private Deque<Task> taskQueue = new Deque<Task>();
+	
+	protected override void Awake() {
+		base.Awake();
+	}
+	
+	protected abstract void PopulateControlMenuList();
 	
 	protected override void Start() {
 		base.Start();
 		
 		if(owner == null)
 			Debug.Log("Player was never set for the Controllable: "+name+". It should be set immediately after instantiating the object.");
+		
+		ControlMenuList = new List<ControlMenu>();
+		PopulateControlMenuList();
 	}
 	
 	protected override void Update() {
@@ -80,7 +90,18 @@ public abstract class Controllable : Selectable {
 	// Called when mouse action button is clicked on any object while this Controllable is selected
 	public virtual void MouseAction(RaycastHit hit) {}
 	
-	// Called when any key is pressed while this Controllable is selected
-	public virtual void KeyPressed() {}
+	// Called when a ControlCode is received while this Controllable is selected
+	public virtual void ReceiveControlCode(string controlCode) {
+		ControlMenuItem selectedMenuItem = CurrentControlMenu.GetMenuItemWithCode(controlCode);
+		if(selectedMenuItem != null && selectedMenuItem.DestinationMenu != null) {
+			foreach(ControlMenu menu in ControlMenuList) {
+				if(menu.Name.Equals(selectedMenuItem.DestinationMenu)) {
+					CurrentControlMenu = menu;
+					//TODO high: look for a "BACK" menu item. if there is one, disable deselection in PlayerInput
+				}
+			}
+		}
+		
+	}
 }
 

@@ -28,6 +28,10 @@ public class BuildProgressControl : Controllable {
 		Creatable = finishedObject.GetComponent<Creatable>();
 	}
 	
+	protected override void PopulateControlMenuList() {}
+	
+	public override void ReceiveControlCode(string controlCode) {}
+	
 	// Called when this building is committed (goes from a queued/placement state to actually being in the world)
 	public void Commit() {
 		BuildingStatus.maxHP = finishedObject.GetComponent<BuildingStatus>().maxHP;
