@@ -5,7 +5,7 @@ public class WolfAI : PersonalAI {
 
 	protected override void ContinueIdleState() {
 		base.ContinueIdleState();
-		//TODO high: wander
+		//TODO low: wander
 	}
 }
 

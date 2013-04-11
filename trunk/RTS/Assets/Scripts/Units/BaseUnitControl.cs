@@ -11,11 +11,18 @@ public class BaseUnitControl : Controllable {
 		base.Start();
 	}
 	
+	protected override void PopulateControlMenuList() {
+		ControlMenu baseUnitMenu = new ControlMenu("baseUnit");
+		baseUnitMenu.MenuItems.Add(new ControlMenuItem(ControlStore.STOP, null));
+		ControlMenuList.Add(baseUnitMenu);
+		
+		CurrentControlMenu = baseUnitMenu;
+	}
+	
 	protected override void Update() {
 		base.Update();
 	}
 	
-	// Called when mouse action button is clicked on any object while this unit is selected
 	public override void MouseAction(RaycastHit hit) {
 		if(hit.collider.GetType() == typeof(TerrainCollider)) {
 			AddTask(new Task(GetComponent<MoveTaskScript>(), hit.point), Game.PlayerInput.IsMultiKeyPressed());
@@ -27,9 +34,10 @@ public class BaseUnitControl : Controllable {
 		}
 	}
 	
-	// Called when any key is pressed while this unit is selected
-	public override void KeyPressed() {
-		if(Input.GetKeyDown(KeyCode.S)) {
+	public override void ReceiveControlCode(string controlCode) {
+		base.ReceiveControlCode(controlCode);
+		
+		if(controlCode.Equals(ControlStore.STOP)) {
 			AbortTaskQueue();
 		}
 	}

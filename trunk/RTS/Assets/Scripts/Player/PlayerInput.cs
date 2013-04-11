@@ -1,5 +1,5 @@
 using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 
 // Handles general player input unrelated to specific objects. Can be placed anywhere as long as it is in the scene
 public class PlayerInput : MonoBehaviour {
@@ -28,7 +28,9 @@ public class PlayerInput : MonoBehaviour {
 				if(!DeselectDisabled && Input.GetKeyDown(KeyCode.Escape)) {
 					DeselectCurrent();
 				} else if(Input.anyKeyDown && CurrentSelectionIsMyControllable()) {
-					((Controllable)CurrentSelection).KeyPressed();
+					foreach(string controlCode in GetControlCodesInMenuForCurrentKeys(((Controllable)CurrentSelection).CurrentControlMenu)) {
+						((Controllable)CurrentSelection).ReceiveControlCode(controlCode);
+					}
 				}
 				
 				// Handle mouse1 click (object action)
@@ -102,5 +104,15 @@ public class PlayerInput : MonoBehaviour {
 	// Returns whether or not the multi-key is pressed (default shift, or the key that allows you to operate on multiple things at once)
 	public bool IsMultiKeyPressed() {
 		return Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
+	}
+	
+	public List<string> GetControlCodesInMenuForCurrentKeys(ControlMenu menu) {
+		List<string> controlCodes = new List<string>();
+		foreach(ControlMenuItem item in menu.MenuItems) {
+			if(Input.GetKeyDown(ControlStore.ControlMap[item.ControlCode].Key)) {
+				controlCodes.Add(item.ControlCode);
+			}
+		}
+		return controlCodes;
 	}
 }

@@ -20,6 +20,12 @@ public class CivilianControl : BaseUnitControl {
 			terrainLayer = GameObject.Find("Terrain").layer;
 	}
 	
+	protected override void PopulateControlMenuList() {
+		base.PopulateControlMenuList();
+		
+		//TODO high: civilian populate control menu list
+	}
+	
 	protected override void Update () {
 		base.Update();
 		
@@ -28,7 +34,6 @@ public class CivilianControl : BaseUnitControl {
 		}
 	}
 	
-	// Called when mouse action button is clicked on any object while this unit is selected
 	public override void MouseAction(RaycastHit hit) {
 		base.MouseAction(hit);
 		
@@ -41,10 +46,12 @@ public class CivilianControl : BaseUnitControl {
 		} 
 	}
 	
-	// Called when any key is pressed while this unit is selected
-	public override void KeyPressed() {
-		base.KeyPressed();
+	public override void ReceiveControlCode(string controlCode) {
+		base.ReceiveControlCode(controlCode);
 		
+		//TODO high: civilian receive control code
+		
+		/*
 		if(queuedBuildTarget != null) {
 			if(Input.GetKeyDown(KeyCode.Escape)) {
 				RemoveQueuedBuildTarget(true);
@@ -61,6 +68,7 @@ public class CivilianControl : BaseUnitControl {
 				buildMenuOpen = true;
 			}
 		}
+		*/
 	}
 	
 	protected void InstantiateBuildProgress(Creatable building) {

@@ -4,14 +4,13 @@ using System.Collections.Generic;
 // Defines values for a Creatable object (unit, building, or tech)
 public class Creatable : MonoBehaviour {
 	
-	public KeyControlCode keyControlCode;
 	public float creationTime;
 	public List<ResourceAmount> resourceCosts;
 	public List<Tech> techDependencies;
 	public BuildProgressControl buildProgressObject;
 	
-	public KeyControl KeyControl {
-		get { return KeyControlStore.KeyControlMap[keyControlCode]; }
+	public string ControlCode {
+		get { return "Create"+this.name; }
 	}
 	
 	// Returns whether or not the given player meets all requirements to create this object.
