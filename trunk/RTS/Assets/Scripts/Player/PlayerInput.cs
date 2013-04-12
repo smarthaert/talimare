@@ -10,7 +10,6 @@ public class PlayerInput : MonoBehaviour {
 	protected int ClickLayerMask { get; set; }
 	
 	public Selectable CurrentSelection { get; protected set; }
-	public bool DeselectDisabled { get; set; }
 	protected Vision CurrentSelectionVision { get; set; }
 	protected GameObject CurrentMarker { get; set; }
 	
@@ -25,7 +24,7 @@ public class PlayerInput : MonoBehaviour {
 				DeselectCurrent();
 			} else {
 				// Send any key pressed notifications to the currently selected object
-				if(!DeselectDisabled && Input.GetKeyDown(KeyCode.Escape)) {
+				if(Input.GetKeyDown(KeyCode.Escape) && (!CurrentSelectionIsMyControllable() || !MenuHasBackButton(((Controllable)CurrentSelection).CurrentControlMenu))) {
 					DeselectCurrent();
 				} else if(Input.anyKeyDown && CurrentSelectionIsMyControllable()) {
 					foreach(string controlCode in GetControlCodesInMenuForCurrentKeys(((Controllable)CurrentSelection).CurrentControlMenu)) {
@@ -79,8 +78,6 @@ public class PlayerInput : MonoBehaviour {
 		
 		CurrentSelection.Selected();
 		CurrentSelectionVision = CurrentSelection.GetComponentInChildren<Vision>();
-		
-		DeselectDisabled = false;
 	}
 	
 	// Deselects the currently selected object
@@ -93,8 +90,6 @@ public class PlayerInput : MonoBehaviour {
 			CurrentSelection.Deselected();
 		CurrentSelection = null;
 		CurrentSelectionVision = null;
-		
-		DeselectDisabled = false;
 	}
 	
 	protected bool CurrentSelectionIsMyControllable() {
@@ -109,10 +104,19 @@ public class PlayerInput : MonoBehaviour {
 	public List<string> GetControlCodesInMenuForCurrentKeys(ControlMenu menu) {
 		List<string> controlCodes = new List<string>();
 		foreach(ControlMenuItem item in menu.MenuItems) {
-			if(Input.GetKeyDown(ControlStore.ControlMap[item.ControlCode].Key)) {
+			if(Input.GetKeyDown(item.Control.Hotkey)) {
 				controlCodes.Add(item.ControlCode);
 			}
 		}
 		return controlCodes;
+	}
+	
+	public bool MenuHasBackButton(ControlMenu menu) {
+		foreach(ControlMenuItem item in menu.MenuItems) {
+			if(item.ControlCode.Equals(ControlStore.MENU_BACK) || item.ControlCode.Equals(ControlStore.MENU_CANCEL)) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

@@ -28,9 +28,21 @@ public class BuildProgressControl : Controllable {
 		Creatable = finishedObject.GetComponent<Creatable>();
 	}
 	
-	protected override void PopulateControlMenuList() {}
+	protected override void BuildControlMenus() {
+		ControlMenu baseBuildProgressMenu = new ControlMenu("baseBuildProgress");
+		baseBuildProgressMenu.MenuItems.Add(new ControlMenuItem(ControlStore.DESTROY, null));
+		ControlMenus.Add(baseBuildProgressMenu);
+		
+		CurrentControlMenu = ControlMenus[0];
+	}
 	
-	public override void ReceiveControlCode(string controlCode) {}
+	public override void ReceiveControlCode(string controlCode) {
+		base.ReceiveControlCode(controlCode);
+		
+		if(controlCode.Equals(ControlStore.DESTROY)) {
+			Cancel();
+		}
+	}
 	
 	// Called when this building is committed (goes from a queued/placement state to actually being in the world)
 	public void Commit() {
@@ -64,6 +76,11 @@ public class BuildProgressControl : Controllable {
 			GameUtil.InstantiateControllable(finishedObject, owner, this.transform.position); //might also need to pass this.transform.rotation
 			Destroy(this.gameObject);
 		}
+	}
+	
+	// Cancel the building, destroying it
+	protected void Cancel() {
+		Destroy(this.gameObject);
 	}
 	
 	// Returns the creation percentage complete as an integer
