@@ -8,7 +8,6 @@ public class CivilianControl : BaseUnitControl {
 	// Buildings this unit can build
 	public List<Creatable> buildings;
 	
-	protected bool buildMenuOpen = false;
 	protected BuildProgressControl queuedBuildTarget;
 	
 	protected static int? terrainLayer;
@@ -20,10 +19,22 @@ public class CivilianControl : BaseUnitControl {
 			terrainLayer = GameObject.Find("Terrain").layer;
 	}
 	
-	protected override void PopulateControlMenuList() {
-		base.PopulateControlMenuList();
+	protected override void BuildControlMenus() {
+		base.BuildControlMenus();
 		
-		//TODO high: civilian populate control menu list
+		ControlMenu baseUnitMenu = ControlMenus[0];
+		baseUnitMenu.MenuItems.Add(new ControlMenuItem(ControlStore.MENU_BUILDINGS, "createBuilding"));
+		
+		ControlMenu createBuildingMenu = new ControlMenu("createBuilding");
+		foreach(Creatable building in buildings) {
+			createBuildingMenu.MenuItems.Add(new ControlMenuItem(building.ControlCode, "cancelCreate"));
+		}
+		createBuildingMenu.MenuItems.Add(new ControlMenuItem(ControlStore.MENU_BACK, "baseUnit"));
+		ControlMenus.Add(createBuildingMenu);
+		
+		ControlMenu cancelCreateMenu = new ControlMenu("cancelCreate");
+		cancelCreateMenu.MenuItems.Add(new ControlMenuItem(ControlStore.MENU_CANCEL, "createBuilding"));
+		ControlMenus.Add(cancelCreateMenu);
 	}
 	
 	protected override void Update () {
@@ -49,32 +60,21 @@ public class CivilianControl : BaseUnitControl {
 	public override void ReceiveControlCode(string controlCode) {
 		base.ReceiveControlCode(controlCode);
 		
-		//TODO high: civilian receive control code
-		
-		/*
-		if(queuedBuildTarget != null) {
-			if(Input.GetKeyDown(KeyCode.Escape)) {
-				RemoveQueuedBuildTarget(true);
-			}
+		if(controlCode.Equals(ControlStore.MENU_CANCEL)) {
+			RemoveQueuedBuildTarget(true);
 		} else {
-			if(buildMenuOpen) {
-				// See if pressed key exists in buildings and if so, queue the BuildProgress object for that building
-				foreach(Creatable building in buildings) {
-					if(Input.GetKeyDown(building.KeyControl.Key) && building.CanCreate(owner)) {
-						InstantiateBuildProgress(building);
-					}
+			// See if control code exists in buildings and if so, queue the BuildProgress object for that building
+			foreach(Creatable building in buildings) {
+				if(building.ControlCode.Equals(controlCode) && building.CanCreate(owner)) {
+					InstantiateBuildProgress(building);
 				}
-			} else if(Input.GetKeyDown(KeyCode.B)) {
-				buildMenuOpen = true;
 			}
 		}
-		*/
 	}
 	
 	protected void InstantiateBuildProgress(Creatable building) {
 		queuedBuildTarget = (GameUtil.InstantiateControllable(building.buildProgressObject, owner, Vector3.zero)).GetComponent<BuildProgressControl>();
 		queuedBuildTarget.name = building.gameObject.name+" (in progress)";
-		Game.PlayerInput.DeselectDisabled = true;
 	}
 	
 	//TODO low: turn on some grid while placing buildings?
@@ -108,9 +108,9 @@ public class CivilianControl : BaseUnitControl {
 		}
 	}
 	
-	// Called when this GameObject has been deselected
 	public override void Deselected() {
-		buildMenuOpen = false;
+		base.Deselected();
+		
 		if(queuedBuildTarget != null) {
 			RemoveQueuedBuildTarget(true);
 		}
@@ -122,7 +122,7 @@ public class CivilianControl : BaseUnitControl {
 			Destroy(queuedBuildTarget.gameObject);
 		} else {
 			queuedBuildTarget = null;
+			CurrentControlMenu = ControlMenus[0];
 		}
-		Game.PlayerInput.DeselectDisabled = false;
 	}
 }

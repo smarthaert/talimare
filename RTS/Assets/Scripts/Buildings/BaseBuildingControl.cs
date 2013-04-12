@@ -22,27 +22,27 @@ public class BaseBuildingControl : Controllable {
 		base.Start();
 	}
 	
-	protected override void PopulateControlMenuList() {
+	protected override void BuildControlMenus() {
 		ControlMenu baseBuildingMenu = new ControlMenu("baseBuilding");
 		baseBuildingMenu.MenuItems.Add(new ControlMenuItem(ControlStore.MENU_UNITS, "createUnit"));
 		baseBuildingMenu.MenuItems.Add(new ControlMenuItem(ControlStore.MENU_TECHS, "createTech"));
-		ControlMenuList.Add(baseBuildingMenu);
+		ControlMenus.Add(baseBuildingMenu);
 		
 		ControlMenu createUnitMenu = new ControlMenu("createUnit");
 		foreach(Creatable unit in units) {
 			createUnitMenu.MenuItems.Add(new ControlMenuItem(unit.ControlCode, null));
 		}
 		createUnitMenu.MenuItems.Add(new ControlMenuItem(ControlStore.MENU_BACK, "baseBuilding"));
-		ControlMenuList.Add(createUnitMenu);
+		ControlMenus.Add(createUnitMenu);
 		
 		ControlMenu createTechMenu = new ControlMenu("createTech");
 		foreach(Creatable tech in techs) {
 			createTechMenu.MenuItems.Add(new ControlMenuItem(tech.ControlCode, null));
 		}
-		createUnitMenu.MenuItems.Add(new ControlMenuItem(ControlStore.MENU_BACK, "baseBuilding"));
-		ControlMenuList.Add(createTechMenu);
+		createTechMenu.MenuItems.Add(new ControlMenuItem(ControlStore.MENU_BACK, "baseBuilding"));
+		ControlMenus.Add(createTechMenu);
 		
-		CurrentControlMenu = baseBuildingMenu;
+		CurrentControlMenu = ControlMenus[0];
 	}
 	
 	protected override void Update() {

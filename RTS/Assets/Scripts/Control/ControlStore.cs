@@ -4,10 +4,14 @@ using System.Collections.Generic;
 public class ControlStore {
 	
 	public const string STOP = "Stop";
-	public const string MENU_UNITS = "OpenMenuUnits";
-	public const string MENU_BUILDINGS = "OpenMenuBuildings";
-	public const string MENU_TECHS = "OpenMenuTechs";
-	public const string MENU_BACK = "Back";
+	
+	public const string DESTROY = "Destroy";
+	
+	public const string MENU_UNITS = "MenuUnits";
+	public const string MENU_BUILDINGS = "MenuBuildings";
+	public const string MENU_TECHS = "MenuTechs";
+	public const string MENU_BACK = "MenuBack";
+	public const string MENU_CANCEL = "MenuCancel";
 	
 	public static Dictionary<string, Control> ControlMap { get; protected set; }
 	
@@ -17,7 +21,10 @@ public class ControlStore {
 		//Tasks
 		ControlMap.Add(STOP, new Control("Stop", KeyCode.S));
 		
+		ControlMap.Add(DESTROY, new Control("Destroy", KeyCode.Delete));
+		
 		//Menu Navigation
+		ControlMap.Add(MENU_CANCEL, new Control("Cancel", KeyCode.Escape));
 		ControlMap.Add(MENU_UNITS, new Control("Units", KeyCode.U));
 		ControlMap.Add(MENU_BUILDINGS, new Control("Buildings", KeyCode.B));
 		ControlMap.Add(MENU_TECHS, new Control("Techs", KeyCode.T));

@@ -12,7 +12,7 @@ public abstract class Controllable : Selectable {
 	public List<Tech> applicableTechs;
 	
 	// A list of ControlMenus which this Controllable has and can be displayed on the HUD
-	protected List<ControlMenu> ControlMenuList { get; set; }
+	protected List<ControlMenu> ControlMenus { get; set; }
 	// The current ControlMenu which is selected and should be displayed on the HUD
 	public ControlMenu CurrentControlMenu { get; protected set; }
 	
@@ -23,17 +23,17 @@ public abstract class Controllable : Selectable {
 		base.Awake();
 	}
 	
-	protected abstract void PopulateControlMenuList();
-	
 	protected override void Start() {
 		base.Start();
 		
 		if(owner == null)
 			Debug.Log("Player was never set for the Controllable: "+name+". It should be set immediately after instantiating the object.");
 		
-		ControlMenuList = new List<ControlMenu>();
-		PopulateControlMenuList();
+		ControlMenus = new List<ControlMenu>();
+		BuildControlMenus();
 	}
+	
+	protected abstract void BuildControlMenus();
 	
 	protected override void Update() {
 		base.Update();
@@ -94,14 +94,18 @@ public abstract class Controllable : Selectable {
 	public virtual void ReceiveControlCode(string controlCode) {
 		ControlMenuItem selectedMenuItem = CurrentControlMenu.GetMenuItemWithCode(controlCode);
 		if(selectedMenuItem != null && selectedMenuItem.DestinationMenu != null) {
-			foreach(ControlMenu menu in ControlMenuList) {
+			foreach(ControlMenu menu in ControlMenus) {
 				if(menu.Name.Equals(selectedMenuItem.DestinationMenu)) {
 					CurrentControlMenu = menu;
-					//TODO high: look for a "BACK" menu item. if there is one, disable deselection in PlayerInput
 				}
 			}
 		}
+	}
+	
+	public override void Deselected() {
+		base.Deselected();
 		
+		CurrentControlMenu = ControlMenus[0];
 	}
 }
 
