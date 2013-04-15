@@ -4,11 +4,15 @@ public class ControlMenuItem {
 	public Control Control { get; protected set; }
 	public string DestinationMenu { get; protected set; }
 	
+	public bool Enabled { get; set; }
+	public string DisabledReason { get; set; }
+	
 	//TODO high: add ability to disable menu items and a reason for the disabling
 	
 	public ControlMenuItem(string controlCode, string destinationMenu) {
 		ControlCode = controlCode;
 		Control = ControlStore.ControlMap[ControlCode];
 		DestinationMenu = destinationMenu;
+		Enabled = true;
 	}
 }
