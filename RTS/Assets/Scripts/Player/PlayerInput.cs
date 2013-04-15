@@ -19,27 +19,32 @@ public class PlayerInput : MonoBehaviour {
 	
 	protected void Update () {
 		if(CurrentSelection != null) {
-			if(CurrentSelectionVision != null && CurrentSelectionVision.IsHiddenByFog) {
-				// Current selection is now hidden by fog
+			if((CurrentSelectionVision != null && CurrentSelectionVision.IsHiddenByFog)
+					|| (Input.GetKeyDown(KeyCode.Escape) && (!CurrentSelectionIsMyControllable() || !MenuHasBackButton(((Controllable)CurrentSelection).CurrentControlMenu)))) {
+				//selection is hidden by fog, or the escape key was pressed
 				DeselectCurrent();
-			} else {
+			} else if(CurrentSelectionIsMyControllable()) {
+				Controllable currentControllable = (Controllable)CurrentSelection;
+				
 				// Send any key pressed notifications to the currently selected object
-				if(Input.GetKeyDown(KeyCode.Escape) && (!CurrentSelectionIsMyControllable() || !MenuHasBackButton(((Controllable)CurrentSelection).CurrentControlMenu))) {
-					DeselectCurrent();
-				} else if(Input.anyKeyDown && CurrentSelectionIsMyControllable()) {
-					foreach(string controlCode in GetControlCodesInMenuForCurrentKeys(((Controllable)CurrentSelection).CurrentControlMenu)) {
-						((Controllable)CurrentSelection).ReceiveControlCode(controlCode);
+				if(Input.anyKeyDown) {
+					foreach(ControlMenuItem menuItem in GetMenuItemsSelectedByCurrentKeys(currentControllable.CurrentControlMenu)) {
+						if(menuItem.Enabled) {
+							currentControllable.ReceiveControlCode(menuItem.ControlCode);
+						} else {
+							Debug.Log(menuItem.DisabledReason);
+						}
 					}
 				}
 				
 				// Handle mouse1 click (object action)
-				if(Input.GetMouseButtonDown(1) && CurrentSelectionIsMyControllable()) {
+				if(Input.GetMouseButtonDown(1)) {
 					// Make sure the current selection is owned by this player
 					Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 					RaycastHit hit;
 					
 					if(Physics.Raycast(ray, out hit, Mathf.Infinity, ClickLayerMask)) {
-						((Controllable)CurrentSelection).MouseAction(hit);
+						currentControllable.MouseAction(hit);
 					}
 				}
 			}
@@ -101,14 +106,14 @@ public class PlayerInput : MonoBehaviour {
 		return Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
 	}
 	
-	public List<string> GetControlCodesInMenuForCurrentKeys(ControlMenu menu) {
-		List<string> controlCodes = new List<string>();
+	public List<ControlMenuItem> GetMenuItemsSelectedByCurrentKeys(ControlMenu menu) {
+		List<ControlMenuItem> controlMenuItems = new List<ControlMenuItem>();
 		foreach(ControlMenuItem item in menu.MenuItems) {
 			if(Input.GetKeyDown(item.Control.Hotkey)) {
-				controlCodes.Add(item.ControlCode);
+				controlMenuItems.Add(item);
 			}
 		}
-		return controlCodes;
+		return controlMenuItems;
 	}
 	
 	public bool MenuHasBackButton(ControlMenu menu) {
