@@ -10,33 +10,35 @@ public class Creatable : MonoBehaviour {
 	public BuildProgressControl buildProgressObject;
 	
 	public string ControlCode {
-		get { return "Create"+this.name; }
+		get { return "Create" + name; }
 	}
 	
 	// Returns whether or not the given player meets all requirements to create this object.
 	// Note: this function is called before the Creatable is instantiated
-	public bool CanCreate(Player player) {
-		bool canCreate = true;
+	public BoolAndString CanCreate(Player player) {
+		BoolAndString canCreate = new BoolAndString(true);
 		if(gameObject.CompareTag("Tech")) {
 			// Creatable is a tech, check to make sure the player hasn't already researched it
 			if(player.PlayerStatus.techs.Contains(GetComponent<Tech>())) {
-				canCreate = false;
-				Debug.Log("Player has already researched this technology: "+GetComponent<Tech>());
+				canCreate.Bool = false;
+				canCreate.String += "You have already researched this technology: "+GetComponent<Tech>();
 			}
 		}
-		if(canCreate) {
+		if(canCreate.Bool) {
+			// Can still create, so continue checking tech dependencies
+			foreach(Tech techDependency in techDependencies) {
+				if(!player.PlayerStatus.techs.Contains(techDependency)) {
+					canCreate.Bool = false;
+					canCreate.String += "Player does not have the required technology: "+techDependency;
+				}
+			}
+		}
+		if(canCreate.Bool) {
 			// Can still create, so continue checking resource levels
 			foreach(ResourceAmount resourceCost in resourceCosts) {
 				if(player.PlayerStatus.resourceLevels[resourceCost.resource] < resourceCost.amount) {
-					canCreate = false;
-					Debug.Log("Player does not have the required resource amount. Resource: "+resourceCost.resource+", Amount: "+resourceCost.amount+". Player has: "+player.PlayerStatus.resourceLevels[resourceCost.resource]);
-					//show some nice error message to the player here
-				}
-			}
-			foreach(Tech techDependency in techDependencies) {
-				if(!player.PlayerStatus.techs.Contains(techDependency)) {
-					canCreate = false;
-					Debug.Log("Player does not have the required technology: "+techDependency);
+					canCreate.Bool = false;
+					canCreate.String += "You do not have the required resource amount. Resource: "+resourceCost.resource+", Amount: "+resourceCost.amount+".";
 				}
 			}
 		}

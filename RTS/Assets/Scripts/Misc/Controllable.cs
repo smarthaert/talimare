@@ -41,6 +41,14 @@ public abstract class Controllable : Selectable {
 		ProcessTaskQueue();
 	}
 	
+	public virtual void DisableCurrentMenuItems() {
+		foreach(ControlMenuItem menuItem in CurrentControlMenu.MenuItems) {
+			if(menuItem.Creatable != null) {
+				menuItem.Enabled = menuItem.Creatable.CanCreate(owner);
+			}
+		}
+	}
+	
 	// Processes the action queue by starting the top action or removing it if it has completed
 	private void ProcessTaskQueue() {
 		if(taskQueue.Count > 0) {
@@ -97,6 +105,7 @@ public abstract class Controllable : Selectable {
 			foreach(ControlMenu menu in ControlMenus) {
 				if(menu.Name.Equals(selectedMenuItem.DestinationMenu)) {
 					CurrentControlMenu = menu;
+					DisableCurrentMenuItems();
 				}
 			}
 		}

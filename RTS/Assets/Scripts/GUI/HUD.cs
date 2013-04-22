@@ -52,13 +52,19 @@ public class HUD : MonoBehaviour {
 	}
 	
 	protected void RenderMapPane() {
-		GUI.BeginGroup(new Rect(0, 0, Screen.width/3, Screen.height/4));
+		//GUI.BeginGroup(new Rect(0, 0, Screen.width/3, Screen.height/4));
+		GUILayout.BeginArea(new Rect(0, 0, Screen.width/3, Screen.height/4));
+		
 		GUI.Box(new Rect(0, 0, Screen.width/3, Screen.height/4), "");
-		GUI.EndGroup();
+		
+		GUILayout.EndArea();
+		//GUI.EndGroup();
 	}
 	
 	protected void RenderSelectedPane() {
-		GUI.BeginGroup(new Rect(Screen.width/3, 0, Screen.width/3, Screen.height/4));
+		//GUI.BeginGroup(new Rect(Screen.width/3, 0, Screen.width/3, Screen.height/4));
+		GUILayout.BeginArea(new Rect(Screen.width/3, 0, Screen.width/3, Screen.height/4));
+		
 		GUI.Box(new Rect(0, 0, Screen.width/3, Screen.height/4), "");
 		if(CurrentSelection != null) {
 			GUILayout.Label(CurrentSelection.name);
@@ -68,7 +74,9 @@ public class HUD : MonoBehaviour {
 				RenderSelectedResource();
 			}
 		}
-		GUI.EndGroup();
+		
+		GUILayout.EndArea();
+		//GUI.EndGroup();
 	}
 	
 	protected void RenderSelectedControllable() {
@@ -89,18 +97,26 @@ public class HUD : MonoBehaviour {
 	}
 	
 	protected void RenderControlsPane() {
-		GUI.BeginGroup(new Rect((Screen.width/3)*2, 0, Screen.width/3, Screen.height/4));
+		//GUI.BeginGroup(new Rect((Screen.width/3)*2, 0, Screen.width/3, Screen.height/4));
+		GUILayout.BeginArea(new Rect((Screen.width/3)*2, 0, Screen.width/3, Screen.height/4));
+		
 		GUI.Box(new Rect(0, 0, Screen.width/3, Screen.height/4), "");
-		if(CurrentSelection is Controllable) {
+		if(CurrentSelection is Controllable && ((Controllable)CurrentSelection).owner == Player) {
 			RenderControls();
 		}
-		GUI.EndGroup();
+		
+		GUILayout.EndArea();
+		//GUI.EndGroup();
 	}
 	
 	protected void RenderControls() {
 		Controllable controllable = (Controllable)CurrentSelection;
 		foreach(ControlMenuItem controlMenuItem in controllable.CurrentControlMenu.MenuItems) {
-			GUILayout.Label(controlMenuItem.Control.Name);
+			if(controlMenuItem.Enabled.Bool) {
+				GUILayout.Label(controlMenuItem.Control.Name);
+			} else {
+				GUILayout.Label("-"+controlMenuItem.Control.Name+"-");
+			}
 		}
 	}
 }
