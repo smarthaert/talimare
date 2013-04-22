@@ -30,14 +30,14 @@ public class BaseBuildingControl : Controllable {
 		
 		ControlMenu createUnitMenu = new ControlMenu("createUnit");
 		foreach(Creatable unit in units) {
-			createUnitMenu.MenuItems.Add(new ControlMenuItem(unit.ControlCode, null));
+			createUnitMenu.MenuItems.Add(new ControlMenuItem(unit, null));
 		}
 		createUnitMenu.MenuItems.Add(new ControlMenuItem(ControlStore.MENU_BACK, "baseBuilding"));
 		ControlMenus.Add(createUnitMenu);
 		
 		ControlMenu createTechMenu = new ControlMenu("createTech");
 		foreach(Creatable tech in techs) {
-			createTechMenu.MenuItems.Add(new ControlMenuItem(tech.ControlCode, null));
+			createTechMenu.MenuItems.Add(new ControlMenuItem(tech, null));
 		}
 		createTechMenu.MenuItems.Add(new ControlMenuItem(ControlStore.MENU_BACK, "baseBuilding"));
 		ControlMenus.Add(createTechMenu);
@@ -76,13 +76,13 @@ public class BaseBuildingControl : Controllable {
 		
 		// See if ControlCode exists in units or techs and if so, queue that Creatable
 		foreach(Creatable unit in units) {
-			if(unit.ControlCode.Equals(controlCode) && unit.CanCreate(owner)) {
+			if(unit.ControlCode.Equals(controlCode) && unit.CanCreate(owner).Bool) {
 				unit.SpendResources(owner);
 				unitQueue.Enqueue(unit);
 			}
 		}
 		foreach(Creatable tech in techs) {
-			if(tech.ControlCode.Equals(controlCode) && !techQueue.Contains(tech) && tech.CanCreate(owner)) {
+			if(tech.ControlCode.Equals(controlCode) && !techQueue.Contains(tech) && tech.CanCreate(owner).Bool) {
 				tech.SpendResources(owner);
 				techQueue.Enqueue(tech);
 			}

@@ -26,13 +26,16 @@ public class PlayerInput : MonoBehaviour {
 			} else if(CurrentSelectionIsMyControllable()) {
 				Controllable currentControllable = (Controllable)CurrentSelection;
 				
+				currentControllable.DisableCurrentMenuItems();
+				
 				// Send any key pressed notifications to the currently selected object
 				if(Input.anyKeyDown) {
 					foreach(ControlMenuItem menuItem in GetMenuItemsSelectedByCurrentKeys(currentControllable.CurrentControlMenu)) {
-						if(menuItem.Enabled) {
+						if(menuItem.Enabled.Bool) {
 							currentControllable.ReceiveControlCode(menuItem.ControlCode);
 						} else {
-							Debug.Log(menuItem.DisabledReason);
+							//print this out in the middle of the player's screen
+							Debug.Log(menuItem.Enabled.String);
 						}
 					}
 				}

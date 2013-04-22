@@ -27,7 +27,7 @@ public class CivilianControl : BaseUnitControl {
 		
 		ControlMenu createBuildingMenu = new ControlMenu("createBuilding");
 		foreach(Creatable building in buildings) {
-			createBuildingMenu.MenuItems.Add(new ControlMenuItem(building.ControlCode, "cancelCreate"));
+			createBuildingMenu.MenuItems.Add(new ControlMenuItem(building, "cancelCreate"));
 		}
 		createBuildingMenu.MenuItems.Add(new ControlMenuItem(ControlStore.MENU_BACK, "baseUnit"));
 		ControlMenus.Add(createBuildingMenu);
@@ -65,7 +65,7 @@ public class CivilianControl : BaseUnitControl {
 		} else {
 			// See if control code exists in buildings and if so, queue the BuildProgress object for that building
 			foreach(Creatable building in buildings) {
-				if(building.ControlCode.Equals(controlCode) && building.CanCreate(owner)) {
+				if(building.ControlCode.Equals(controlCode) && building.CanCreate(owner).Bool) {
 					InstantiateBuildProgress(building);
 				}
 			}
@@ -97,11 +97,11 @@ public class CivilianControl : BaseUnitControl {
 	
 	// Commits the currently queued building at its current position and begins building
 	protected void CommitQueuedBuilding() {
-		if(queuedBuildTarget.Creatable.CanCreate(owner)) {
+		if(queuedBuildTarget.Creatable.CanCreate(owner).Bool) {
 			queuedBuildTarget.Commit();
 			AddTask(new Task(GetComponent<BuildTaskScript>(), queuedBuildTarget), Game.PlayerInput.IsMultiKeyPressed());
 		}
-		if(Game.PlayerInput.IsMultiKeyPressed() && queuedBuildTarget.Creatable.CanCreate(owner)) {
+		if(Game.PlayerInput.IsMultiKeyPressed() && queuedBuildTarget.Creatable.CanCreate(owner).Bool) {
 			InstantiateBuildProgress(queuedBuildTarget.Creatable);
 		} else {
 			RemoveQueuedBuildTarget(false);
