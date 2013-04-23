@@ -6,6 +6,8 @@ public class Creatable : MonoBehaviour {
 	
 	public float creationTime;
 	public List<ResourceAmount> resourceCosts;
+	// Holds the resource costs in another format which is more convenient for some scripts to access
+	public Dictionary<Resource, int> ResourceCostsMap { get; protected set; }
 	public List<Tech> techDependencies;
 	public BuildProgressControl buildProgressObject;
 	
@@ -16,6 +18,10 @@ public class Creatable : MonoBehaviour {
 	// Returns whether or not the given player meets all requirements to create this object.
 	// Note: this function is called before the Creatable is instantiated
 	public BoolAndString CanCreate(Player player) {
+		if(ResourceCostsMap == null) {
+			PopulateResourceCostsMap();
+		}
+		
 		BoolAndString canCreate = new BoolAndString(true);
 		if(gameObject.CompareTag("Tech")) {
 			// Creatable is a tech, check to make sure the player hasn't already researched it
@@ -43,6 +49,13 @@ public class Creatable : MonoBehaviour {
 			}
 		}
 		return canCreate;
+	}
+	
+	protected void PopulateResourceCostsMap() {
+		ResourceCostsMap = new Dictionary<Resource, int>();
+		foreach(ResourceAmount resourceAmount in resourceCosts) {
+			ResourceCostsMap.Add(resourceAmount.resource, resourceAmount.amount);
+		}
 	}
 	
 	// Spends the resources required to create this object

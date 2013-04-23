@@ -27,17 +27,22 @@ public class BuildTaskScript : TaskScript {
 		if(HasStartedBuilding) {
 			// Currently building
 			BuildTarget.Building(Time.deltaTime);
-			if(BuildTarget.Completed()) {
+			if(BuildTarget.Completed) {
 				StopTask();
 			}
 		} else {
-			//TODO high: gather build materials from depots
 			// Haven't started building yet
-			if(IsInBuildRange()) {
-				MoveTaskScript.StopTask();
-				HasStartedBuilding = true;
+			ResourceAmount requiredResource = BuildTarget.GetNextResourceNeededToBuild();
+			if(requiredResource == null) {
+				if(IsInBuildRange()) {
+					MoveTaskScript.StopTask();
+					HasStartedBuilding = true;
+				} else {
+					MoveTaskScript.StartTask(BuildTarget.transform);
+				}
 			} else {
-				MoveTaskScript.StartTask(BuildTarget.transform);
+				ResourceDepot nearestDepot = ResourceDepot.FindNearestDepotWithResource(transform.position, Controllable.owner, requiredResource.resource);
+				//TODO high: gather build materials from depots
 			}
 		}
 	}
