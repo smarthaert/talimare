@@ -60,13 +60,13 @@ public class PlayerStatus : MonoBehaviour {
 	}
 	
 	void Start() {
-		// Find all Creatables that currently exist and spend their upkeep resources.
+		// Find all Creatables that currently exist and spend their resources.
 		// (This needs to be done since Creatables that exist when the game starts were never queued,
 		// and thus were never spent for)
 		foreach(Creatable creatable in FindObjectsOfType(typeof(Creatable)).Cast<Creatable>()) {
 			if(creatable.gameObject.GetComponent<Controllable>().owner == player) {
 				foreach(ResourceAmount resourceCost in creatable.resourceCosts) {
-					if(resourceCost.IsUpkeepResource()) {
+					if(resourceCost.IsUpkeepResource()) { //only really need to do upkeep resources
 						SpendResource(resourceCost.resource, resourceCost.amount);
 					}
 				}
