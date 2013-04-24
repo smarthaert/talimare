@@ -24,8 +24,8 @@ public class Game : MonoBehaviour {
 	// Adds a player to the game, complete with player relationships
 	public static void AddPlayer(Player newPlayer) {
 		foreach(Player existingPlayer in players) {
-			existingPlayer.relationships.Add(newPlayer, PlayerRelationship.HOSTILE);
-			newPlayer.relationships.Add(existingPlayer, PlayerRelationship.HOSTILE);
+			existingPlayer.Relationships.Add(newPlayer, PlayerRelationship.HOSTILE);
+			newPlayer.Relationships.Add(existingPlayer, PlayerRelationship.HOSTILE);
 		}
 		players.Add(newPlayer);
 	}

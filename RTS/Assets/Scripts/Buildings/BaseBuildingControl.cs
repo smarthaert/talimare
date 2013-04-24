@@ -77,6 +77,8 @@ public class BaseBuildingControl : Controllable {
 		// See if ControlCode exists in units or techs and if so, queue that Creatable
 		foreach(Creatable unit in units) {
 			if(unit.ControlCode.Equals(controlCode) && unit.CanCreate(owner).Bool) {
+				//TODO high: required resources need to be delivered to building
+				//TODO high: make a job list, which holds all the jobs which are currently waiting to be done. units can then be directed to pick up these jobs (which then become tasks) or can pick them up automatically (this is strategic ai)
 				unit.SpendResources(owner);
 				unitQueue.Enqueue(unit);
 			}
