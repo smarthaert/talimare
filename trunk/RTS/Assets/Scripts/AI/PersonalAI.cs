@@ -71,7 +71,7 @@ public class PersonalAI : MonoBehaviour {
 		// Determine if object is in a state to respond
 		if(State == AIState.Idle || (State == AIState.Working && combatOverridesWork)) {
 			// Determine if other object is an enemy unit
-			if(obj.CompareTag("Unit") && Controllable.owner.relationships[obj.GetComponent<Controllable>().owner] == PlayerRelationship.HOSTILE) {
+			if(obj.CompareTag("Unit") && Controllable.owner.Relationships[obj.GetComponent<Controllable>().owner] == PlayerRelationship.HOSTILE) {
 				// Act based on object's stance
 				if(stance == AIStance.Aggressive) {
 					Fight(obj);
@@ -92,7 +92,7 @@ public class PersonalAI : MonoBehaviour {
 		// Determine if object is in a state to respond
 		if(State == AIState.Idle || (State == AIState.Working && combatOverridesWork)) {
 			// Determine if other object is an enemy
-			if(Controllable.owner.relationships[source.GetComponent<Controllable>().owner] == PlayerRelationship.HOSTILE) {
+			if(Controllable.owner.Relationships[source.GetComponent<Controllable>().owner] == PlayerRelationship.HOSTILE) {
 				// Act based on object's stance
 				if(stance == AIStance.Aggressive || stance == AIStance.Defensive) {
 					Fight(source);
