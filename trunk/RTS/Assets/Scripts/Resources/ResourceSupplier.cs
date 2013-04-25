@@ -8,7 +8,7 @@ public class ResourceSupplier : MonoBehaviour {
 	
 	protected Player player;
 
-	void Start () {
+	protected void Start () {
 		player = GetComponent<Controllable>().owner;
 		
 		// Add all supplied resources to the player's pool
@@ -21,7 +21,7 @@ public class ResourceSupplier : MonoBehaviour {
 	}
 	
 	// Called when this object is destroyed. Removes the provided resource from the player's pool
-	void OnDestroy () {
+	protected void OnDestroy () {
 		foreach(ResourceAmount suppliedResource in suppliedResources) {
 			if(suppliedResource.IsUpkeepResource()) {
 				player.PlayerStatus.SpendResource(suppliedResource.resource, suppliedResource.amount);
