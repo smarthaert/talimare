@@ -77,8 +77,6 @@ public class CivilianControl : BaseUnitControl {
 		queuedBuildTarget.name = building.gameObject.name+" (in progress)";
 	}
 	
-	//TODO low: turn on some grid while placing buildings?
-	
 	// Moves the queued building to where the mouse hits the ground
 	protected void DrawQueuedBuildingAtMouse() {
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -92,7 +90,6 @@ public class CivilianControl : BaseUnitControl {
 			position.z = Mathf.RoundToInt(position.z);
 			queuedBuildTarget.transform.position = position;
 		}
-		//TODO low: finish drawing queued buildings (can't intersect other objects, etc.)
 	}
 	
 	// Commits the currently queued building at its current position and begins building
