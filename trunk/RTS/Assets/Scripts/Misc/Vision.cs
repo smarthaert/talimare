@@ -13,6 +13,7 @@ public class Vision : MonoBehaviour {
 	protected FogOfWar fogOfWarScript;
 	protected MoveTaskScript pathfinder;
 	protected Controllable controllable;
+	protected PersonalAI personalAI;
 	
 	protected bool isUnit = false;
 	public bool IsHiddenByFog { get; set; }
@@ -26,15 +27,14 @@ public class Vision : MonoBehaviour {
 	
 	protected void Start() {
 		// A capsule collider provides a trigger for the vision range
-		gameObject.AddComponent<CapsuleCollider>();
-		CapsuleCollider visionCollider = GetComponent<CapsuleCollider>();
+		CapsuleCollider visionCollider = gameObject.AddComponent<CapsuleCollider>();
 		visionCollider.isTrigger = true;
 		visionCollider.radius = visionRange;
 		visionCollider.height = 99f;
 		
 		// A rigidbody allows this object's collider to trigger while it is moving
-		gameObject.AddComponent<Rigidbody>();
-		GetComponent<Rigidbody>().isKinematic = true;
+		Rigidbody rigidBody = gameObject.AddComponent<Rigidbody>();
+		rigidBody.isKinematic = true;
 		
 		// Determine if this is a unit (the alternative would be a building)
 		if(transform.parent.gameObject.CompareTag("Unit"))
@@ -44,8 +44,9 @@ public class Vision : MonoBehaviour {
 		if(fogOfWar != null)
 			fogOfWarScript = fogOfWar.GetComponent<FogOfWar>();
 		if(isUnit)
-			pathfinder = transform.parent.gameObject.GetComponent<MoveTaskScript>();
-		controllable = transform.parent.gameObject.GetComponent<Controllable>();
+			pathfinder = transform.parent.GetComponent<MoveTaskScript>();
+		controllable = transform.parent.GetComponent<Controllable>();
+		personalAI = transform.parent.GetComponent<PersonalAI>();
 		ConfigureVisionSettings();
 		
 		fogLayerMask = 1 << LayerMask.NameToLayer("FogOfWar");
@@ -180,7 +181,9 @@ public class Vision : MonoBehaviour {
 		if(other.transform.parent != this.transform.parent) {
 			if(other.GetComponent<Controllable>() != null && other.GetComponent<Controllable>().owner != controllable.owner) {
 				// Object is a Controllable owned by another player
-				transform.parent.gameObject.SendMessage("ObjectEnteredVision", other.gameObject, SendMessageOptions.DontRequireReceiver);
+				if(personalAI != null) {
+					personalAI.ObjectEnteredVision(other.gameObject);
+				}
 			}
 		}
 	}
@@ -190,7 +193,9 @@ public class Vision : MonoBehaviour {
 		if(other.transform.parent != this.transform.parent) {
 			if(other.GetComponent<Controllable>() != null && other.GetComponent<Controllable>().owner != controllable.owner) {
 				// Object is a Controllable owned by another player
-				transform.parent.gameObject.SendMessage("ObjectLeftVision", other.gameObject, SendMessageOptions.DontRequireReceiver);
+				if(personalAI != null) {
+					personalAI.ObjectLeftVision(other.gameObject);
+				}
 			}
 		}
 	}
