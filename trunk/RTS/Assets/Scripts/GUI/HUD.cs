@@ -82,6 +82,10 @@ public class HUD : MonoBehaviour {
 	protected void RenderSelectedControllable() {
 		ControllableStatus status = CurrentSelection.GetComponent<ControllableStatus>();
 		GUILayout.Label("HP: " + status.HP + " / " + status.maxHP);
+		UnitStatus unitStatus = CurrentSelection.GetComponent<UnitStatus>();
+		if(unitStatus != null) {
+			GUILayout.Label("Water: " + unitStatus.Water + " / " + unitStatus.maxWater);
+		}
 		//check if civilian carrying resources
 		if(CurrentSelection.GetComponent<GatherTaskScript>() != null) {
 			ResourceAmount heldResource = CurrentSelection.GetComponent<GatherTaskScript>().HeldResource;
