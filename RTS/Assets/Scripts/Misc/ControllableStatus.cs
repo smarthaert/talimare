@@ -7,11 +7,11 @@ public class ControllableStatus : MonoBehaviour {
 	public int maxHP;
 	public int HP { get; protected set; }
 
-	protected void Start () {
+	protected virtual void Start () {
 		HP = maxHP;
 	}
 	
-	protected void Update () {}
+	protected virtual void Update () {}
 	
 	public void SetHPToZero() {
 		HP = 0;
