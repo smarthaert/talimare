@@ -18,6 +18,7 @@ public class UnitStatus : ControllableStatus {
 		base.Start();
 		
 		Water = maxWater;
+		CounteractWaterLoss = false;
 	}
 	
 	protected override void Update() {
@@ -41,6 +42,9 @@ public class UnitStatus : ControllableStatus {
 	
 	public void GainWater(int amount) {
 		Water += amount;
-		Mathf.Clamp(Water, 0, maxWater);
+		if(Water > maxWater)
+			Debug.Log("Water is greater than max!");
+		//shouldn't need to clamp water, as no water should ever be supplied above the maximum
+		//Water = Mathf.Clamp(Water, 0, maxWater);
 	}
 }
