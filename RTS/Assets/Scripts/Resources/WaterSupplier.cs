@@ -58,16 +58,18 @@ public class WaterSupplier : MonoBehaviour {
 		if(suppliablesInRange.Count > 0) {
 			int waterLeftToSupply = Mathf.Min(WaterHeld, maxWaterSupplyRate);
 			int waterSupplied;
+			// Remove any dead suppliables
+			suppliablesInRange.RemoveAll(SuppliableIsDead);
 			// Sort suppliables from lowest to highest current water
 			suppliablesInRange.Sort(CompareSuppliables);
 			// First loop through suppliables, supplying only enough to cover their water loss rate
 			foreach(UnitStatus suppliable in suppliablesInRange) {
 				if(waterLeftToSupply > 0 && suppliable.waterLossRate > 0 && !suppliable.CounteractWaterLoss) {
-					waterSupplied = Mathf.Min(waterLeftToSupply, suppliable.waterLossRate);
-					if(waterSupplied == suppliable.waterLossRate) {
+					if(waterLeftToSupply >= suppliable.waterLossRate) {
+						waterSupplied = suppliable.waterLossRate;
 						suppliable.CounteractWaterLoss = true;
 					} else {
-						waterSupplied = Mathf.Min(waterSupplied, suppliable.maxWater - suppliable.Water);
+						waterSupplied = Mathf.Min(waterLeftToSupply, suppliable.maxWater - suppliable.Water);
 						if(waterSupplied > 0) {
 							suppliable.GainWater(waterSupplied);
 						}
@@ -92,6 +94,10 @@ public class WaterSupplier : MonoBehaviour {
 				}
 			}
 		}
+	}
+	
+	protected bool SuppliableIsDead(UnitStatus s) {
+		return !s.IsAlive;
 	}
 	
 	protected int CompareSuppliables(UnitStatus x, UnitStatus y) {
