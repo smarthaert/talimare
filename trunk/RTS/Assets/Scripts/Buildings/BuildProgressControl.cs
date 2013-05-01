@@ -39,11 +39,11 @@ public class BuildProgressControl : Controllable {
 	}
 	
 	protected override void BuildControlMenus() {
-		ControlMenu baseBuildProgressMenu = new ControlMenu("baseBuildProgress");
-		baseBuildProgressMenu.MenuItems.Add(new ControlMenuItem(ControlStore.DESTROY, null));
-		ControlMenus.Add(baseBuildProgressMenu);
+		ControlMenu baseBuildProgressMenu = new ControlMenu();
+		baseBuildProgressMenu.MenuItems.Add(new ControlMenuItem(ControlStore.DESTROY));
+		ControlMenus.Add(BASE_MENU_NAME, baseBuildProgressMenu);
 		
-		CurrentControlMenu = ControlMenus[0];
+		CurrentControlMenu = ControlMenus[BASE_MENU_NAME];
 	}
 	
 	public override void ReceiveControlCode(string controlCode) {

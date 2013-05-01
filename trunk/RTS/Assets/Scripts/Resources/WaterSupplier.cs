@@ -1,8 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-public class WaterSupplier : MonoBehaviour {
-	//TODO high: water supplier
+public class WaterSupplier : LocalResourceSupplier {
 	
 	public int maxWaterHeld;
 	public int waterGainRate;
@@ -18,22 +17,8 @@ public class WaterSupplier : MonoBehaviour {
 	// The objects which are currently within supply range and eligible for supply
 	protected List<UnitStatus> suppliablesInRange = new List<UnitStatus>();
 	
-	public float supplyRange;
-	
-	protected Controllable controllable;
-	
-	protected void Start() {
-		// A capsule collider provides a trigger for the supply range
-		CapsuleCollider supplyCollider = gameObject.AddComponent<CapsuleCollider>();
-		supplyCollider.isTrigger = true;
-		supplyCollider.radius = supplyRange;
-		supplyCollider.height = 99f;
-		
-		// A rigidbody allows this object's collider to trigger while it is moving
-		Rigidbody rigidBody = gameObject.AddComponent<Rigidbody>();
-		rigidBody.isKinematic = true;
-		
-		controllable = transform.parent.gameObject.GetComponent<Controllable>();
+	protected override void Start() {
+		base.Start();
 		
 		WaterHeld = 0;
 	}
@@ -101,31 +86,19 @@ public class WaterSupplier : MonoBehaviour {
 	}
 	
 	protected int CompareSuppliables(UnitStatus x, UnitStatus y) {
+		//TODO high: sort supplies by their current percentage of water
 		return x.Water.CompareTo(y.Water);
 	}
 	
-	// Called when a collider enters this supply range
-	protected void OnTriggerEnter(Collider other) {
-		if(other.transform.parent != this.transform.parent) {
-			if(other.GetComponent<Controllable>() != null && other.GetComponent<Controllable>().owner == controllable.owner) {
-				// Object is a Controllable owned by this player
-				if(other.GetComponent<UnitStatus>() != null) {
-					suppliablesInRange.Add(other.GetComponent<UnitStatus>());
-				}
-			}
+	protected override void OnTriggerEnter(Collider other) {
+		if(IsControllableWithSameOwner(other) && other.GetComponent<UnitStatus>() != null) {
+			suppliablesInRange.Add(other.GetComponent<UnitStatus>());
 		}
 	}
 	
-	// Called when a collider exits this supply range
-	protected void OnTriggerExit(Collider other) {
-		//TODO high: death inside the supply range does not trigger exit
-		if(other.transform.parent != this.transform.parent) {
-			if(other.GetComponent<Controllable>() != null && other.GetComponent<Controllable>().owner == controllable.owner) {
-				// Object is a Controllable owned by this player
-				if(other.GetComponent<UnitStatus>() != null) {
-					suppliablesInRange.Remove(other.GetComponent<UnitStatus>());
-				}
-			}
+	protected override void OnTriggerExit(Collider other) {
+		if(IsControllableWithSameOwner(other) && other.GetComponent<UnitStatus>() != null) {
+			suppliablesInRange.Remove(other.GetComponent<UnitStatus>());
 		}
 	}
 }

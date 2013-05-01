@@ -11,13 +11,15 @@ public abstract class Controllable : Selectable {
 	// A list of Techs which apply to this object when they are gained
 	public List<Tech> applicableTechs;
 	
-	// A list of ControlMenus which this Controllable has and can be displayed on the HUD
-	protected List<ControlMenu> ControlMenus { get; set; }
+	// A collection of ControlMenus which this Controllable has and can be displayed on the HUD, keyed by menu name
+	protected Dictionary<string, ControlMenu> ControlMenus { get; set; }
 	// The current ControlMenu which is selected and should be displayed on the HUD
-	public ControlMenu CurrentControlMenu { get; protected set; }
+	public ControlMenu CurrentControlMenu { get; set; }
 	
 	// A queue to hold all current tasks this object is tasked complete
 	private Deque<Task> taskQueue = new Deque<Task>();
+	
+	public const string BASE_MENU_NAME = "baseMenu";
 	
 	protected override void Awake() {
 		base.Awake();
@@ -29,7 +31,7 @@ public abstract class Controllable : Selectable {
 		if(owner == null)
 			Debug.Log("Player was never set for the Controllable: "+name+". It should be set immediately after instantiating the object.");
 		
-		ControlMenus = new List<ControlMenu>();
+		ControlMenus = new Dictionary<string, ControlMenu>();
 		BuildControlMenus();
 	}
 	
@@ -43,8 +45,12 @@ public abstract class Controllable : Selectable {
 	
 	public virtual void DisableCurrentMenuItems() {
 		foreach(ControlMenuItem menuItem in CurrentControlMenu.MenuItems) {
-			if(menuItem.Creatable != null) {
+			if(menuItem.RequiresPower && GetComponent<BuildingStatus>() != null && !GetComponent<BuildingStatus>().Powered) {
+				menuItem.Enabled = new BoolAndString(false, "Power is required for that.");
+			} else if(menuItem.Creatable != null) {
 				menuItem.Enabled = menuItem.Creatable.CanCreate(owner);
+			} else {
+				menuItem.Enabled = new BoolAndString(true);
 			}
 		}
 	}
@@ -100,21 +106,18 @@ public abstract class Controllable : Selectable {
 	
 	// Called when a ControlCode is received while this Controllable is selected
 	public virtual void ReceiveControlCode(string controlCode) {
+		// Handle menu navigation
 		ControlMenuItem selectedMenuItem = CurrentControlMenu.GetMenuItemWithCode(controlCode);
-		if(selectedMenuItem != null && selectedMenuItem.DestinationMenu != null) {
-			foreach(ControlMenu menu in ControlMenus) {
-				if(menu.Name.Equals(selectedMenuItem.DestinationMenu)) {
-					CurrentControlMenu = menu;
-					DisableCurrentMenuItems();
-				}
-			}
+		if(selectedMenuItem.DestinationMenu != null) {
+			CurrentControlMenu = ControlMenus[selectedMenuItem.DestinationMenu];
+			DisableCurrentMenuItems();
 		}
 	}
 	
 	public override void Deselected() {
 		base.Deselected();
 		
-		CurrentControlMenu = ControlMenus[0];
+		CurrentControlMenu = ControlMenus[BASE_MENU_NAME];
 	}
 }
 
