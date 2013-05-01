@@ -6,9 +6,11 @@ public class ControllableStatus : MonoBehaviour {
 
 	public int maxHP;
 	public int HP { get; protected set; }
+	public bool IsAlive { get; protected set; }
 
 	protected virtual void Start () {
 		HP = maxHP;
+		IsAlive = true;
 	}
 	
 	protected virtual void Update () {}
@@ -20,7 +22,7 @@ public class ControllableStatus : MonoBehaviour {
 	public void Damage(int amount) {
 		HP -= amount;
 		Mathf.Clamp(HP, 0, maxHP);
-		if(HP <= 0) {
+		if(HP == 0) {
 			Die();
 		}
 	}
@@ -31,6 +33,7 @@ public class ControllableStatus : MonoBehaviour {
 	}
 	
 	protected void Die() {
+		IsAlive = false;
 		Destroy(this.gameObject);
 	}
 }
