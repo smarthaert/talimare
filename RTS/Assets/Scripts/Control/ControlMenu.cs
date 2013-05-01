@@ -2,11 +2,9 @@ using UnityEngine;
 using System.Collections.Generic;
 
 public class ControlMenu {
-	public string Name { get; protected set; }
 	public List<ControlMenuItem> MenuItems { get; protected set; }
 	
-	public ControlMenu(string name) {
-		Name = name;
+	public ControlMenu() {
 		MenuItems = new List<ControlMenuItem>();
 	}
 	

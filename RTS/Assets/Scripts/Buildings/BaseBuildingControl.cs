@@ -18,31 +18,34 @@ public class BaseBuildingControl : Controllable {
 	
 	protected Vector3? rallyPoint = null;
 	
+	public const string UNIT_MENU_NAME = "unitMenu";
+	public const string TECH_MENU_NAME = "techMenu";
+	
 	protected override void Start() {
 		base.Start();
 	}
 	
 	protected override void BuildControlMenus() {
-		ControlMenu baseBuildingMenu = new ControlMenu("baseBuilding");
-		baseBuildingMenu.MenuItems.Add(new ControlMenuItem(ControlStore.MENU_UNITS, "createUnit"));
-		baseBuildingMenu.MenuItems.Add(new ControlMenuItem(ControlStore.MENU_TECHS, "createTech"));
-		ControlMenus.Add(baseBuildingMenu);
+		ControlMenu baseBuildingMenu = new ControlMenu();
+		baseBuildingMenu.MenuItems.Add(new ControlMenuItem(ControlStore.MENU_UNITS, UNIT_MENU_NAME));
+		baseBuildingMenu.MenuItems.Add(new ControlMenuItem(ControlStore.MENU_TECHS, TECH_MENU_NAME));
+		ControlMenus.Add(BASE_MENU_NAME, baseBuildingMenu);
 		
-		ControlMenu createUnitMenu = new ControlMenu("createUnit");
+		ControlMenu createUnitMenu = new ControlMenu();
 		foreach(Creatable unit in units) {
-			createUnitMenu.MenuItems.Add(new ControlMenuItem(unit, null));
+			createUnitMenu.MenuItems.Add(new ControlMenuItem(unit));
 		}
-		createUnitMenu.MenuItems.Add(new ControlMenuItem(ControlStore.MENU_BACK, "baseBuilding"));
-		ControlMenus.Add(createUnitMenu);
+		createUnitMenu.MenuItems.Add(new ControlMenuItem(ControlStore.MENU_BACK, BASE_MENU_NAME));
+		ControlMenus.Add(UNIT_MENU_NAME, createUnitMenu);
 		
-		ControlMenu createTechMenu = new ControlMenu("createTech");
+		ControlMenu createTechMenu = new ControlMenu();
 		foreach(Creatable tech in techs) {
-			createTechMenu.MenuItems.Add(new ControlMenuItem(tech, null));
+			createTechMenu.MenuItems.Add(new ControlMenuItem(tech, true));
 		}
-		createTechMenu.MenuItems.Add(new ControlMenuItem(ControlStore.MENU_BACK, "baseBuilding"));
-		ControlMenus.Add(createTechMenu);
+		createTechMenu.MenuItems.Add(new ControlMenuItem(ControlStore.MENU_BACK, BASE_MENU_NAME));
+		ControlMenus.Add(TECH_MENU_NAME, createTechMenu);
 		
-		CurrentControlMenu = ControlMenus[0];
+		CurrentControlMenu = ControlMenus[BASE_MENU_NAME];
 	}
 	
 	protected override void Update() {

@@ -12,11 +12,11 @@ public class BaseUnitControl : Controllable {
 	}
 	
 	protected override void BuildControlMenus() {
-		ControlMenu baseUnitMenu = new ControlMenu("baseUnit");
-		baseUnitMenu.MenuItems.Add(new ControlMenuItem(ControlStore.STOP, null));
-		ControlMenus.Add(baseUnitMenu);
+		ControlMenu baseUnitMenu = new ControlMenu();
+		baseUnitMenu.MenuItems.Add(new ControlMenuItem(ControlStore.STOP));
+		ControlMenus.Add(BASE_MENU_NAME, baseUnitMenu);
 		
-		CurrentControlMenu = ControlMenus[0];
+		CurrentControlMenu = ControlMenus[BASE_MENU_NAME];
 	}
 	
 	protected override void Update() {
