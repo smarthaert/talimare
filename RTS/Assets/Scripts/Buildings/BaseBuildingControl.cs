@@ -23,6 +23,8 @@ public class BaseBuildingControl : Controllable {
 	
 	protected override void Start() {
 		base.Start();
+		
+		GameUtil.RescanPathfinding();
 	}
 	
 	protected override void BuildControlMenus() {
@@ -67,10 +69,8 @@ public class BaseBuildingControl : Controllable {
 	public override void MouseAction(RaycastHit hit) {
 		if(hit.collider.GetType() == typeof(TerrainCollider)) {
 			rallyPoint = hit.point;
-			Debug.Log("Rally point set to: "+rallyPoint);
 		} else if(hit.collider.gameObject == this.gameObject) {
 			rallyPoint = null;
-			Debug.Log("Rally point removed.");
 		}
 	}
 	
@@ -95,7 +95,7 @@ public class BaseBuildingControl : Controllable {
 	}
 	
 	// Complete a unit, instantiating it at a proper location, and giving it a rally point if necessary
-	void CompleteUnit() {
+	protected void CompleteUnit() {
 		Creatable unit = unitQueue.Dequeue();
 		float distance = collider.bounds.size.magnitude + unit.gameObject.collider.bounds.size.magnitude;
 		GameObject newUnit = GameUtil.InstantiateControllable(unit.GetComponent<Controllable>(), gameObject.GetComponent<Controllable>().owner, transform.position + (transform.right * distance));
@@ -106,9 +106,13 @@ public class BaseBuildingControl : Controllable {
 	}
 	
 	// Complete a tech, adding it to the player's tech list and running
-	void CompleteTech() {
+	protected void CompleteTech() {
 		Tech tech = techQueue.Dequeue().GetComponent<Tech>();
 		tech.AddTechForPlayer(owner);
 		techTimer = 0;
+	}
+	
+	protected void OnDestroy() {
+		GameUtil.RescanPathfinding();
 	}
 }

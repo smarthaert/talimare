@@ -7,8 +7,6 @@ public class BuildProgressControl : Controllable {
 	
 	public Controllable finishedObject;
 	
-	protected static AstarPath Pathfinding { get; set; }
-	
 	protected BuildingStatus BuildingStatus { get; set; }
 	public Creatable Creatable { get; protected set; }
 	
@@ -59,10 +57,7 @@ public class BuildProgressControl : Controllable {
 		Completed = false;
 		BuildingStatus.maxHP = finishedObject.GetComponent<BuildingStatus>().maxHP;
 		BuildingStatus.SetHPToZero();
-		if(Pathfinding == null) {
-			Pathfinding = GameObject.Find("Pathfinding").GetComponent<AstarPath>();
-		}
-		Pathfinding.Scan();
+		GameUtil.RescanPathfinding();
 		Creatable.SpendResources(owner);
 	}
 	

@@ -26,6 +26,8 @@ public class Vision : MonoBehaviour {
 	protected float circleStep;
 	
 	protected void Start() {
+		//TODO high: refactor vision so the script can go on the parent gameobject. (characters will need kinematic rigidbodies to trigger collisions with each other while moving!)
+		
 		// A capsule collider provides a trigger for the vision range
 		CapsuleCollider visionCollider = gameObject.AddComponent<CapsuleCollider>();
 		visionCollider.isTrigger = true;

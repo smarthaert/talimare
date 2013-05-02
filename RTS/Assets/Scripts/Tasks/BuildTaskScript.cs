@@ -32,18 +32,18 @@ public class BuildTaskScript : TaskScript {
 			}
 		} else {
 			// Haven't started building yet
-			ResourceAmount requiredResource = BuildTarget.GetNextResourceNeededToBuild();
-			if(requiredResource == null) {
+			//TODO high: gather build materials from depots
+			//ResourceAmount requiredResource = BuildTarget.GetNextResourceNeededToBuild();
+			//if(requiredResource == null) {
 				if(IsInBuildRange()) {
 					MoveTaskScript.StopTask();
 					HasStartedBuilding = true;
 				} else {
 					MoveTaskScript.StartTask(BuildTarget.transform);
 				}
-			} else {
-				ResourceDepot nearestDepot = ResourceDepot.FindNearestDepotWithResource(transform.position, Controllable.owner, requiredResource.resource);
-				//TODO high: gather build materials from depots
-			}
+			//} else {
+				//ResourceDepot nearestDepot = ResourceDepot.FindNearestDepotWithResource(transform.position, Controllable.owner, requiredResource.resource);
+			//}
 		}
 	}
 	
