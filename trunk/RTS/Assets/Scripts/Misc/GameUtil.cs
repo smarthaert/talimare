@@ -3,6 +3,8 @@ using System.Collections.Generic;
 
 public abstract class GameUtil : Component {
 	
+	protected static AstarPath Pathfinding { get; set; }
+	
 	// Creates a new instance of the given Controllable for the given Player at the given position.
 	// Also applies applicable techs to this new object
 	public static GameObject InstantiateControllable(Controllable controllable, Player player, Vector3 position) {
@@ -43,5 +45,12 @@ public abstract class GameUtil : Component {
 			}
 		}
 		return components;
+	}
+	
+	public static void RescanPathfinding() {
+		if(Pathfinding == null) {
+			Pathfinding = GameObject.Find("Pathfinding").GetComponent<AstarPath>();
+		}
+		Pathfinding.Scan();
 	}
 }

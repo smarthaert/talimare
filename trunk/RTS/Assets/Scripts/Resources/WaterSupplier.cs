@@ -43,8 +43,8 @@ public class WaterSupplier : LocalResourceSupplier {
 		if(suppliablesInRange.Count > 0) {
 			int waterLeftToSupply = Mathf.Min(WaterHeld, maxWaterSupplyRate);
 			int waterSupplied;
-			// Remove any dead suppliables
-			suppliablesInRange.RemoveAll(SuppliableIsDead);
+			// Remove any destroyed suppliables
+			suppliablesInRange.RemoveAll(SuppliableIsDestroyed);
 			// Sort suppliables from lowest to highest current water
 			suppliablesInRange.Sort(CompareSuppliables);
 			// First loop through suppliables, supplying only enough to cover their water loss rate
@@ -81,24 +81,31 @@ public class WaterSupplier : LocalResourceSupplier {
 		}
 	}
 	
-	protected bool SuppliableIsDead(UnitStatus s) {
-		return !s.IsAlive;
+	protected bool SuppliableIsDestroyed(UnitStatus s) {
+		return !s.gameObject.activeInHierarchy;
 	}
 	
 	protected int CompareSuppliables(UnitStatus x, UnitStatus y) {
-		//TODO high: sort supplies by their current percentage of water
-		return x.Water.CompareTo(y.Water);
+		return x.WaterPercentage.CompareTo(y.WaterPercentage);
 	}
 	
-	protected override void OnTriggerEnter(Collider other) {
+	public override void OnTriggerEnter(Collider other) {
 		if(IsControllableWithSameOwner(other) && other.GetComponent<UnitStatus>() != null) {
 			suppliablesInRange.Add(other.GetComponent<UnitStatus>());
+			other.GetComponent<UnitStatus>().WaterSuppliersInRange.Add(this);
 		}
 	}
 	
-	protected override void OnTriggerExit(Collider other) {
-		if(IsControllableWithSameOwner(other) && other.GetComponent<UnitStatus>() != null) {
+	public override void OnTriggerExit(Collider other) {
+		if(suppliablesInRange.Contains(other.GetComponent<UnitStatus>())) {
 			suppliablesInRange.Remove(other.GetComponent<UnitStatus>());
+			other.GetComponent<UnitStatus>().WaterSuppliersInRange.Remove(this);
+		}
+	}
+	
+	protected void OnDestroy() {
+		foreach(UnitStatus unitStatus in suppliablesInRange) {
+			unitStatus.WaterSuppliersInRange.Remove(this);
 		}
 	}
 }

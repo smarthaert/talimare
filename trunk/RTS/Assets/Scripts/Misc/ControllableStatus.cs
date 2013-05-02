@@ -6,11 +6,9 @@ public class ControllableStatus : MonoBehaviour {
 
 	public int maxHP;
 	public int HP { get; protected set; }
-	public bool IsAlive { get; protected set; }
 
 	protected virtual void Start () {
 		HP = maxHP;
-		IsAlive = true;
 	}
 	
 	protected virtual void Update () {}
@@ -33,7 +31,6 @@ public class ControllableStatus : MonoBehaviour {
 	}
 	
 	protected void Die() {
-		IsAlive = false;
 		Destroy(this.gameObject);
 	}
 }

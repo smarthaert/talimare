@@ -35,7 +35,7 @@ public class ControlStore {
 		
 		//Buildings
 		ControlMap.Add("CreateBase", new Control("Base", KeyCode.B));
-		ControlMap.Add("CreatePowerPlant", new Control("PowerPlant", KeyCode.P));
+		ControlMap.Add("CreatePower Plant", new Control("PowerPlant", KeyCode.P));
 		
 		//Techs
 		ControlMap.Add("CreateElectricity", new Control("Electricity", KeyCode.E));
