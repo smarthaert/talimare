@@ -5,6 +5,12 @@ public abstract class GameUtil : Component {
 	
 	protected static AstarPath Pathfinding { get; set; }
 	
+	public const string TAG_UNIT = "Unit";
+	public const string TAG_BUILDING = "Building";
+	public const string TAG_TECH = "Tech";
+	public const string TAG_BUILD_PROGRESS = "BuildProgress";
+	public const string TAG_RESOURCE = "Resource";
+	
 	// Creates a new instance of the given Controllable for the given Player at the given position.
 	// Also applies applicable techs to this new object
 	public static GameObject InstantiateControllable(Controllable controllable, Player player, Vector3 position) {
@@ -49,8 +55,12 @@ public abstract class GameUtil : Component {
 	
 	public static void RescanPathfinding() {
 		if(Pathfinding == null) {
-			Pathfinding = GameObject.Find("Pathfinding").GetComponent<AstarPath>();
+			GameObject pathfinding = GameObject.Find("Pathfinding");
+			if(pathfinding != null)
+				Pathfinding = pathfinding.GetComponent<AstarPath>();
 		}
-		Pathfinding.Scan();
+		if(Pathfinding != null) {
+			Pathfinding.Scan();
+		}
 	}
 }

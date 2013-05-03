@@ -26,7 +26,7 @@ public class BaseUnitControl : Controllable {
 	public override void MouseAction(RaycastHit hit) {
 		if(hit.collider.GetType() == typeof(TerrainCollider)) {
 			AddTask(new Task(GetComponent<MoveTaskScript>(), hit.point), Game.PlayerInput.IsMultiKeyPressed());
-		} else if(hit.collider.gameObject.CompareTag("Unit")) {
+		} else if(hit.collider.gameObject.CompareTag(GameUtil.TAG_UNIT)) {
 			Controllable targetControl = hit.collider.gameObject.GetComponent<Controllable>();
 			if(targetControl != null && owner != targetControl.owner && owner.Relationships[targetControl.owner] == PlayerRelationship.HOSTILE) {
 				AddTask(new Task(GetComponent<AttackTaskScript>(), targetControl.gameObject), Game.PlayerInput.IsMultiKeyPressed());

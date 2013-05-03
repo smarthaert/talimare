@@ -44,13 +44,15 @@ public abstract class Controllable : Selectable {
 	}
 	
 	public virtual void DisableCurrentMenuItems() {
-		foreach(ControlMenuItem menuItem in CurrentControlMenu.MenuItems) {
-			if(menuItem.RequiresPower && GetComponent<BuildingStatus>() != null && !GetComponent<BuildingStatus>().Powered) {
-				menuItem.Enabled = new BoolAndString(false, "Power is required for that.");
-			} else if(menuItem.Creatable != null) {
-				menuItem.Enabled = menuItem.Creatable.CanCreate(owner);
-			} else {
-				menuItem.Enabled = new BoolAndString(true);
+		if(CurrentControlMenu != null) {
+			foreach(ControlMenuItem menuItem in CurrentControlMenu.MenuItems) {
+				if(menuItem.RequiresPower && GetComponent<BuildingStatus>() != null && !GetComponent<BuildingStatus>().Powered) {
+					menuItem.Enabled = new BoolAndString(false, "Power is required for that.");
+				} else if(menuItem.Creatable != null) {
+					menuItem.Enabled = menuItem.Creatable.CanCreate(owner);
+				} else {
+					menuItem.Enabled = new BoolAndString(true);
+				}
 			}
 		}
 	}

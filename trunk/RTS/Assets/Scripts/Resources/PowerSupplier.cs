@@ -4,19 +4,18 @@ using System.Collections.Generic;
 public class PowerSupplier : LocalResourceSupplier {
 	
 	public int powerSupplied;
-	public int PowerFree { get; protected set; }
+	public int FreePower { get; protected set; }
 	
-	// Holds all objects which are eligible for power supply (including those currently powered by this supplier)
+	// Holds all objects which are eligible for power supply (including those currently powered by this supplier).
+	// NOTE: Objects are held regardless of whether power is currently enabled for them
 	protected List<BuildingStatus> suppliablesInRange = new List<BuildingStatus>();
 	// Holds all objects which are currently powered by this supply
-	protected List<BuildingStatus> powerUsers = new List<BuildingStatus>();
-	
-	//TODO use partial power supply to power a building from multiple suppliers
+	protected Dictionary<BuildingStatus, int> powerUsers = new Dictionary<BuildingStatus, int>();
 	
 	protected override void Start() {
 		base.Start();
 		
-		PowerFree = powerSupplied;
+		FreePower = powerSupplied;
 	}
 	
 	public override void OnTriggerEnter(Collider other) {
@@ -24,8 +23,19 @@ public class PowerSupplier : LocalResourceSupplier {
 			BuildingStatus buildingStatus = other.GetComponent<BuildingStatus>();
 			if(buildingStatus.powerRequired > 0) {
 				suppliablesInRange.Add(buildingStatus);
-				buildingStatus.PowerSuppliersInRange.Add(this);
-				RecheckSuppliablesForNewPower();
+				RecheckSuppliablesForNewPower(); //must recheck power before calling AddPowerSupplier
+				buildingStatus.AddPowerSupplier(this);
+			}
+		}
+	}
+	
+	// Checks all suppliables in range to see if any can now be supplied power
+	protected void RecheckSuppliablesForNewPower() {
+		foreach(BuildingStatus buildingStatus in suppliablesInRange) {
+			if(buildingStatus.PowerEnabled && !buildingStatus.Powered && buildingStatus.powerRequired < FreePower) {
+				Debug.Log("Powering up "+buildingStatus.name+" using pushed power");
+				buildingStatus.Powered = true;
+				CapturePower(buildingStatus, buildingStatus.powerRequired);
 			}
 		}
 	}
@@ -35,36 +45,42 @@ public class PowerSupplier : LocalResourceSupplier {
 			BuildingStatus buildingStatus = other.GetComponent<BuildingStatus>();
 			
 			suppliablesInRange.Remove(buildingStatus);
-			buildingStatus.PowerSuppliersInRange.Remove(this);
-			if(powerUsers.Contains(buildingStatus)) {
-				Debug.Log("Unpowering "+other.name);
-				powerUsers.Remove(buildingStatus);
-				PowerFree += buildingStatus.powerRequired;
-				buildingStatus.Powered = false;
+			buildingStatus.RemovePowerSupplier(this);
+			if(powerUsers.ContainsKey(buildingStatus)) {
+				if(buildingStatus.Powered) {
+					Debug.Log("Unpowering "+other.name);
+					buildingStatus.Powered = false;
+				}
+				ReleasePower(buildingStatus);
 				RecheckSuppliablesForNewPower();
 			}
 		}
 	}
 	
-	// Checks all suppliables in range to see if any can now be supplied power
-	protected void RecheckSuppliablesForNewPower() {
-		foreach(BuildingStatus buildingStatus in suppliablesInRange) {
-			if(!buildingStatus.Powered && buildingStatus.powerRequired < PowerFree) {
-				Debug.Log("Powering up "+buildingStatus.name);
-				powerUsers.Add(buildingStatus);
-				PowerFree -= buildingStatus.powerRequired;
-				buildingStatus.Powered = true;
-			}
-		}
+	// Captures the given amount of power for use by the given object
+	public void CapturePower(BuildingStatus buildingStatus, int amount) {
+		powerUsers.Add(buildingStatus, amount);
+		FreePower -= powerUsers[buildingStatus];
+	}
+	
+	// Releases any power captured by the given object
+	public void ReleasePower(BuildingStatus buildingStatus) {
+		FreePower += powerUsers[buildingStatus];
+		powerUsers.Remove(buildingStatus);
 	}
 	
 	protected void OnDestroy() {
-		foreach(BuildingStatus buildingStatus in powerUsers) {
-			Debug.Log("Unpowering "+buildingStatus.name);
-			buildingStatus.Powered = false;
+		BuildingStatus[] powerUsersClone = new BuildingStatus[powerUsers.Count];
+		powerUsers.Keys.CopyTo(powerUsersClone, 0);
+		foreach(BuildingStatus buildingStatus in powerUsersClone) {
+			if(buildingStatus.Powered) {
+				Debug.Log("Unpowering "+buildingStatus.name);
+				buildingStatus.Powered = false;
+			}
+			ReleasePower(buildingStatus);
 		}
 		foreach(BuildingStatus buildingStatus in suppliablesInRange) {
-			buildingStatus.PowerSuppliersInRange.Remove(this);
+			buildingStatus.RemovePowerSupplier(this);
 		}
 	}
 }

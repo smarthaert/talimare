@@ -31,6 +31,9 @@ public class BaseBuildingControl : Controllable {
 		ControlMenu baseBuildingMenu = new ControlMenu();
 		baseBuildingMenu.MenuItems.Add(new ControlMenuItem(ControlStore.MENU_UNITS, UNIT_MENU_NAME));
 		baseBuildingMenu.MenuItems.Add(new ControlMenuItem(ControlStore.MENU_TECHS, TECH_MENU_NAME));
+		if(GetComponent<BuildingStatus>() != null && GetComponent<BuildingStatus>().powerRequired > 0) {
+			baseBuildingMenu.MenuItems.Add(new ControlMenuItem(ControlStore.TOGGLE_POWER));
+		}
 		ControlMenus.Add(BASE_MENU_NAME, baseBuildingMenu);
 		
 		ControlMenu createUnitMenu = new ControlMenu();
@@ -77,19 +80,23 @@ public class BaseBuildingControl : Controllable {
 	public override void ReceiveControlCode(string controlCode) {
 		base.ReceiveControlCode(controlCode);
 		
-		// See if ControlCode exists in units or techs and if so, queue that Creatable
-		foreach(Creatable unit in units) {
-			if(unit.ControlCode.Equals(controlCode) && unit.CanCreate(owner).Bool) {
-				//TODO high: required resources need to be delivered to building
-				//TODO high: make a job list, which holds all the jobs which are currently waiting to be done. units can then be directed to pick up these jobs (which then become tasks) or can pick them up automatically (this is strategic ai)
-				unit.SpendResources(owner);
-				unitQueue.Enqueue(unit);
+		if(controlCode.Equals(ControlStore.TOGGLE_POWER)) {
+			GetComponent<BuildingStatus>().SetPowerEnabled(!GetComponent<BuildingStatus>().PowerEnabled);
+		} else {
+			// See if ControlCode exists in units or techs and if so, queue that Creatable
+			foreach(Creatable unit in units) {
+				if(unit.ControlCode.Equals(controlCode) && unit.CanCreate(owner).Bool) {
+					//TODO high: required resources need to be delivered to building
+					//TODO high: make a job list, which holds all the jobs which are currently waiting to be done. units can then be directed to pick up these jobs (which then become tasks) or can pick them up automatically (this is strategic ai)
+					unit.SpendResources(owner);
+					unitQueue.Enqueue(unit);
+				}
 			}
-		}
-		foreach(Creatable tech in techs) {
-			if(tech.ControlCode.Equals(controlCode) && !techQueue.Contains(tech) && tech.CanCreate(owner).Bool) {
-				tech.SpendResources(owner);
-				techQueue.Enqueue(tech);
+			foreach(Creatable tech in techs) {
+				if(tech.ControlCode.Equals(controlCode) && !techQueue.Contains(tech) && tech.CanCreate(owner).Bool) {
+					tech.SpendResources(owner);
+					techQueue.Enqueue(tech);
+				}
 			}
 		}
 	}

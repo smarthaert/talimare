@@ -23,7 +23,7 @@ public class Creatable : MonoBehaviour {
 		}
 		
 		BoolAndString canCreate = new BoolAndString(true);
-		if(gameObject.CompareTag("Tech")) {
+		if(gameObject.CompareTag(GameUtil.TAG_TECH)) {
 			// Creatable is a tech, check to make sure the player hasn't already researched it
 			if(player.PlayerStatus.techs.Contains(GetComponent<Tech>())) {
 				canCreate.Bool = false;

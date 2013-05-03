@@ -2,8 +2,6 @@ using UnityEngine;
 
 public enum Resource {
 	Food,
-	Water,
-	Power,
 	Copper,
 	Iron,
 	Coal,
