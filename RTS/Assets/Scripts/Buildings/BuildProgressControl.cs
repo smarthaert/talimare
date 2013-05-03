@@ -90,7 +90,10 @@ public class BuildProgressControl : Controllable {
 		// If multiple civs are building this, there's a chance that Complete gets called more than once
 		if(!Completed) {
 			Completed = true;
-			GameUtil.InstantiateControllable(finishedObject, owner, this.transform.position); //might also need to pass this.transform.rotation
+			GameObject newObject = GameUtil.InstantiateControllable(finishedObject, owner, this.transform.position); //might also need to pass this.transform.rotation
+			if(Game.PlayerInput.CurrentSelection == this) {
+				Game.PlayerInput.Select(newObject.GetComponent<Selectable>());
+			}
 			Destroy(this.gameObject);
 		}
 	}

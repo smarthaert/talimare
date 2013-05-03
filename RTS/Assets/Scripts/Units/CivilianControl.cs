@@ -53,9 +53,9 @@ public class CivilianControl : BaseUnitControl {
 		
 		if(queuedBuildTarget != null) {
 			CommitQueuedBuilding();
-		} else if(hit.collider.gameObject.CompareTag("Resource")) {
+		} else if(hit.collider.gameObject.CompareTag(GameUtil.TAG_RESOURCE)) {
 			AddTask(new Task(GetComponent<GatherTaskScript>(), hit.collider.gameObject.GetComponent<ResourceNode>()), Game.PlayerInput.IsMultiKeyPressed());
-		} else if(hit.collider.gameObject.CompareTag("BuildProgress")) {
+		} else if(hit.collider.gameObject.CompareTag(GameUtil.TAG_BUILD_PROGRESS)) {
 			AddTask(new Task(GetComponent<BuildTaskScript>(), hit.collider.gameObject.GetComponent<BuildProgressControl>()), Game.PlayerInput.IsMultiKeyPressed());
 		} 
 	}

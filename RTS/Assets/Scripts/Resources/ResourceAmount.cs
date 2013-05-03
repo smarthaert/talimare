@@ -15,7 +15,7 @@ public class ResourceAmount {
 	
 	// Convenience method to determine if this resource is an upkeep resource
 	public bool IsUpkeepResource() {
-		if(resource == Resource.Food || resource == Resource.Water || resource == Resource.Power)
+		if(resource == Resource.Food)
 			return true;
 		else
 			return false;

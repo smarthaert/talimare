@@ -30,7 +30,7 @@ public class HUD : MonoBehaviour {
 		foreach(KeyValuePair<Resource, int> resourceLevel in Player.PlayerStatus.resourceLevels) {
 			Rect tempLocation = ResourceLevelsLocation;
 			tempLocation.y += offset;
-			if(resourceLevel.Key == Resource.Food || resourceLevel.Key == Resource.Water || resourceLevel.Key == Resource.Power) {
+			if(resourceLevel.Key == Resource.Food) {
 				int resourceUpkeepMaximum = Player.PlayerStatus.upkeepMaximums[resourceLevel.Key];
 				int resourceAmountUsed = resourceUpkeepMaximum - resourceLevel.Value;
 				GUI.Label(tempLocation, resourceLevel.Key.ToString()+": "+resourceAmountUsed+" / "+resourceUpkeepMaximum.ToString());
@@ -84,22 +84,40 @@ public class HUD : MonoBehaviour {
 		GUILayout.Label("HP: " + status.HP + " / " + status.maxHP);
 		
 		//check if unit
-		if(CurrentSelection.GetComponent<UnitStatus>() != null) {
-			UnitStatus unitStatus = CurrentSelection.GetComponent<UnitStatus>();
-			GUILayout.Label("Water: " + unitStatus.Water + " / " + unitStatus.maxWater);
+		if(CurrentSelection.CompareTag(GameUtil.TAG_UNIT)) {
+			if(CurrentSelection.GetComponent<UnitStatus>() != null) {
+				UnitStatus unitStatus = CurrentSelection.GetComponent<UnitStatus>();
+				GUILayout.Label("Water: " + unitStatus.Water + " / " + unitStatus.maxWater);
+			}
+			
+			//check if civilian carrying resources
+			if(CurrentSelection.GetComponent<GatherTaskScript>() != null) {
+				ResourceAmount heldResource = CurrentSelection.GetComponent<GatherTaskScript>().HeldResource;
+				if(heldResource != null) {
+					GUILayout.Label("Carrying: " + heldResource.resource + " x " + heldResource.amount);
+				}
+			}
 		}
 		
-		//check if water supplier
-		if(CurrentSelection.GetComponentInChildren<WaterSupplier>() != null) {
-			WaterSupplier waterSupplier = CurrentSelection.GetComponentInChildren<WaterSupplier>();
-			GUILayout.Label("Water: " + waterSupplier.WaterHeld + " / " + waterSupplier.maxWaterHeld);
-		}
-		
-		//check if civilian carrying resources
-		if(CurrentSelection.GetComponent<GatherTaskScript>() != null) {
-			ResourceAmount heldResource = CurrentSelection.GetComponent<GatherTaskScript>().HeldResource;
-			if(heldResource != null) {
-				GUILayout.Label("Carrying: " + heldResource.resource + " x " + heldResource.amount);
+		//check if building
+		if(CurrentSelection.CompareTag(GameUtil.TAG_BUILDING)) {
+			//check if water supplier
+			if(CurrentSelection.GetComponent<WaterSupplier>() != null) {
+				WaterSupplier waterSupplier = CurrentSelection.GetComponent<WaterSupplier>();
+				GUILayout.Label("Water: " + waterSupplier.WaterHeld + " / " + waterSupplier.maxWaterHeld);
+			}
+			
+			//check if power supplier
+			if(CurrentSelection.GetComponent<PowerSupplier>() != null) {
+				PowerSupplier powerSupplier = CurrentSelection.GetComponent<PowerSupplier>();
+				GUILayout.Label("Power: " + (powerSupplier.powerSupplied-powerSupplier.FreePower) + " / " + powerSupplier.powerSupplied + " used");
+			}
+			
+			if(CurrentSelection.GetComponent<BuildingStatus>() != null) {
+				BuildingStatus buildingStatus = CurrentSelection.GetComponent<BuildingStatus>();
+				if(buildingStatus.powerRequired > 0) {
+					GUILayout.Label("Power is " + (buildingStatus.PowerEnabled ? "enabled" : "disabled") + " and" + (buildingStatus.Powered ? " " : " not ") + "supplied");
+				}
 			}
 		}
 	}

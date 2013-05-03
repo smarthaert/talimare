@@ -3,10 +3,14 @@ using System.Collections.Generic;
 
 public class ControlStore {
 	
+	//Tasks
 	public const string STOP = "Stop";
 	
+	//Misc
+	public const string TOGGLE_POWER = "TogglePower";
 	public const string DESTROY = "Destroy";
 	
+	//Menu Navigation
 	public const string MENU_UNITS = "MenuUnits";
 	public const string MENU_BUILDINGS = "MenuBuildings";
 	public const string MENU_TECHS = "MenuTechs";
@@ -21,6 +25,8 @@ public class ControlStore {
 		//Tasks
 		ControlMap.Add(STOP, new Control("Stop", KeyCode.S));
 		
+		//Misc
+		ControlMap.Add(TOGGLE_POWER, new Control("Toggle Power", KeyCode.P));
 		ControlMap.Add(DESTROY, new Control("Destroy", KeyCode.Delete));
 		
 		//Menu Navigation

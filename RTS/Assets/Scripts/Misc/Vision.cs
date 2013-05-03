@@ -39,7 +39,7 @@ public class Vision : MonoBehaviour {
 		rigidBody.isKinematic = true;
 		
 		// Determine if this is a unit (the alternative would be a building)
-		if(transform.parent.gameObject.CompareTag("Unit"))
+		if(transform.parent.gameObject.CompareTag(GameUtil.TAG_UNIT))
 			isUnit = true;
 		
 		GameObject fogOfWar = GameObject.Find("FogOfWar");
@@ -69,7 +69,7 @@ public class Vision : MonoBehaviour {
 		else
 			RevealsFog = false;
 		
-		if(transform.parent.gameObject.CompareTag("Unit"))
+		if(transform.parent.gameObject.CompareTag(GameUtil.TAG_UNIT))
 			HidesInFog = true;
 		else
 			HidesInFog = false;

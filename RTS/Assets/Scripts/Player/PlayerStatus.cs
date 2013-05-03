@@ -10,10 +10,6 @@ public class PlayerStatus : MonoBehaviour {
 	// Resources - use these fields only for the initial setting of values in the editor
 	[NonSerialized]
 	public int food = 0;
-	[NonSerialized]
-	public int water = 0;
-	[NonSerialized]
-	public int power = 0;
 	public int copper = 0;
 	public int iron = 0;
 	public int coal = 0;
@@ -23,8 +19,6 @@ public class PlayerStatus : MonoBehaviour {
 	
 	// Current upkeep resource maximums - use these fields only for the initial setting of values in the editor
 	public int maxFood = 0;
-	public int maxWater = 0;
-	public int maxPower = 0;
 	
 	// Resources - use this when referencing resource levels from other scripts
 	// Note: for upkeep resources, this contains the amount of usable resource remaining
@@ -45,12 +39,8 @@ public class PlayerStatus : MonoBehaviour {
 		player = gameObject.GetComponent<Player>();
 		
 		food = maxFood;
-		water = maxWater;
-		power = maxPower;
 		
 		upkeepMaximums.Add(Resource.Food, maxFood);
-		upkeepMaximums.Add(Resource.Water, maxWater);
-		upkeepMaximums.Add(Resource.Power, maxPower);
 		
 		// Initialize the dictionaries by loading each with every resource
 		foreach(object resource in Enum.GetValues(typeof(Resource))) {

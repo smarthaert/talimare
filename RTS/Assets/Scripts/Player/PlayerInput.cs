@@ -78,7 +78,7 @@ public class PlayerInput : MonoBehaviour {
 	}
 	
 	// Selects the given object, adding a visual marker
-	protected void Select(Selectable selectable) {
+	public void Select(Selectable selectable) {
 		DeselectCurrent();
 		CurrentSelection = selectable;
 		CurrentMarker = (GameObject)Instantiate(selectionMarker, CurrentSelection.gameObject.transform.position, Quaternion.identity);
