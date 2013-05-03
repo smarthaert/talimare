@@ -2,7 +2,6 @@ using UnityEngine;
 using System.Collections.Generic;
 
 // Handles the status of a building being placed and built
-[RequireComponent(typeof(BuildingStatus))]
 public class BuildProgressControl : Controllable {
 	
 	public Controllable finishedObject;
@@ -25,8 +24,9 @@ public class BuildProgressControl : Controllable {
 	protected override void Start() {
 		base.Start();
 		
-		BuildingStatus = GetComponent<BuildingStatus>();
 		Creatable = finishedObject.GetComponent<Creatable>();
+		BuildingStatus = gameObject.AddComponent<BuildingStatus>();
+		gameObject.AddComponent<Vision>().visionRange = 2;
 		
 		StoredResources = new Dictionary<Resource, int>();
 		foreach(ResourceAmount resourceAmount in Creatable.resourceCosts) {

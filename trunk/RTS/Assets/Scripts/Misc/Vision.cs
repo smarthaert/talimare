@@ -11,7 +11,7 @@ public class Vision : MonoBehaviour {
 	protected float LOSHeight = 0.0f;
 	
 	protected FogOfWar fogOfWarScript;
-	protected MoveTaskScript pathfinder;
+	protected MoveTaskScript moveTaskScript;
 	protected Controllable controllable;
 	protected PersonalAI personalAI;
 	
@@ -26,29 +26,34 @@ public class Vision : MonoBehaviour {
 	protected float circleStep;
 	
 	protected void Start() {
-		//TODO high: refactor vision so the script can go on the parent gameobject. (characters will need kinematic rigidbodies to trigger collisions with each other while moving!)
+		// A child GameObject is needed to attach a collider to. Attaching the collider to the parent object causes problems
+		GameObject child = new GameObject(this.GetType().Name);
+		child.transform.parent = transform;
+		child.transform.localPosition = Vector3.zero;
+		child.layer = LayerMask.NameToLayer("Ignore Raycast");
 		
 		// A capsule collider provides a trigger for the vision range
-		CapsuleCollider visionCollider = gameObject.AddComponent<CapsuleCollider>();
+		CapsuleCollider visionCollider = child.AddComponent<CapsuleCollider>();
 		visionCollider.isTrigger = true;
 		visionCollider.radius = visionRange;
 		visionCollider.height = 99f;
 		
-		// A rigidbody allows this object's collider to trigger while it is moving
-		Rigidbody rigidBody = gameObject.AddComponent<Rigidbody>();
-		rigidBody.isKinematic = true;
+		// Add a kinematic rigidbody if there isn't already one in order to make collisions work
+		if(GetComponent<Rigidbody>() == null) {
+			gameObject.AddComponent<Rigidbody>().isKinematic = true;
+		}
 		
 		// Determine if this is a unit (the alternative would be a building)
-		if(transform.parent.gameObject.CompareTag(GameUtil.TAG_UNIT))
+		if(gameObject.CompareTag(GameUtil.TAG_UNIT))
 			isUnit = true;
 		
 		GameObject fogOfWar = GameObject.Find("FogOfWar");
 		if(fogOfWar != null)
 			fogOfWarScript = fogOfWar.GetComponent<FogOfWar>();
 		if(isUnit)
-			pathfinder = transform.parent.GetComponent<MoveTaskScript>();
-		controllable = transform.parent.GetComponent<Controllable>();
-		personalAI = transform.parent.GetComponent<PersonalAI>();
+			moveTaskScript = GetComponent<MoveTaskScript>();
+		controllable = GetComponent<Controllable>();
+		personalAI = GetComponent<PersonalAI>();
 		ConfigureVisionSettings();
 		
 		fogLayerMask = 1 << LayerMask.NameToLayer("FogOfWar");
@@ -64,15 +69,17 @@ public class Vision : MonoBehaviour {
 	
 	// Configures this object's vision settings based on its owner
 	protected void ConfigureVisionSettings() {
-		if(controllable.owner == Game.ThisPlayer)
+		if(controllable.owner == Game.ThisPlayer) {
 			RevealsFog = true;
-		else
+		} else {
 			RevealsFog = false;
+		}
 		
-		if(transform.parent.gameObject.CompareTag(GameUtil.TAG_UNIT))
+		if(gameObject.CompareTag(GameUtil.TAG_UNIT)) {
 			HidesInFog = true;
-		else
+		} else {
 			HidesInFog = false;
+		}
 	}
 	
 	void Update() {
@@ -162,7 +169,7 @@ public class Vision : MonoBehaviour {
 	
 	// Hides this object, disabling all renderers
 	void Hide() {
-		Renderer[] allRenderer = transform.parent.gameObject.GetComponentsInChildren<Renderer>();
+		Renderer[] allRenderer = gameObject.GetComponentsInChildren<Renderer>();
 		foreach(Renderer rendR in allRenderer) {
 			rendR.enabled = false;
 		}
@@ -171,7 +178,7 @@ public class Vision : MonoBehaviour {
 	
 	// Shows this object, enabling all renderers
 	void Show() {
-		Renderer[] allRenderer = transform.parent.gameObject.GetComponentsInChildren<Renderer>();
+		Renderer[] allRenderer = gameObject.GetComponentsInChildren<Renderer>();
 		foreach(Renderer rendR in allRenderer) {
 			rendR.enabled = true;
 		}
@@ -180,25 +187,19 @@ public class Vision : MonoBehaviour {
 	
 	// Called when another collider enters this vision range
 	void OnTriggerEnter(Collider other) {
-		if(other.transform.parent != this.transform.parent) {
-			if(other.GetComponent<Controllable>() != null && other.GetComponent<Controllable>().owner != controllable.owner) {
-				// Object is a Controllable owned by another player
-				if(personalAI != null) {
-					personalAI.ObjectEnteredVision(other.gameObject);
-				}
-			}
+		if(IsControllableWithDifferentOwner(other) && personalAI != null) {
+			personalAI.ObjectEnteredVision(other.gameObject);
 		}
 	}
 	
 	// Called when another collider exits this vision range
 	void OnTriggerExit(Collider other) {
-		if(other.transform.parent != this.transform.parent) {
-			if(other.GetComponent<Controllable>() != null && other.GetComponent<Controllable>().owner != controllable.owner) {
-				// Object is a Controllable owned by another player
-				if(personalAI != null) {
-					personalAI.ObjectLeftVision(other.gameObject);
-				}
-			}
+		if(IsControllableWithDifferentOwner(other) && personalAI != null) {
+			personalAI.ObjectLeftVision(other.gameObject);
 		}
+	}
+	
+	protected bool IsControllableWithDifferentOwner(Collider other) {
+		return other.GetComponent<Controllable>() != null && other.GetComponent<Controllable>().owner != controllable.owner;
 	}
 }

@@ -18,6 +18,11 @@ public class LocalResourceSupplier : MonoBehaviour {
 		supplyCollider.radius = supplyRange;
 		supplyCollider.height = 99f;
 		
+		// Add a kinematic rigidbody if there isn't already one in order to make collisions work
+		if(GetComponent<Rigidbody>() == null) {
+			gameObject.AddComponent<Rigidbody>().isKinematic = true;
+		}
+		
 		controllable = GetComponent<Controllable>();
 	}
 	
