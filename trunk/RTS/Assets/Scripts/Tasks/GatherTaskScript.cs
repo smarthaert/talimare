@@ -2,7 +2,7 @@ using UnityEngine;
 
 // Handles unit gathering
 [RequireComponent(typeof(MoveTaskScript))]
-public class GatherTaskScript : TaskScript {
+public class GatherTaskScript : MonoBehaviour {
 	
 	// The amount this unit gathers each time gathering triggers on a resource node
 	public int gatherAmount;
@@ -20,11 +20,11 @@ public class GatherTaskScript : TaskScript {
 	// The depot this unit is currently returning resources to
 	protected ResourceDepot DepotTarget { get; set; }
 	
+	protected Controllable Controllable { get; set; }
 	protected MoveTaskScript MoveTaskScript { get; set; }
 	
-	protected override void Awake() {
-		base.Awake();
-		
+	protected void Awake() {
+		Controllable = GetComponent<Controllable>();
 		MoveTaskScript = GetComponent<MoveTaskScript>();
 	}
 	
@@ -85,9 +85,9 @@ public class GatherTaskScript : TaskScript {
 		}
 	}
 	
-	public override void StartTask(object target) {
-		if(GatherTarget != (ResourceNode)target) {
-			GatherTarget = (ResourceNode)target;
+	public void StartTask(ResourceNode target) {
+		if(GatherTarget != target) {
+			GatherTarget = target;
 			GatherTimer = 0;
 			if(HeldResource != null && HeldResource.resource != GatherTarget.resource) {
 				HeldResource = null;
@@ -95,11 +95,11 @@ public class GatherTaskScript : TaskScript {
 		}
 	}
 	
-	public override bool IsTaskRunning() {
+	public bool IsTaskRunning() {
 		return GatherTarget != null;
 	}
 	
-	public override void StopTask() {
+	public void StopTask() {
 		GatherTarget = null;
 		DepotTarget = null;
 	}

@@ -36,7 +36,7 @@ public class PersonalAI : MonoBehaviour {
 		if(Controllable.GetCurrentTask() == null) {
 			State = AIState.Idle;
 			HandleIdleStateChange();
-		} else if(Controllable.GetCurrentTask().TaskScript is AttackTaskScript) {
+		} else if(Controllable.GetCurrentTask() is AttackTask) {
 			State = AIState.Fighting;
 		} else {
 			State = AIState.Working;
@@ -104,7 +104,7 @@ public class PersonalAI : MonoBehaviour {
 	}
 	
 	protected virtual void Fight(GameObject target) {
-		Controllable.AddTaskInterrupt(new Task(GetComponent<AttackTaskScript>(), target));
+		Controllable.AddTaskInterrupt(new AttackTask(GetComponent<AttackTaskScript>(), target));
 	}
 	
 	protected virtual void Flee(GameObject fleeFrom) {
