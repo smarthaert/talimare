@@ -3,7 +3,7 @@ using System.Collections;
 
 // Handles unit attacking
 [RequireComponent(typeof(MoveTaskScript))]
-public class AttackTaskScript : TaskScript {
+public class AttackTaskScript : MonoBehaviour {
 	
 	public float attackRange = 0;
 	public int attackDamage = 0;
@@ -24,11 +24,11 @@ public class AttackTaskScript : TaskScript {
 	// An internal var to track who we're targeting for each individual attack sequence
 	protected GameObject CurrentAttackTarget { get; set; }
 	
+	protected Controllable Controllable { get; set; }
 	protected MoveTaskScript MoveTaskScript { get; set; }
 	
-	protected override void Awake() {
-		base.Awake();
-		
+	protected void Awake() {
+		Controllable = GetComponent<Controllable>();
 		MoveTaskScript = GetComponent<MoveTaskScript>();
 	}
 	
@@ -66,17 +66,17 @@ public class AttackTaskScript : TaskScript {
 		}
 	}
 	
-	public override void StartTask(object target) {
-		if(Target != (GameObject)target) {
-			Target = (GameObject)target;
+	public void StartTask(GameObject target) {
+		if(Target != target) {
+			Target = target;
 		}
 	}
 	
-	public override bool IsTaskRunning() {
+	public bool IsTaskRunning() {
 		return Target != null;
 	}
 	
-	public override void StopTask() {
+	public void StopTask() {
 		Target = null;
 	}
 	

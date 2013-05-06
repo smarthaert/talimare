@@ -3,22 +3,21 @@ using System.Collections.Generic;
 
 // Handles unit building
 [RequireComponent(typeof(MoveTaskScript))]
-public class BuildTaskScript : TaskScript {
+public class BuildTaskScript : MonoBehaviour {
 	
-	// The building this unit is currently building
-	protected BuildProgressControl BuildTarget { get; set; }
+	protected BuildJob BuildJob { get; set; }
 	protected bool HasStartedBuilding { get; set; }
 	
+	protected Controllable Controllable { get; set; }
 	protected MoveTaskScript MoveTaskScript { get; set; }
 	
-	protected override void Awake() {
-		base.Awake();
-		
+	protected void Awake() {
+		Controllable = GetComponent<Controllable>();
 		MoveTaskScript = GetComponent<MoveTaskScript>();
 	}
 	
 	protected void Update () {
-		if(BuildTarget != null) {
+		if(BuildJob != null) {
 			UpdateBuild();
 		}
 	}
@@ -26,44 +25,38 @@ public class BuildTaskScript : TaskScript {
 	protected void UpdateBuild() {
 		if(HasStartedBuilding) {
 			// Currently building
-			BuildTarget.Building(Time.deltaTime);
-			if(BuildTarget.Completed) {
+			BuildJob.BuildTarget.Building(Time.deltaTime);
+			if(BuildJob.BuildTarget.Completed) {
 				StopTask();
 			}
 		} else {
-			// Haven't started building yet
-			//TODO high: gather build materials from depots
-			//ResourceAmount requiredResource = BuildTarget.GetNextResourceNeededToBuild();
-			//if(requiredResource == null) {
-				if(IsInBuildRange()) {
-					MoveTaskScript.StopTask();
-					HasStartedBuilding = true;
-				} else {
-					MoveTaskScript.StartTask(BuildTarget.transform);
-				}
-			//} else {
-				//ResourceDepot nearestDepot = ResourceDepot.FindNearestDepotWithResource(transform.position, Controllable.owner, requiredResource.resource);
-			//}
+			// Not building yet due to being out of range
+			if(IsInBuildRange()) {
+				MoveTaskScript.StopTask();
+				HasStartedBuilding = true;
+			} else {
+				MoveTaskScript.StartTask(BuildJob.BuildTarget.transform);
+			}
 		}
 	}
 	
-	public override void StartTask(object target) {
-		if(BuildTarget != (BuildProgressControl)target) {
-			BuildTarget = (BuildProgressControl)target;
+	public void StartTask(BuildJob buildJob) {
+		if(BuildJob != buildJob) {
+			BuildJob = buildJob;
 			HasStartedBuilding = false;
 		}
 	}
 	
-	public override bool IsTaskRunning() {
-		return BuildTarget != null;
+	public bool IsTaskRunning() {
+		return BuildJob != null;
 	}
 	
-	public override void StopTask() {
-		BuildTarget = null;
+	public void StopTask() {
+		BuildJob = null;
 	}
 	
 	protected bool IsInBuildRange() {
-		float buildRange = this.collider.bounds.size.magnitude/2 + BuildTarget.collider.bounds.size.magnitude/2 + 0.5f;
-		return (BuildTarget.transform.position - this.transform.position).magnitude <= buildRange;
+		float buildRange = this.collider.bounds.size.magnitude/2 + BuildJob.BuildTarget.collider.bounds.size.magnitude/2 + 0.5f;
+		return (BuildJob.BuildTarget.transform.position - this.transform.position).magnitude <= buildRange;
 	}
 }

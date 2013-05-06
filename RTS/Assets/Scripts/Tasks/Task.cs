@@ -1,32 +1,19 @@
 
-// A Task is a TaskScript linked with a target, and can be queued inside Controllables
-public class Task {
+// A Task is a TaskScript linked with a job or target, and can be queued inside Controllables
+public abstract class Task {
 	
-	public TaskScript TaskScript { get; set; }
-	public object Target { get; set; }
-	public bool IsStarted { get; set; }
+	public bool Started { get; protected set; }
 	
-	public Task(TaskScript taskScript, object target) {
-		TaskScript = taskScript;
-		Target = target;
-		IsStarted = false;
-	}
-
-	public void Start() {
-		TaskScript.StartTask(Target);
-		IsStarted = true;
+	public Task() {
+		Started = false;
 	}
 	
-	public bool IsRunning() {
-		return TaskScript.IsTaskRunning();
+	public virtual void Start() {
+		Started = true;
 	}
-	
-	public void Abort() {
-		TaskScript.StopTask();
-	}
-	
-	public void Pause() {
-		TaskScript.StopTask();
-		IsStarted = false;
+	public abstract bool IsRunning();
+	public virtual void Abort() {}
+	public virtual void Pause() {
+		Started = false;
 	}
 }

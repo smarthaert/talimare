@@ -32,7 +32,7 @@ using Pathfinding;
  * it will use Transform.Translate which is guaranteed to always work.
  */
 [RequireComponent(typeof(Seeker))]
-public class MoveTaskScript : TaskScript {
+public class MoveTaskScript : MonoBehaviour {
 	
 	/** Determines how often it will search for new paths. 
 	 * If you have fast moving targets or AIs, you might want to set it to a lower value.
@@ -117,9 +117,7 @@ public class MoveTaskScript : TaskScript {
 	/** Only when the previous path has been returned should be search for a new path */
 	protected bool canSearchAgain = true;
 	
-	protected override void Awake () {
-		base.Awake();
-		
+	protected void Awake () {
 		seeker = GetComponent<Seeker>();
 		//This is a simple optimization, cache the transform component lookup
 		tr = transform;
@@ -130,27 +128,7 @@ public class MoveTaskScript : TaskScript {
 		rigid = rigidbody;
 	}
 	
-	public override void StartTask(object target) {
-		if(target is Transform)
-			MoveTo((Transform)target);
-		else if(target is Vector3?)
-			MoveTo((Vector3?) target);
-	}
-	
-	public override bool IsTaskRunning() {
-		if(targetPoint != null || targetTransform != null) {
-			return !targetReached;
-		} else {
-			return false;
-		}
-	}
-	
-	public override void StopTask() {
-		targetReached = true;
-		OnTargetReached();
-	}
-	
-	protected void MoveTo(Transform target) {
+	public void StartTask(Transform target) {
 		if(target != null && targetTransform != target) {
 			SetUpNewMove();
 			targetTransform = target;
@@ -158,12 +136,25 @@ public class MoveTaskScript : TaskScript {
 		}
 	}
 	
-	protected void MoveTo(Vector3? target) {
+	public void StartTask(Vector3? target) {
 		if(target != null && targetPoint != target) {
 			SetUpNewMove();
 			targetPoint = target;
 			TrySearchPath();
 		}
+	}
+	
+	public bool IsTaskRunning() {
+		if(targetPoint != null || targetTransform != null) {
+			return !targetReached;
+		} else {
+			return false;
+		}
+	}
+	
+	public void StopTask() {
+		targetReached = true;
+		OnTargetReached();
 	}
 	
 	protected void SetUpNewMove() {

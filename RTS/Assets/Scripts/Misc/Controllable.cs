@@ -61,7 +61,7 @@ public abstract class Controllable : Selectable {
 	private void ProcessTaskQueue() {
 		if(taskQueue.Count > 0) {
 			Task frontTask = taskQueue.GetAtFront();
-			if(!frontTask.IsStarted) {
+			if(!frontTask.Started) {
 				frontTask.Start();
 			} else if(!frontTask.IsRunning()) {
 				taskQueue.RemoveFromFront();
@@ -89,7 +89,7 @@ public abstract class Controllable : Selectable {
 	public void AbortTaskQueue() {
 		while(taskQueue.Count > 0) {
 			Task abortedTask = taskQueue.RemoveFromFront();
-			if(abortedTask.IsStarted) {
+			if(abortedTask.Started) {
 				abortedTask.Abort();
 			}
 		}
