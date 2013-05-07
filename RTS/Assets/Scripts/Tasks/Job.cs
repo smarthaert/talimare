@@ -6,12 +6,11 @@ public abstract class Job {
 	protected List<List<Job>> SubJobs { get; set; }
 	// The Controllable which has been assigned to this job
 	protected List<Controllable> Assignees { get; set; }
-	protected bool Completed { get; set; }
+	public abstract bool Completed { get; }
 	
 	public Job() {
 		SubJobs = new List<List<Job>>();
 		Assignees = new List<Controllable>();
-		Completed = false;
 	}
 	
 	public void AddSubJob(int sequence, Job job) {
@@ -19,10 +18,6 @@ public abstract class Job {
 			SubJobs[sequence] = new List<Job>();
 		}
 		SubJobs[sequence].Add(job);
-	}
-	
-	public void CompleteJob() {
-		Completed = true;
 	}
 	
 	// Assigns the next available sub job or this job to the given Controllable. Returns whether or not a job was assigned

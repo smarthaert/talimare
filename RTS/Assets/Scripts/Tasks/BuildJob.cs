@@ -4,6 +4,12 @@ using System.Collections.Generic;
 public class BuildJob : Job {
 	public BuildProgressControl BuildTarget { get; protected set; }
 	
+	public override bool Completed {
+		get {
+			return BuildTarget.Completed;
+		}
+	}
+	
 	public BuildJob(BuildProgressControl buildTarget) {
 		BuildTarget = buildTarget;
 		foreach(ResourceAmount resourceAmount in buildTarget.Creatable.resourceCosts) {
@@ -19,5 +25,9 @@ public class BuildJob : Job {
 		base.AssignThisJob(jobTaker, appendToTaskQueue);
 		
 		jobTaker.AddTask(new BuildTask(jobTaker.GetComponent<BuildTaskScript>(), this), appendToTaskQueue);
+	}
+	
+	public void AdvanceBuildCompletion(float timeSpent) {
+		BuildTarget.Building(timeSpent);
 	}
 }

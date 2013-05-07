@@ -5,6 +5,7 @@ using System.Collections.Generic;
 [RequireComponent(typeof(MoveTaskScript))]
 public class BuildTaskScript : MonoBehaviour {
 	
+	// The current job this unit is tasked to complete
 	protected BuildJob BuildJob { get; set; }
 	protected bool HasStartedBuilding { get; set; }
 	
@@ -18,19 +19,21 @@ public class BuildTaskScript : MonoBehaviour {
 	
 	protected void Update () {
 		if(BuildJob != null) {
-			UpdateBuild();
+			if(BuildJob.Completed) {
+				StopTask();
+			} else {
+				UpdateBuild();
+			}
 		}
 	}
 	
 	protected void UpdateBuild() {
 		if(HasStartedBuilding) {
 			// Currently building
-			BuildJob.BuildTarget.Building(Time.deltaTime);
-			if(BuildJob.BuildTarget.Completed) {
-				StopTask();
-			}
+			BuildJob.AdvanceBuildCompletion(Time.deltaTime);
 		} else {
 			// Not building yet due to being out of range
+			//TODO ensure all buildjob sub jobs are completed
 			if(IsInBuildRange()) {
 				MoveTaskScript.StopTask();
 				HasStartedBuilding = true;
