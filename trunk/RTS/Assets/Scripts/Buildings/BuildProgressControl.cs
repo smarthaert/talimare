@@ -61,16 +61,6 @@ public class BuildProgressControl : Controllable {
 		Creatable.SpendResources(owner);
 	}
 	
-	// Returns the next resource and amount that needs to be stored in order to begin building. null means all required resources are present
-	public ResourceAmount GetNextResourceNeededToBuild() {
-		foreach(ResourceAmount requiredResourceAmount in Creatable.resourceCosts) {
-			if(!requiredResourceAmount.IsUpkeepResource() && StoredResources[requiredResourceAmount.resource] < requiredResourceAmount.amount) {
-				return new ResourceAmount(requiredResourceAmount.resource, requiredResourceAmount.amount - StoredResources[requiredResourceAmount.resource]);
-			}
-		}
-		return null;
-	}
-	
 	// Called at regular intervals while this building is being built to advance its completion
 	public void Building(float timeSpent) {
 		timeSpentCreating += timeSpent;

@@ -2,77 +2,55 @@ using UnityEngine;
 
 // Handles unit gathering
 [RequireComponent(typeof(MoveTaskScript))]
+[RequireComponent(typeof(MoveResourceTaskScript))]
 public class GatherTaskScript : MonoBehaviour {
 	
 	// The amount this unit gathers each time gathering triggers on a resource node
 	public int gatherAmount;
-	// The maximum amount of one resource this unit can gather before returning to a depot
-	public int gatherLimit;
 	
 	// Gathering triggers once per this many seconds
 	protected float gatherTime = 5;
-	// Resource amount this unit is currently holding
-	public ResourceAmount HeldResource { get; protected set; }
 	
 	// The resource node this unit is currently gathering from
 	protected ResourceNode GatherTarget { get; set; }
 	protected float GatherTimer { get; set; }
-	// The depot this unit is currently returning resources to
-	protected ResourceDepot DepotTarget { get; set; }
 	
 	protected Controllable Controllable { get; set; }
 	protected MoveTaskScript MoveTaskScript { get; set; }
+	protected MoveResourceTaskScript MoveResourceTaskScript { get; set; }
 	
 	protected void Awake() {
 		Controllable = GetComponent<Controllable>();
 		MoveTaskScript = GetComponent<MoveTaskScript>();
+		MoveResourceTaskScript = GetComponent<MoveResourceTaskScript>();
 	}
 	
 	protected void Update () {
-		if(DepotTarget != null) {
-			UpdateDepotReturn();
-		} else if(GatherTarget != null) {
+		if(GatherTarget != null) {
 			UpdateGather();
 		}
 	}
 	
-	protected void UpdateDepotReturn() {
-		if(IsInRange(DepotTarget.gameObject)) {
-			// In range, deposit resources
-			MoveTaskScript.StopTask();
-			DepotTarget.DepositResource(HeldResource.resource, HeldResource.amount);
-			DepotTarget = null;
-			HeldResource = null;
-		} else {
-			// Not in range, make sure we're moving toward depot
-			MoveTaskScript.StartTask(DepotTarget.transform);
-		}
-	}
-	
 	protected void UpdateGather() {
-		if(HeldResource == null || HeldResource.amount < gatherLimit) {
-			if(GatherTimer > 0) {
-				// Currently gathering
-				GatherTimer -= Time.deltaTime;
-				if(GatherTimer <= 0) {
-					// Timer's up, trigger gather from node if still in range
-					if(IsInRange(GatherTarget.gameObject)) {
-						int gatheredAmount = GatherTarget.GatherFrom(gatherAmount);
-						if(HeldResource == null) {
-							HeldResource = new ResourceAmount();
-							HeldResource.resource = GatherTarget.resource;
-							HeldResource.amount = 0;
-						}
-						HeldResource.amount += gatheredAmount;
-						if(HeldResource.amount >= gatherLimit) {
-							DepotTarget = ResourceDepot.FindNearestDepotForResource(transform.position, Controllable.owner, HeldResource.resource);
-						} else {
-							GatherTimer = gatherTime;
-						}
+		if(GatherTimer > 0) {
+			// Currently gathering
+			GatherTimer -= Time.deltaTime;
+			if(GatherTimer <= 0) {
+				// Timer's up, trigger gather from node if still in range
+				if(IsInRange(GatherTarget.gameObject)) {
+					int gatheredAmount = GatherTarget.GatherFrom(gatherAmount);
+					MoveResourceTaskScript.HoldResource(GatherTarget.resource, gatheredAmount);
+					if(MoveResourceTaskScript.HeldResource.amount >= MoveResourceTaskScript.heldResourceLimit) {
+						// Return gathered resources to depot
+						MoveResourceTaskScript.StartTask();
+					} else {
+						GatherTimer = gatherTime;
 					}
 				}
-			} else {
-				// Not currently gathering (either due to being out of range, or just haven't started yet)
+			}
+		} else {
+			// Not currently gathering (either due to being out of range, or just haven't started yet)
+			if(MoveResourceTaskScript.CanHoldMoreOfResource(GatherTarget.resource)) {
 				if(IsInRange(GatherTarget.gameObject)) {
 					// In range, start gathering
 					MoveTaskScript.StopTask();
@@ -89,8 +67,9 @@ public class GatherTaskScript : MonoBehaviour {
 		if(GatherTarget != target) {
 			GatherTarget = target;
 			GatherTimer = 0;
-			if(HeldResource != null && HeldResource.resource != GatherTarget.resource) {
-				HeldResource = null;
+			// Return any other incorrect held resources to a depot before beginning
+			if(!MoveResourceTaskScript.CanHoldMoreOfResource(GatherTarget.resource)) {
+				MoveResourceTaskScript.StartTask();
 			}
 		}
 	}
@@ -101,7 +80,6 @@ public class GatherTaskScript : MonoBehaviour {
 	
 	public void StopTask() {
 		GatherTarget = null;
-		DepotTarget = null;
 	}
 	
 	protected bool IsInRange(GameObject gameObject) {

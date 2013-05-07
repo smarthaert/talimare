@@ -90,9 +90,9 @@ public class HUD : MonoBehaviour {
 				GUILayout.Label("Water: " + unitStatus.Water + " / " + unitStatus.maxWater);
 			}
 			
-			//check if civilian carrying resources
-			if(CurrentSelection.GetComponent<GatherTaskScript>() != null) {
-				ResourceAmount heldResource = CurrentSelection.GetComponent<GatherTaskScript>().HeldResource;
+			//check if carrying resources
+			if(CurrentSelection.GetComponent<MoveResourceTaskScript>() != null) {
+				ResourceAmount heldResource = CurrentSelection.GetComponent<MoveResourceTaskScript>().HeldResource;
 				if(heldResource != null) {
 					GUILayout.Label("Carrying: " + heldResource.resource + " x " + heldResource.amount);
 				}
