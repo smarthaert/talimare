@@ -8,6 +8,8 @@ public class BuildProgressControl : Controllable {
 	
 	protected BuildingStatus BuildingStatus { get; set; }
 	public Creatable Creatable { get; protected set; }
+	// The global job associated with building this object
+	public BuildJob BuildJob { get; protected set; }
 	
 	// The resources which are currently stored in this building in order to begin construction
 	public Dictionary<Resource, int> StoredResources { get; protected set; }
@@ -59,6 +61,7 @@ public class BuildProgressControl : Controllable {
 		BuildingStatus.SetHPToZero();
 		GameUtil.RescanPathfinding();
 		Creatable.SpendResources(owner);
+		BuildJob = new BuildJob(this, owner);
 	}
 	
 	// Called at regular intervals while this building is being built to advance its completion
@@ -98,4 +101,3 @@ public class BuildProgressControl : Controllable {
 		return Mathf.FloorToInt(timeSpentCreating / Creatable.creationTime);
 	}
 }
-

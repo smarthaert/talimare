@@ -56,8 +56,7 @@ public class CivilianControl : BaseUnitControl {
 		} else if(hit.collider.gameObject.CompareTag(GameUtil.TAG_RESOURCE)) {
 			AddTask(new GatherTask(GetComponent<GatherTaskScript>(), hit.collider.gameObject.GetComponent<ResourceNode>()), Game.PlayerInput.IsMultiKeyPressed());
 		} else if(hit.collider.gameObject.CompareTag(GameUtil.TAG_BUILD_PROGRESS)) {
-			//TODO get the job associated with this build progress and try to take it up
-			//AddTask(new BuildTask(GetComponent<BuildTaskScript>(), hit.collider.gameObject.GetComponent<BuildProgressControl>()), Game.PlayerInput.IsMultiKeyPressed());
+			hit.collider.gameObject.GetComponent<BuildProgressControl>().BuildJob.AssignNextJob(this, false);
 		} 
 	}
 	
@@ -100,8 +99,7 @@ public class CivilianControl : BaseUnitControl {
 	protected void CommitQueuedBuilding() {
 		if(queuedBuildTarget.Creatable.CanCreate(owner).Bool) {
 			queuedBuildTarget.Commit();
-			//TODO get the job associated with this build progress and try to take it up
-			//AddTask(new BuildTask(GetComponent<BuildTaskScript>(), queuedBuildTarget), Game.PlayerInput.IsMultiKeyPressed());
+			queuedBuildTarget.BuildJob.AssignNextJob(this, false);
 		}
 		if(Game.PlayerInput.IsMultiKeyPressed() && queuedBuildTarget.Creatable.CanCreate(owner).Bool) {
 			InstantiateBuildProgress(queuedBuildTarget.Creatable);

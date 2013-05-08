@@ -33,7 +33,6 @@ public class BuildTaskScript : MonoBehaviour {
 			BuildJob.AdvanceBuildCompletion(Time.deltaTime);
 		} else {
 			// Not building yet due to being out of range
-			//TODO ensure all buildjob sub jobs are completed
 			if(IsInBuildRange()) {
 				MoveTaskScript.StopTask();
 				HasStartedBuilding = true;
@@ -45,6 +44,9 @@ public class BuildTaskScript : MonoBehaviour {
 	
 	public void StartTask(BuildJob buildJob) {
 		if(BuildJob != buildJob) {
+			if(!BuildJob.AllSubJobsComplete()) {
+				Debug.LogError("All build sub jobs are not complete! We shouldn't be building yet.");
+			}
 			BuildJob = buildJob;
 			HasStartedBuilding = false;
 		}
@@ -55,6 +57,7 @@ public class BuildTaskScript : MonoBehaviour {
 	}
 	
 	public void StopTask() {
+		BuildJob.RemoveAssignee(Controllable);
 		BuildJob = null;
 	}
 	

@@ -120,6 +120,15 @@ public class HUD : MonoBehaviour {
 				}
 			}
 		}
+		
+		if(CurrentSelection.CompareTag(GameUtil.TAG_BUILD_PROGRESS)) {
+			if(CurrentSelection.GetComponent<BuildProgressControl>() != null) {
+				BuildProgressControl buildProgressControl = CurrentSelection.GetComponent<BuildProgressControl>();
+				foreach(Resource resourse in buildProgressControl.StoredResources.Keys) {
+					GUILayout.Label("Stored: " + resourse + " x " + buildProgressControl.StoredResources[resourse]);
+				}
+			}
+		}
 	}
 	
 	protected void RenderSelectedResource() {
