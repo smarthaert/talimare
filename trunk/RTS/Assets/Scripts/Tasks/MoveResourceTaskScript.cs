@@ -55,19 +55,22 @@ public class MoveResourceTaskScript : MonoBehaviour {
 				MoveTaskScript.StartTask(MoveResourceJob.Destination.transform);
 			}
 		} else {
+			//TODO fetching resource isn't working
 			//TODO med: check for updated DepotFetchTarget every x seconds (equal to seeker update rate)
 			if(DepotFetchTarget == null) {
-				DepotFetchTarget = ResourceDepot.FindNearestDepotWithResource(transform.position, Controllable.owner, MoveResourceJob.Resource);
-			}
-			if(IsInRange(DepotFetchTarget.gameObject)) {
-				// In range, fetch resources from DepotFetchTarget
-				MoveTaskScript.StopTask();
-				//TODO !!!! Fetch required resource from depot
-				int fetchedResourceAmount = Mathf.Min(DepotFetchTarget.GetResourceAmount(MoveResourceJob.Resource), MoveResourceJob.AmountRemaining);
-				DepotFetchTarget.WithdrawResource(MoveResourceJob.Resource, fetchedResourceAmount);
+				DepotFetchTarget = ResourceDepot.FindNearestDepotWithResource(MoveResourceJob.Resource, Controllable.owner, transform.position);
+				Debug.Log("No "+MoveResourceJob.Resource+" is available to move as requested.");
+				StopTask();
 			} else {
-				// Not in range, make sure we're moving toward DepotFetchTarget
-				MoveTaskScript.StartTask(DepotFetchTarget.transform);
+				if(IsInRange(DepotFetchTarget.gameObject)) {
+					// In range, fetch resources from DepotFetchTarget
+					MoveTaskScript.StopTask();
+					int fetchedResourceAmount = Mathf.Min(DepotFetchTarget.GetResourceAmount(MoveResourceJob.Resource), MoveResourceJob.AmountRemaining);
+					DepotFetchTarget.WithdrawResource(MoveResourceJob.Resource, fetchedResourceAmount);
+				} else {
+					// Not in range, make sure we're moving toward DepotFetchTarget
+					MoveTaskScript.StartTask(DepotFetchTarget.transform);
+				}
 			}
 		}
 	}
@@ -99,7 +102,7 @@ public class MoveResourceTaskScript : MonoBehaviour {
 	// Starts this task as a special case where all currently-held resources will be moved to the nearest depot
 	public void StartTask() {
 		if(HeldResource != null) {
-			DepotReturnTarget = ResourceDepot.FindNearestDepotForResource(transform.position, Controllable.owner, HeldResource.resource);
+			DepotReturnTarget = ResourceDepot.FindNearestDepotForResource(HeldResource.resource, Controllable.owner, transform.position);
 		}
 	}
 	
@@ -108,7 +111,10 @@ public class MoveResourceTaskScript : MonoBehaviour {
 	}
 	
 	public void StopTask() {
-		MoveResourceJob = null;
+		if(MoveResourceJob != null) {
+			MoveResourceJob.RemoveAssignee(Controllable);
+			MoveResourceJob = null;
+		}
 		DepotReturnTarget = null;
 	}
 	

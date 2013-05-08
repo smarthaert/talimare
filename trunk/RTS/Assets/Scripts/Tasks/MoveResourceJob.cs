@@ -18,21 +18,21 @@ public class MoveResourceJob : Job {
 		}
 	}
 	
-	public MoveResourceJob(Resource resource, int amount, BuildProgressControl destination) {
+	public MoveResourceJob(Resource resource, int amount, BuildProgressControl destination, Player owner) : base(owner) {
 		Resource = resource;
 		Amount = amount;
 		Destination = destination;
 		MovedAmount = 0;
 	}
 	
-	protected override bool CanTakeThisJob(Controllable jobTaker) {
-		return Assignees.Count == 0 && jobTaker.GetComponent<MoveResourceTaskScript>() != null;
+	protected override bool CanTakeThisJob(Controllable assignee) {
+		return Assignees.Count == 0 && assignee.GetComponent<MoveResourceTaskScript>() != null && ResourceDepot.FindAllDepotsWithResource(Resource, Owner).Count > 0;
 	}
 
-	protected override void AssignThisJob(Controllable jobTaker, bool appendToTaskQueue) {
-		base.AssignThisJob(jobTaker, appendToTaskQueue);
+	protected override void AssignThisJob(Controllable assignee, bool appendToTaskQueue) {
+		base.AssignThisJob(assignee, appendToTaskQueue);
 		
-		jobTaker.AddTask(new MoveResourceTask(jobTaker.GetComponent<MoveResourceTaskScript>(), this), appendToTaskQueue);
+		assignee.AddTask(new MoveResourceTask(assignee.GetComponent<MoveResourceTaskScript>(), this), appendToTaskQueue);
 	}
 	
 	// Stores the given amount of Resource in Destination

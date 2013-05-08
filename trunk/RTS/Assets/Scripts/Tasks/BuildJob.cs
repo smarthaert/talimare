@@ -10,21 +10,21 @@ public class BuildJob : Job {
 		}
 	}
 	
-	public BuildJob(BuildProgressControl buildTarget) {
+	public BuildJob(BuildProgressControl buildTarget, Player owner) : base(owner) {
 		BuildTarget = buildTarget;
-		foreach(ResourceAmount resourceAmount in buildTarget.Creatable.resourceCosts) {
-			AddSubJob(0, new MoveResourceJob(resourceAmount.resource, resourceAmount.amount, buildTarget));
+		foreach(ResourceAmount resourceAmount in BuildTarget.Creatable.resourceCosts) {
+			AddSubJob(0, new MoveResourceJob(resourceAmount.resource, resourceAmount.amount, buildTarget, owner));
 		}
 	}
 	
-	protected override bool CanTakeThisJob(Controllable jobTaker) {
-		return Assignees.Count == 0 && jobTaker.GetComponent<BuildTaskScript>() != null;
+	protected override bool CanTakeThisJob(Controllable assignee) {
+		return Assignees.Count == 0 && assignee.GetComponent<BuildTaskScript>() != null;
 	}
 
-	protected override void AssignThisJob(Controllable jobTaker, bool appendToTaskQueue) {
-		base.AssignThisJob(jobTaker, appendToTaskQueue);
+	protected override void AssignThisJob(Controllable assignee, bool appendToTaskQueue) {
+		base.AssignThisJob(assignee, appendToTaskQueue);
 		
-		jobTaker.AddTask(new BuildTask(jobTaker.GetComponent<BuildTaskScript>(), this), appendToTaskQueue);
+		assignee.AddTask(new BuildTask(assignee.GetComponent<BuildTaskScript>(), this), appendToTaskQueue);
 	}
 	
 	public void AdvanceBuildCompletion(float timeSpent) {

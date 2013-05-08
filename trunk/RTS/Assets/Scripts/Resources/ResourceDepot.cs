@@ -5,7 +5,7 @@ using System.Collections.Generic;
 [RequireComponent(typeof(Controllable))]
 public class ResourceDepot : MonoBehaviour {
 
-	public List<Resource> storableResources;
+	public List<ResourceAmount> storableResources;
 	protected Dictionary<Resource, int> StoredResources { get; set; }
 	
 	protected PlayerStatus PlayerStatus { get; set; }
@@ -14,8 +14,9 @@ public class ResourceDepot : MonoBehaviour {
 		PlayerStatus = GetComponent<Controllable>().owner.PlayerStatus;
 		
 		StoredResources = new Dictionary<Resource, int>();
-		foreach(Resource resource in storableResources) {
-			StoredResources.Add(resource, 0);
+		foreach(ResourceAmount resourceAmount in storableResources) {
+			StoredResources.Add(resourceAmount.resource, 0);
+			DepositResource(resourceAmount.resource, resourceAmount.amount);
 		}
 	}
 	
@@ -34,34 +35,48 @@ public class ResourceDepot : MonoBehaviour {
 	}
 	
 	// Returns the nearest ResourceDepot to the given point which is owned by the given player and can store the given resource
-	public static ResourceDepot FindNearestDepotForResource(Vector3 point, Player player, Resource resource) {
+	public static ResourceDepot FindNearestDepotForResource(Resource resource, Player player, Vector3 point) {
+		ResourceAmount resourceAsAmount = new ResourceAmount(resource, 0);
 		float minDist = Mathf.Infinity;
-		ResourceDepot minComp = null;
+		ResourceDepot minDepot = null;
 		foreach(ResourceDepot resourceDepot in GameUtil.FindAllOwnedInstancesOf<ResourceDepot>(player)) {
-			if(resourceDepot.storableResources.Contains(resource)) {
+			if(resourceDepot.storableResources.Contains(resourceAsAmount)) {
 				float dist = Vector3.Distance(point, resourceDepot.transform.position);
 				if(dist < minDist) {
 					minDist = dist;
-					minComp = resourceDepot;
+					minDepot = resourceDepot;
 				}
 			}
 		}
-		return minComp;
+		return minDepot;
 	}
 	
 	// Returns the nearest ResourceDepot to the given point which is owned by the given player and has some amount of the given resource stored
-	public static ResourceDepot FindNearestDepotWithResource(Vector3 point, Player player, Resource resource) {
+	public static ResourceDepot FindNearestDepotWithResource(Resource resource, Player player, Vector3 point) {
+		ResourceAmount resourceAsAmount = new ResourceAmount(resource, 0);
 		float minDist = Mathf.Infinity;
-		ResourceDepot minComp = null;
+		ResourceDepot minDepot = null;
 		foreach(ResourceDepot resourceDepot in GameUtil.FindAllOwnedInstancesOf<ResourceDepot>(player)) {
-			if(resourceDepot.storableResources.Contains(resource) && resourceDepot.StoredResources[resource] > 0) {
+			if(resourceDepot.storableResources.Contains(resourceAsAmount) && resourceDepot.StoredResources[resource] > 0) {
 				float dist = Vector3.Distance(point, resourceDepot.transform.position);
 				if(dist < minDist) {
 					minDist = dist;
-					minComp = resourceDepot;
+					minDepot = resourceDepot;
 				}
 			}
 		}
-		return minComp;
+		return minDepot;
+	}
+	
+	// Returns all ResourceDepots which are owned by the given player and have some amount of the given resource stored
+	public static List<ResourceDepot> FindAllDepotsWithResource(Resource resource, Player player) {
+		ResourceAmount resourceAsAmount = new ResourceAmount(resource, 0);
+		List<ResourceDepot> allDepots = new List<ResourceDepot>();
+		foreach(ResourceDepot resourceDepot in GameUtil.FindAllOwnedInstancesOf<ResourceDepot>(player)) {
+			if(resourceDepot.storableResources.Contains(resourceAsAmount) && resourceDepot.StoredResources[resource] > 0) {
+				allDepots.Add(resourceDepot);
+			}
+		}
+		return allDepots;
 	}
 }
