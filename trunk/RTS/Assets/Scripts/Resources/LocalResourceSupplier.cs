@@ -5,7 +5,7 @@ public class LocalResourceSupplier : MonoBehaviour {
 	public float supplyRange;
 	protected Controllable controllable;
 	
-	protected virtual void Start() {
+	protected virtual void Awake() {
 		// A child GameObject is needed to attach a collider to. Attaching the collider to the parent object causes problems
 		GameObject child = new GameObject(this.GetType().Name);
 		child.transform.parent = transform;
@@ -22,7 +22,9 @@ public class LocalResourceSupplier : MonoBehaviour {
 		if(GetComponent<Rigidbody>() == null) {
 			gameObject.AddComponent<Rigidbody>().isKinematic = true;
 		}
-		
+	}
+	
+	protected virtual void Start() {
 		controllable = GetComponent<Controllable>();
 	}
 	

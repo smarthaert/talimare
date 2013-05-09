@@ -25,7 +25,7 @@ public class Vision : MonoBehaviour {
 	// This determines how many rays we cast evenly around in a circle around this object
 	protected float circleStep;
 	
-	protected void Start() {
+	protected void Awake() {
 		// A child GameObject is needed to attach a collider to. Attaching the collider to the parent object causes problems
 		GameObject child = new GameObject(this.GetType().Name);
 		child.transform.parent = transform;
@@ -42,7 +42,9 @@ public class Vision : MonoBehaviour {
 		if(GetComponent<Rigidbody>() == null) {
 			gameObject.AddComponent<Rigidbody>().isKinematic = true;
 		}
-		
+	}
+	
+	protected void Start() {
 		// Determine if this is a unit (the alternative would be a building)
 		if(gameObject.CompareTag(GameUtil.TAG_UNIT))
 			isUnit = true;

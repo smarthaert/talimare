@@ -21,7 +21,7 @@ public class MoveResourceTaskScript : MonoBehaviour {
 	protected Controllable Controllable { get; set; }
 	protected MoveTaskScript MoveTaskScript { get; set; }
 	
-	protected void Awake() {
+	protected void Start() {
 		Controllable = GetComponent<Controllable>();
 		MoveTaskScript = GetComponent<MoveTaskScript>();
 	}
@@ -39,7 +39,7 @@ public class MoveResourceTaskScript : MonoBehaviour {
 	}
 	
 	protected void UpdateMoveResource() {
-		if(HoldingRequiredResourceAmount()) {
+		if(HoldingRequiredResource()) {
 			if(IsInRange(MoveResourceJob.Destination.gameObject)) {
 				// In range, store resources in target
 				MoveTaskScript.StopTask();
@@ -55,22 +55,25 @@ public class MoveResourceTaskScript : MonoBehaviour {
 				MoveTaskScript.StartTask(MoveResourceJob.Destination.transform);
 			}
 		} else {
-			//TODO fetching resource isn't working
 			//TODO med: check for updated DepotFetchTarget every x seconds (equal to seeker update rate)
 			if(DepotFetchTarget == null) {
 				DepotFetchTarget = ResourceDepot.FindNearestDepotWithResource(MoveResourceJob.Resource, Controllable.owner, transform.position);
-				Debug.Log("No "+MoveResourceJob.Resource+" is available to move as requested.");
-				StopTask();
-			} else {
+				if(DepotFetchTarget == null) {
+					Debug.Log("No "+MoveResourceJob.Resource+" is available to move as requested.");
+					StopTask();
+				}
+			} else if(DepotFetchTarget.GetResourceAmount(MoveResourceJob.Resource) > 0) {
 				if(IsInRange(DepotFetchTarget.gameObject)) {
 					// In range, fetch resources from DepotFetchTarget
 					MoveTaskScript.StopTask();
-					int fetchedResourceAmount = Mathf.Min(DepotFetchTarget.GetResourceAmount(MoveResourceJob.Resource), MoveResourceJob.AmountRemaining);
-					DepotFetchTarget.WithdrawResource(MoveResourceJob.Resource, fetchedResourceAmount);
+					// Currently, a unit can fetch an unlimited amount of resource from a depot instantly
+					HoldResource(MoveResourceJob.Resource, DepotFetchTarget.WithdrawResource(MoveResourceJob.Resource, Mathf.Min(MoveResourceJob.AmountRemaining, heldResourceLimit)));
 				} else {
 					// Not in range, make sure we're moving toward DepotFetchTarget
 					MoveTaskScript.StartTask(DepotFetchTarget.transform);
 				}
+			} else {
+				DepotFetchTarget = null;
 			}
 		}
 	}
@@ -93,7 +96,7 @@ public class MoveResourceTaskScript : MonoBehaviour {
 		if(MoveResourceJob != moveResourceJob) {
 			MoveResourceJob = moveResourceJob;
 			// Return any other incorrect held resources to a depot before beginning
-			if(!CanHoldMoreOfResource(MoveResourceJob.Resource)) {
+			if(HeldResourceSpaceAvailable(MoveResourceJob.Resource) == 0) {
 				StartTask();
 			}
 		}
@@ -116,26 +119,39 @@ public class MoveResourceTaskScript : MonoBehaviour {
 			MoveResourceJob = null;
 		}
 		DepotReturnTarget = null;
+		DepotFetchTarget = null;
 	}
 	
 	// Holds the given amount of the given resource. The hold is only successful if the same or no resource is already held
 	public void HoldResource(Resource resource, int amount) {
-		if(HeldResource == null) {
-			HeldResource = new ResourceAmount();
-			HeldResource.resource = resource;
-			HeldResource.amount = amount;
+		if(HeldResource != null && HeldResource.resource != resource) {
+			Debug.LogError("Trying to hold resource "+resource+" while already holding "+HeldResource.resource);
+		}
+		if(HeldResource == null && amount > 0) {
+			HeldResource = new ResourceAmount(resource, amount);
 		} else if(HeldResource.resource == resource) {
 			HeldResource.amount += amount;
 		}
-		HeldResource.amount = Mathf.Clamp(HeldResource.amount, 0, heldResourceLimit);
+		if(HeldResource.amount > heldResourceLimit) {
+			Debug.LogError("Held resource amount is greater than limit. "+HeldResource.resource+" is "+HeldResource.amount+" over "+heldResourceLimit);
+		}
 	}
 	
-	public bool CanHoldMoreOfResource(Resource resource) {
-		return HeldResource == null || (HeldResource.resource == resource && HeldResource.amount < heldResourceLimit);
+	// Returns the amount of resource that can be held. Since only one resource can be held at a time, if another resource is currently held then 0 is returned
+	public int HeldResourceSpaceAvailable(Resource resource) {
+		if(HeldResource != null) {
+			if(HeldResource.resource != resource) {
+				return 0;
+			} else {
+				return heldResourceLimit - HeldResource.amount;
+			}
+		} else {
+			return heldResourceLimit;
+		}
 	}
 		
-	public bool HoldingRequiredResourceAmount() {
-		return HeldResource != null && HeldResource.resource == MoveResourceJob.Resource && HeldResource.amount >= MoveResourceJob.Amount;
+	public bool HoldingRequiredResource() {
+		return HeldResource != null && HeldResource.resource == MoveResourceJob.Resource;
 	}
 	
 	protected bool IsInRange(GameObject gameObject) {

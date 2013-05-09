@@ -27,7 +27,7 @@ public class AttackTaskScript : MonoBehaviour {
 	protected Controllable Controllable { get; set; }
 	protected MoveTaskScript MoveTaskScript { get; set; }
 	
-	protected void Awake() {
+	protected void Start() {
 		Controllable = GetComponent<Controllable>();
 		MoveTaskScript = GetComponent<MoveTaskScript>();
 	}

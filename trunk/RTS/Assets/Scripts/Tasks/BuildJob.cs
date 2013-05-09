@@ -13,7 +13,9 @@ public class BuildJob : Job {
 	public BuildJob(BuildProgressControl buildTarget, Player owner) : base(owner) {
 		BuildTarget = buildTarget;
 		foreach(ResourceAmount resourceAmount in BuildTarget.Creatable.resourceCosts) {
-			AddSubJob(0, new MoveResourceJob(resourceAmount.resource, resourceAmount.amount, buildTarget, owner));
+			if(!resourceAmount.IsUpkeepResource()) {
+				AddSubJob(0, new MoveResourceJob(resourceAmount.resource, resourceAmount.amount, buildTarget, owner));
+			}
 		}
 	}
 	

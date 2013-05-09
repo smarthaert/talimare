@@ -117,7 +117,7 @@ public class MoveTaskScript : MonoBehaviour {
 	/** Only when the previous path has been returned should be search for a new path */
 	protected bool canSearchAgain = true;
 	
-	protected void Awake () {
+	protected void Start () {
 		seeker = GetComponent<Seeker>();
 		//This is a simple optimization, cache the transform component lookup
 		tr = transform;

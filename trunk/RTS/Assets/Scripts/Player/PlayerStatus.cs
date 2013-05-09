@@ -57,7 +57,7 @@ public class PlayerStatus : MonoBehaviour {
 			if(creatable.gameObject.GetComponent<Controllable>().owner == player) {
 				foreach(ResourceAmount resourceCost in creatable.resourceCosts) {
 					if(resourceCost.IsUpkeepResource()) { //only really need to do upkeep resources
-						SpendResource(resourceCost.resource, resourceCost.amount);
+						LoseResource(resourceCost.resource, resourceCost.amount);
 					}
 				}
 			}
@@ -74,7 +74,7 @@ public class PlayerStatus : MonoBehaviour {
 	}
 	
 	// Spends an amount of the given resource. This is called when a unit, tech, or building is queued
-	public void SpendResource(Resource resource, int amount) {
+	public void LoseResource(Resource resource, int amount) {
 		resourceLevels[resource] -= amount;
 	}
 	

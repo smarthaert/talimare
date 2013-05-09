@@ -21,9 +21,9 @@ public class PowerSupplier : LocalResourceSupplier {
 	public override void OnTriggerEnter(Collider other) {
 		if(IsControllableWithSameOwner(other) && other.GetComponent<BuildingStatus>() != null) {
 			BuildingStatus buildingStatus = other.GetComponent<BuildingStatus>();
-			if(buildingStatus.powerRequired > 0) {
+			if(buildingStatus.powerRequired > 0 && !suppliablesInRange.Contains(buildingStatus)) {
 				suppliablesInRange.Add(buildingStatus);
-				RecheckSuppliablesForNewPower(); //must recheck power before calling AddPowerSupplier
+				RecheckSuppliablesForNewPower(); //must recheck power BEFORE calling AddPowerSupplier
 				buildingStatus.AddPowerSupplier(this);
 			}
 		}

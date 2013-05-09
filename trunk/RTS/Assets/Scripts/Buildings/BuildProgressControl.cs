@@ -66,6 +66,7 @@ public class BuildProgressControl : Controllable {
 	
 	// Called at regular intervals while this building is being built to advance its completion
 	public void Building(float timeSpent) {
+		//TODO ensure that all stored resources are present (or print error)
 		timeSpentCreating += timeSpent;
 		if(timeSpentCreating >= Creatable.creationTime) {
 			Complete();

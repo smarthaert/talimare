@@ -37,7 +37,7 @@ public class MoveResourceJob : Job {
 	
 	// Stores the given amount of Resource in Destination
 	public void MoveResource(int amount) {
-		Destination.StoredResources.Add(Resource, amount);
+		Destination.StoredResources[Resource] += amount;
 		MovedAmount += amount;
 	}
 }

@@ -19,7 +19,7 @@ public class GatherTaskScript : MonoBehaviour {
 	protected MoveTaskScript MoveTaskScript { get; set; }
 	protected MoveResourceTaskScript MoveResourceTaskScript { get; set; }
 	
-	protected void Awake() {
+	protected void Start() {
 		Controllable = GetComponent<Controllable>();
 		MoveTaskScript = GetComponent<MoveTaskScript>();
 		MoveResourceTaskScript = GetComponent<MoveResourceTaskScript>();
@@ -38,9 +38,9 @@ public class GatherTaskScript : MonoBehaviour {
 			if(GatherTimer <= 0) {
 				// Timer's up, trigger gather from node if still in range
 				if(IsInRange(GatherTarget.gameObject)) {
-					int gatheredAmount = GatherTarget.GatherFrom(gatherAmount);
+					int gatheredAmount = GatherTarget.GatherFrom(Mathf.Min(gatherAmount, MoveResourceTaskScript.HeldResourceSpaceAvailable(GatherTarget.resource)));
 					MoveResourceTaskScript.HoldResource(GatherTarget.resource, gatheredAmount);
-					if(MoveResourceTaskScript.HeldResource.amount >= MoveResourceTaskScript.heldResourceLimit) {
+					if(MoveResourceTaskScript.HeldResourceSpaceAvailable(GatherTarget.resource) == 0) {
 						// Return gathered resources to depot
 						MoveResourceTaskScript.StartTask();
 					} else {
@@ -50,15 +50,13 @@ public class GatherTaskScript : MonoBehaviour {
 			}
 		} else {
 			// Not currently gathering (either due to being out of range, or just haven't started yet)
-			if(MoveResourceTaskScript.CanHoldMoreOfResource(GatherTarget.resource)) {
-				if(IsInRange(GatherTarget.gameObject)) {
-					// In range, start gathering
-					MoveTaskScript.StopTask();
-					GatherTimer = gatherTime;
-				} else {
-					// Not in range, make sure we're moving toward node
-					MoveTaskScript.StartTask(GatherTarget.transform);
-				}
+			if(IsInRange(GatherTarget.gameObject)) {
+				// In range, start gathering
+				MoveTaskScript.StopTask();
+				GatherTimer = gatherTime;
+			} else {
+				// Not in range, make sure we're moving toward node
+				MoveTaskScript.StartTask(GatherTarget.transform);
 			}
 		}
 	}
@@ -68,7 +66,7 @@ public class GatherTaskScript : MonoBehaviour {
 			GatherTarget = target;
 			GatherTimer = 0;
 			// Return any other incorrect held resources to a depot before beginning
-			if(!MoveResourceTaskScript.CanHoldMoreOfResource(GatherTarget.resource)) {
+			if(MoveResourceTaskScript.HeldResourceSpaceAvailable(GatherTarget.resource) == 0) {
 				MoveResourceTaskScript.StartTask();
 			}
 		}
