@@ -62,6 +62,7 @@ public abstract class Job {
 	}
 	
 	public virtual void RemoveAssignee(Controllable assignee) {
+		//TODO add flag to automatically take another related job - NO, PERSONAL + STRATEGIC AI SHOULD HANDLE THIS
 		Assignees.Remove(assignee);
 		Debug.Log("job unassigned from "+assignee);
 	}

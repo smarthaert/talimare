@@ -17,6 +17,13 @@ public class UnitStatus : ControllableStatus {
 	// Used by a water supplier to mark that water should not be lost on the next water tick
 	public bool CounteractWaterLoss { get; set; }
 	
+	protected override void Awake() {
+		// Add a kinematic rigidbody if there isn't already one in order to make collisions work
+		if(GetComponent<Rigidbody>() == null) {
+			gameObject.AddComponent<Rigidbody>().isKinematic = true;
+		}
+	}
+	
 	protected override void Start() {
 		base.Start();
 		

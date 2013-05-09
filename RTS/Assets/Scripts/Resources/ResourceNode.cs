@@ -17,13 +17,13 @@ public class ResourceNode : Selectable {
 			Pathfinding = (AstarPath)GameObject.FindObjectOfType(typeof(AstarPath));
 	}
 	
-	public int GatherFrom(int amount) {
-		CurrentAmount -= amount;
+	public int GatherFrom(int maxAmount) {
+		int actualAmount = Mathf.Min(maxAmount, CurrentAmount);
+		CurrentAmount -= actualAmount;
 		if(CurrentAmount <= 0) {
 			Die();
-			return amount + CurrentAmount;
 		}
-		return amount;
+		return actualAmount;
 	}
 	
 	public void Die() {

@@ -13,6 +13,13 @@ public class BuildingStatus : ControllableStatus {
 	// Holds all of the power suppliers of which this object is in range
 	protected List<PowerSupplier> PowerSuppliersInRange { get; set; }
 	
+	protected override void Awake() {
+		// Add a kinematic rigidbody if there isn't already one in order to make collisions work
+		if(GetComponent<Rigidbody>() == null) {
+			gameObject.AddComponent<Rigidbody>().isKinematic = true;
+		}
+	}
+	
 	protected override void Start() {
 		base.Start();
 		

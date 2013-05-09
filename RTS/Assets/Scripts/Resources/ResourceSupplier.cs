@@ -24,7 +24,7 @@ public class ResourceSupplier : MonoBehaviour {
 	protected void OnDestroy () {
 		foreach(ResourceAmount suppliedResource in suppliedResources) {
 			if(suppliedResource.IsUpkeepResource()) {
-				player.PlayerStatus.SpendResource(suppliedResource.resource, suppliedResource.amount);
+				player.PlayerStatus.LoseResource(suppliedResource.resource, suppliedResource.amount);
 				player.PlayerStatus.RemoveSuppliedUpkeepResource(suppliedResource.resource, suppliedResource.amount);
 			}
 		}

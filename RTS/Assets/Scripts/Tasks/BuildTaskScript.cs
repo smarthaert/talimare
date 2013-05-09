@@ -12,7 +12,7 @@ public class BuildTaskScript : MonoBehaviour {
 	protected Controllable Controllable { get; set; }
 	protected MoveTaskScript MoveTaskScript { get; set; }
 	
-	protected void Awake() {
+	protected void Start() {
 		Controllable = GetComponent<Controllable>();
 		MoveTaskScript = GetComponent<MoveTaskScript>();
 	}
@@ -44,11 +44,11 @@ public class BuildTaskScript : MonoBehaviour {
 	
 	public void StartTask(BuildJob buildJob) {
 		if(BuildJob != buildJob) {
+			BuildJob = buildJob;
+			HasStartedBuilding = false;
 			if(!BuildJob.AllSubJobsComplete()) {
 				Debug.LogError("All build sub jobs are not complete! We shouldn't be building yet.");
 			}
-			BuildJob = buildJob;
-			HasStartedBuilding = false;
 		}
 	}
 	

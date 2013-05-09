@@ -29,9 +29,11 @@ public class ResourceDepot : MonoBehaviour {
 		PlayerStatus.GainResource(resource, amount);
 	}
 	
-	public void WithdrawResource(Resource resource, int amount) {
-		StoredResources[resource] -= amount;
-		PlayerStatus.GainResource(resource, amount);
+	public int WithdrawResource(Resource resource, int maxAmount) {
+		int actualAmount = Mathf.Min(maxAmount, StoredResources[resource]);
+		StoredResources[resource] -= actualAmount;
+		PlayerStatus.LoseResource(resource, actualAmount);
+		return actualAmount;
 	}
 	
 	// Returns the nearest ResourceDepot to the given point which is owned by the given player and can store the given resource
