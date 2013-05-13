@@ -57,8 +57,11 @@ public class BuildTaskScript : MonoBehaviour {
 	}
 	
 	public void StopTask() {
-		BuildJob.RemoveAssignee(Controllable);
-		BuildJob = null;
+		if(BuildJob != null) {
+			BuildJob.RemoveAssignee(Controllable);
+			BuildJob = null;
+		}
+		MoveTaskScript.StopTask();
 	}
 	
 	protected bool IsInBuildRange() {

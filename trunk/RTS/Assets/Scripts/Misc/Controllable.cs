@@ -80,9 +80,18 @@ public abstract class Controllable : Selectable {
 	// Adds a task as an interrupt, which will execute immediately and any current task becomes paused
 	public void AddTaskInterrupt(Task task) {
 		if(taskQueue.Count > 0) {
-			taskQueue.GetAtFront().Pause();
+			if(taskQueue.GetAtFront().Started) {
+				taskQueue.GetAtFront().Pause();
+			}
 		}
 		taskQueue.AddToFront(task);
+	}
+	
+	// Adds a task as an interrupt, but after the current task
+	public void AddTaskInterruptAfterCurrent(Task task) {
+		Task savedFront = taskQueue.RemoveFromFront();
+		taskQueue.AddToFront(task);
+		taskQueue.AddToFront(savedFront);
 	}
 	
 	// Aborts the entire task queue by aborting and removing each task

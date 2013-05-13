@@ -14,7 +14,7 @@ public class BuildJob : Job {
 		BuildTarget = buildTarget;
 		foreach(ResourceAmount resourceAmount in BuildTarget.Creatable.resourceCosts) {
 			if(!resourceAmount.IsUpkeepResource()) {
-				AddSubJob(0, new MoveResourceJob(resourceAmount.resource, resourceAmount.amount, buildTarget, owner));
+				AddSubJob(new MoveResourceJob(resourceAmount.resource, resourceAmount.amount, buildTarget, owner));
 			}
 		}
 	}
@@ -23,10 +23,14 @@ public class BuildJob : Job {
 		return Assignees.Count == 0 && assignee.GetComponent<BuildTaskScript>() != null;
 	}
 
-	protected override void AssignThisJob(Controllable assignee, bool appendToTaskQueue) {
+	protected override void AssignThisJob(Controllable assignee, bool? appendToTaskQueue) {
 		base.AssignThisJob(assignee, appendToTaskQueue);
 		
-		assignee.AddTask(new BuildTask(assignee.GetComponent<BuildTaskScript>(), this), appendToTaskQueue);
+		if(!appendToTaskQueue.HasValue) {
+			assignee.AddTaskInterruptAfterCurrent(new BuildTask(assignee.GetComponent<BuildTaskScript>(), this));
+		} else {
+			assignee.AddTask(new BuildTask(assignee.GetComponent<BuildTaskScript>(), this), appendToTaskQueue.Value);
+		}
 	}
 	
 	public void AdvanceBuildCompletion(float timeSpent) {
