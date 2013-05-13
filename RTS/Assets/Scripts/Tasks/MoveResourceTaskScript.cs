@@ -120,6 +120,7 @@ public class MoveResourceTaskScript : MonoBehaviour {
 		}
 		DepotReturnTarget = null;
 		DepotFetchTarget = null;
+		MoveTaskScript.StopTask();
 	}
 	
 	// Holds the given amount of the given resource. The hold is only successful if the same or no resource is already held

@@ -78,6 +78,7 @@ public class AttackTaskScript : MonoBehaviour {
 	
 	public void StopTask() {
 		Target = null;
+		MoveTaskScript.StopTask();
 	}
 	
 	protected bool IsInRange(Transform targetTransform) {

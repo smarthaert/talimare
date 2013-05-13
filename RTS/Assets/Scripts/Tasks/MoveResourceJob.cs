@@ -29,10 +29,14 @@ public class MoveResourceJob : Job {
 		return Assignees.Count == 0 && assignee.GetComponent<MoveResourceTaskScript>() != null && ResourceDepot.FindAllDepotsWithResource(Resource, Owner).Count > 0;
 	}
 
-	protected override void AssignThisJob(Controllable assignee, bool appendToTaskQueue) {
+	protected override void AssignThisJob(Controllable assignee, bool? appendToTaskQueue) {
 		base.AssignThisJob(assignee, appendToTaskQueue);
 		
-		assignee.AddTask(new MoveResourceTask(assignee.GetComponent<MoveResourceTaskScript>(), this), appendToTaskQueue);
+		if(!appendToTaskQueue.HasValue) {
+			assignee.AddTaskInterruptAfterCurrent(new MoveResourceTask(assignee.GetComponent<MoveResourceTaskScript>(), this));
+		} else {
+			assignee.AddTask(new MoveResourceTask(assignee.GetComponent<MoveResourceTaskScript>(), this), appendToTaskQueue.Value);
+		}
 	}
 	
 	// Stores the given amount of Resource in Destination
