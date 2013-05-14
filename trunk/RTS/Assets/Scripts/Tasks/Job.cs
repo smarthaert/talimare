@@ -12,12 +12,15 @@ public abstract class Job {
 	protected List<Controllable> Assignees { get; set; }
 	public abstract bool Completed { get; }
 	
-	public Job(Player owner) {
+	// isRootJob specifies whether or not this job should be added to the strategic AI's job list
+	public Job(Player owner, bool isRootJob) {
 		Owner = owner;
 		SubJobs = new List<Job>();
 		Assignees = new List<Controllable>();
 		
-		//TODO add all created jobs to the strategic ai of the owning player
+		if(isRootJob) {
+			Owner.StrategicAI.AddJob(this);
+		}
 	}
 	
 	public void AddSubJob(Job job) {
@@ -59,6 +62,8 @@ public abstract class Job {
 		// Attempt to automatically assign a related job if this one was completed
 		if(ParentJob != null && Completed) {
 			ParentJob.AssignNextJob(assignee, null);
+		} else if(ParentJob == null && Completed && Assignees.Count == 0) {
+			Owner.StrategicAI.JobComplete(this);
 		}
 	}
 	

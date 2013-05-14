@@ -189,6 +189,7 @@ public class Vision : MonoBehaviour {
 	
 	// Called when another collider enters this vision range
 	void OnTriggerEnter(Collider other) {
+		//TODO OnTriggerEnter collisions are not triggering on game load... see if this can be fixed
 		if(IsControllableWithDifferentOwner(other) && personalAI != null) {
 			personalAI.ObjectEnteredVision(other.gameObject);
 		}

@@ -18,7 +18,7 @@ public class MoveResourceJob : Job {
 		}
 	}
 	
-	public MoveResourceJob(Resource resource, int amount, BuildProgressControl destination, Player owner) : base(owner) {
+	public MoveResourceJob(Resource resource, int amount, BuildProgressControl destination, Player owner, bool isRootJob) : base(owner, isRootJob) {
 		Resource = resource;
 		Amount = amount;
 		Destination = destination;

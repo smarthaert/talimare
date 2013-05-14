@@ -21,15 +21,15 @@ public class ControllableStatus : MonoBehaviour {
 	
 	public void Damage(int amount) {
 		HP -= amount;
-		Mathf.Clamp(HP, 0, maxHP);
-		if(HP == 0) {
+		HP = Mathf.Clamp(HP, 0, maxHP);
+		if(HP <= 0) {
 			Die();
 		}
 	}
 	
 	public void Heal(int amount) {
 		HP += amount;
-		Mathf.Clamp(HP, 0, maxHP);
+		HP = Mathf.Clamp(HP, 0, maxHP);
 	}
 	
 	protected void Die() {
