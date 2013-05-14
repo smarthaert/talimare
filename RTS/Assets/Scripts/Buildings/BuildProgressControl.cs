@@ -61,12 +61,19 @@ public class BuildProgressControl : Controllable {
 		BuildingStatus.SetHPToZero();
 		GameUtil.RescanPathfinding();
 		Creatable.SpendResources(owner);
-		BuildJob = new BuildJob(this, owner);
+		BuildJob = new BuildJob(this, owner, true);
 	}
 	
 	// Called at regular intervals while this building is being built to advance its completion
 	public void Building(float timeSpent) {
-		//TODO ensure that all stored resources are present (or print error)
+		// Development error checking
+		if(timeSpentCreating == 0f) {
+			foreach(ResourceAmount resourceAmount in Creatable.resourceCosts) {
+				if(!resourceAmount.IsUpkeepResource() && StoredResources[resourceAmount.resource] < resourceAmount.amount) {
+					Debug.LogError(this+" is being built but is missing some of resource: "+resourceAmount.resource);
+				}
+			}
+		}
 		timeSpentCreating += timeSpent;
 		if(timeSpentCreating >= Creatable.creationTime) {
 			Complete();

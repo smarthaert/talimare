@@ -9,7 +9,7 @@ public class PlayerStatus : MonoBehaviour {
 	
 	// Resources - use these fields only for the initial setting of values in the editor
 	[NonSerialized]
-	public int food = 0;
+	public int food = 0; //TODO remove resource amounts from player status
 	public int copper = 0;
 	public int iron = 0;
 	public int coal = 0;

@@ -23,10 +23,17 @@ public abstract class Controllable : Selectable {
 	
 	protected override void Awake() {
 		base.Awake();
+		
+		// Add a kinematic rigidbody if there isn't already one in order to make collisions work
+		if(GetComponent<Rigidbody>() == null) {
+			gameObject.AddComponent<Rigidbody>().isKinematic = true;
+		}
 	}
 	
 	protected override void Start() {
 		base.Start();
+		
+		owner = transform.parent.GetComponent<Player>();
 		
 		if(owner == null)
 			Debug.Log("Player was never set for the Controllable: "+name+". It should be set immediately after instantiating the object.");

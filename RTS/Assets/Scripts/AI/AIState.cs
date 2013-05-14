@@ -1,3 +1,3 @@
 public enum AIState {
-	Idle, Working, Fighting
+	Idle, Working, Fighting, Fleeing
 }
