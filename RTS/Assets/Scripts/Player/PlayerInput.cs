@@ -101,7 +101,7 @@ public class PlayerInput : MonoBehaviour {
 	}
 	
 	protected bool CurrentSelectionIsMyControllable() {
-		return (CurrentSelection is Controllable && ((Controllable)CurrentSelection).owner == Game.ThisPlayer);
+		return (CurrentSelection is Controllable && ((Controllable)CurrentSelection).Owner == Game.ThisPlayer);
 	}
 	
 	// Returns whether or not the multi-key is pressed (default shift, or the key that allows you to operate on multiple things at once)

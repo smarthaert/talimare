@@ -9,7 +9,7 @@ public class Tech : MonoBehaviour {
 		player.PlayerStatus.techs.Add(this);
 		foreach(Object obj in GameObject.FindObjectsOfType(typeof(Controllable))) {
 			Controllable controllable = (Controllable)obj;
-			if(controllable.owner == player && controllable.applicableTechs.Contains(this)) {
+			if(controllable.Owner == player && controllable.applicableTechs.Contains(this)) {
 				ApplyTechTo(controllable.gameObject);
 			}
 		}

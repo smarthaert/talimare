@@ -5,6 +5,8 @@ public class LocalResourceSupplier : MonoBehaviour {
 	public float supplyRange;
 	protected Controllable controllable;
 	
+	protected SphereCollider SupplyCollider { get; set; }
+	
 	protected virtual void Awake() {
 		// A child GameObject is needed to attach a collider to. Attaching the collider to the parent object causes problems
 		GameObject child = new GameObject(this.GetType().Name);
@@ -13,19 +15,18 @@ public class LocalResourceSupplier : MonoBehaviour {
 		child.layer = LayerMask.NameToLayer("Ignore Raycast");
 		
 		// A CapsuleCollider provides a trigger for the supply range
-		CapsuleCollider supplyCollider = child.AddComponent<CapsuleCollider>();
-		supplyCollider.isTrigger = true;
-		supplyCollider.radius = supplyRange;
-		supplyCollider.height = 99f;
-		
-		// Add a kinematic rigidbody if there isn't already one in order to make collisions work
-		if(GetComponent<Rigidbody>() == null) {
-			gameObject.AddComponent<Rigidbody>().isKinematic = true;
-		}
+		SupplyCollider = child.AddComponent<SphereCollider>();
+		SupplyCollider.isTrigger = true;
+		SupplyCollider.radius = supplyRange;
 	}
 	
 	protected virtual void Start() {
 		controllable = GetComponent<Controllable>();
+		
+		// Evaluate objects already colliding
+		foreach(Collider collider in Physics.OverlapSphere(SupplyCollider.transform.position, SupplyCollider.radius)) {
+			OnTriggerEnter(collider);
+		}
 	}
 	
 	// Called when a collider enters this supply range
@@ -35,6 +36,6 @@ public class LocalResourceSupplier : MonoBehaviour {
 	public virtual void OnTriggerExit(Collider other) {}
 	
 	public bool IsControllableWithSameOwner(Collider other) {
-		return other.GetComponent<Controllable>() != null && other.GetComponent<Controllable>().owner == controllable.owner;
+		return other.GetComponent<Controllable>() != null && other.GetComponent<Controllable>().Owner == controllable.Owner;
 	}
 }

@@ -11,7 +11,7 @@ public class ResourceDepot : MonoBehaviour {
 	protected PlayerStatus PlayerStatus { get; set; }
 	
 	protected void Start() {
-		PlayerStatus = GetComponent<Controllable>().owner.PlayerStatus;
+		PlayerStatus = GetComponent<Controllable>().Owner.PlayerStatus;
 		
 		StoredResources = new Dictionary<Resource, int>();
 		foreach(ResourceAmount resourceAmount in storableResources) {

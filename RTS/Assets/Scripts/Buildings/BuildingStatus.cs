@@ -13,8 +13,6 @@ public class BuildingStatus : ControllableStatus {
 	// Holds all of the power suppliers of which this object is in range
 	protected List<PowerSupplier> PowerSuppliersInRange { get; set; }
 	
-	protected override void Awake() {}
-	
 	protected override void Start() {
 		base.Start();
 		

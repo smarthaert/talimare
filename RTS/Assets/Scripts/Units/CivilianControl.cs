@@ -68,7 +68,7 @@ public class CivilianControl : BaseUnitControl {
 		} else {
 			// See if control code exists in buildings and if so, queue the BuildProgress object for that building
 			foreach(Creatable building in buildings) {
-				if(building.ControlCode.Equals(controlCode) && building.CanCreate(owner).Bool) {
+				if(building.ControlCode.Equals(controlCode) && building.CanCreate(Owner).Bool) {
 					InstantiateBuildProgress(building);
 				}
 			}
@@ -76,7 +76,7 @@ public class CivilianControl : BaseUnitControl {
 	}
 	
 	protected void InstantiateBuildProgress(Creatable building) {
-		queuedBuildTarget = (GameUtil.InstantiateControllable(building.buildProgressObject, owner, Vector3.zero)).GetComponent<BuildProgressControl>();
+		queuedBuildTarget = (GameUtil.InstantiateControllable(building.buildProgressObject, Owner, Vector3.zero)).GetComponent<BuildProgressControl>();
 		queuedBuildTarget.name = building.gameObject.name+" (in progress)";
 	}
 	
@@ -97,11 +97,11 @@ public class CivilianControl : BaseUnitControl {
 	
 	// Commits the currently queued building at its current position and begins building
 	protected void CommitQueuedBuilding() {
-		if(queuedBuildTarget.Creatable.CanCreate(owner).Bool) {
+		if(queuedBuildTarget.Creatable.CanCreate(Owner).Bool) {
 			queuedBuildTarget.Commit();
 			queuedBuildTarget.BuildJob.AssignNextJob(this, Game.PlayerInput.IsMultiKeyPressed());
 		}
-		if(Game.PlayerInput.IsMultiKeyPressed() && queuedBuildTarget.Creatable.CanCreate(owner).Bool) {
+		if(Game.PlayerInput.IsMultiKeyPressed() && queuedBuildTarget.Creatable.CanCreate(Owner).Bool) {
 			InstantiateBuildProgress(queuedBuildTarget.Creatable);
 		} else {
 			RemoveQueuedBuildTarget(false);

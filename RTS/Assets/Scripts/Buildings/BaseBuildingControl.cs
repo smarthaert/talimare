@@ -85,15 +85,15 @@ public class BaseBuildingControl : Controllable {
 		} else {
 			// See if ControlCode exists in units or techs and if so, queue that Creatable
 			foreach(Creatable unit in units) {
-				if(unit.ControlCode.Equals(controlCode) && unit.CanCreate(owner).Bool) {
+				if(unit.ControlCode.Equals(controlCode) && unit.CanCreate(Owner).Bool) {
 					//TODO high: required resources need to be delivered to building
-					unit.SpendResources(owner);
+					unit.SpendResources(Owner);
 					unitQueue.Enqueue(unit);
 				}
 			}
 			foreach(Creatable tech in techs) {
-				if(tech.ControlCode.Equals(controlCode) && !techQueue.Contains(tech) && tech.CanCreate(owner).Bool) {
-					tech.SpendResources(owner);
+				if(tech.ControlCode.Equals(controlCode) && !techQueue.Contains(tech) && tech.CanCreate(Owner).Bool) {
+					tech.SpendResources(Owner);
 					techQueue.Enqueue(tech);
 				}
 			}
@@ -104,7 +104,7 @@ public class BaseBuildingControl : Controllable {
 	protected void CompleteUnit() {
 		Creatable unit = unitQueue.Dequeue();
 		float distance = collider.bounds.size.magnitude + unit.gameObject.collider.bounds.size.magnitude;
-		GameObject newUnit = GameUtil.InstantiateControllable(unit.GetComponent<Controllable>(), gameObject.GetComponent<Controllable>().owner, transform.position + (transform.right * distance));
+		GameObject newUnit = GameUtil.InstantiateControllable(unit.GetComponent<Controllable>(), gameObject.GetComponent<Controllable>().Owner, transform.position + (transform.right * distance));
 		if(rallyPoint != null) {
 			newUnit.GetComponent<Controllable>().AddTask(new MoveTask(newUnit.GetComponent<MoveTaskScript>(), rallyPoint), false);
 		}
@@ -114,7 +114,7 @@ public class BaseBuildingControl : Controllable {
 	// Complete a tech, adding it to the player's tech list and running
 	protected void CompleteTech() {
 		Tech tech = techQueue.Dequeue().GetComponent<Tech>();
-		tech.AddTechForPlayer(owner);
+		tech.AddTechForPlayer(Owner);
 		techTimer = 0;
 	}
 	

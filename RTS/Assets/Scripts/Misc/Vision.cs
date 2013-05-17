@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[RequireComponent(typeof(Controllable))]
 public class Vision : MonoBehaviour {
 
 	public float visionRange = 10.0f;
@@ -25,6 +26,8 @@ public class Vision : MonoBehaviour {
 	// This determines how many rays we cast evenly around in a circle around this object
 	protected float circleStep;
 	
+	protected SphereCollider VisionCollider { get; set; }
+	
 	protected void Awake() {
 		// A child GameObject is needed to attach a collider to. Attaching the collider to the parent object causes problems
 		GameObject child = new GameObject(this.GetType().Name);
@@ -33,30 +36,25 @@ public class Vision : MonoBehaviour {
 		child.layer = LayerMask.NameToLayer("Ignore Raycast");
 		
 		// A capsule collider provides a trigger for the vision range
-		CapsuleCollider visionCollider = child.AddComponent<CapsuleCollider>();
-		visionCollider.isTrigger = true;
-		visionCollider.radius = visionRange;
-		visionCollider.height = 99f;
-		
-		// Add a kinematic rigidbody if there isn't already one in order to make collisions work
-		if(GetComponent<Rigidbody>() == null) {
-			gameObject.AddComponent<Rigidbody>().isKinematic = true;
-		}
+		VisionCollider = child.AddComponent<SphereCollider>();
+		VisionCollider.isTrigger = true;
+		VisionCollider.radius = visionRange;
 	}
 	
 	protected void Start() {
 		// Determine if this is a unit (the alternative would be a building)
-		if(gameObject.CompareTag(GameUtil.TAG_UNIT))
+		if(gameObject.CompareTag(GameUtil.TAG_UNIT)) {
 			isUnit = true;
-		
-		GameObject fogOfWar = GameObject.Find("FogOfWar");
-		if(fogOfWar != null)
-			fogOfWarScript = fogOfWar.GetComponent<FogOfWar>();
-		if(isUnit)
 			moveTaskScript = GetComponent<MoveTaskScript>();
+		}
 		controllable = GetComponent<Controllable>();
 		personalAI = GetComponent<PersonalAI>();
 		ConfigureVisionSettings();
+		
+		GameObject fogOfWar = GameObject.Find("FogOfWar");
+		if(fogOfWar != null) {
+			fogOfWarScript = fogOfWar.GetComponent<FogOfWar>();
+		}
 		
 		fogLayerMask = 1 << LayerMask.NameToLayer("FogOfWar");
 		LOSLayerMask = 1 << LayerMask.NameToLayer("Terrain");
@@ -67,11 +65,16 @@ public class Vision : MonoBehaviour {
 			IsHiddenByFog = false;
 			CalculateRevealPoints();
 		}
+		
+		// Evaluate objects already colliding
+		foreach(Collider collider in Physics.OverlapSphere(VisionCollider.transform.position, VisionCollider.radius)) {
+			OnTriggerEnter(collider);
+		}
 	}
 	
 	// Configures this object's vision settings based on its owner
 	protected void ConfigureVisionSettings() {
-		if(controllable.owner == Game.ThisPlayer) {
+		if(controllable.Owner == Game.ThisPlayer) {
 			RevealsFog = true;
 		} else {
 			RevealsFog = false;
@@ -189,7 +192,6 @@ public class Vision : MonoBehaviour {
 	
 	// Called when another collider enters this vision range
 	void OnTriggerEnter(Collider other) {
-		//TODO OnTriggerEnter collisions are not triggering on game load... see if this can be fixed
 		if(IsControllableWithDifferentOwner(other) && personalAI != null) {
 			personalAI.ObjectEnteredVision(other.gameObject);
 		}
@@ -203,6 +205,6 @@ public class Vision : MonoBehaviour {
 	}
 	
 	protected bool IsControllableWithDifferentOwner(Collider other) {
-		return other.GetComponent<Controllable>() != null && other.GetComponent<Controllable>().owner != controllable.owner;
+		return other.GetComponent<Controllable>() != null && other.GetComponent<Controllable>().Owner != controllable.Owner;
 	}
 }
