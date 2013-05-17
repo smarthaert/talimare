@@ -60,8 +60,7 @@ public class BuildProgressControl : Controllable {
 		BuildingStatus.maxHP = finishedObject.GetComponent<BuildingStatus>().maxHP;
 		BuildingStatus.SetHPToZero();
 		GameUtil.RescanPathfinding();
-		Creatable.SpendResources(owner);
-		BuildJob = new BuildJob(this, owner, true);
+		BuildJob = new BuildJob(this, Owner, true);
 	}
 	
 	// Called at regular intervals while this building is being built to advance its completion
@@ -91,7 +90,7 @@ public class BuildProgressControl : Controllable {
 		// If multiple civs are building this, there's a chance that Complete gets called more than once
 		if(!Completed) {
 			Completed = true;
-			GameObject newObject = GameUtil.InstantiateControllable(finishedObject, owner, this.transform.position); //might also need to pass this.transform.rotation
+			GameObject newObject = GameUtil.InstantiateControllable(finishedObject, Owner, this.transform.position); //might also need to pass this.transform.rotation
 			if(Game.PlayerInput.CurrentSelection == this) {
 				Game.PlayerInput.Select(newObject.GetComponent<Selectable>());
 			}

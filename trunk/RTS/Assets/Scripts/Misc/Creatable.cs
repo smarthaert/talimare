@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 
 // Defines values for a Creatable object (unit, building, or tech)
+[RequireComponent(typeof(Controllable))]
 public class Creatable : MonoBehaviour {
 	
 	public float creationTime;
@@ -66,19 +67,18 @@ public class Creatable : MonoBehaviour {
 		}
 	}
 	
-	void Start() {
+	protected void Start() {
 		// Capture a Creatable's upkeep resources when it is instantiated
-		Player owner = GetComponent<Controllable>().owner;
 		foreach(ResourceAmount resourceCost in resourceCosts) {
 			if(resourceCost.IsUpkeepResource()) {
-				owner.PlayerStatus.CaptureUpkeepResource(resourceCost.resource, resourceCost.amount, this.gameObject);
+				GetComponent<Controllable>().Owner.PlayerStatus.CaptureUpkeepResource(resourceCost.resource, resourceCost.amount, this.gameObject);
 			}
 		}
 	}
 	
 	// Called when the object is destroyed, this refunds and releases the Creatable's upkeep resources
-	void OnDestroy() {
-		Player owner = GetComponent<Controllable>().owner;
+	protected void OnDestroy() {
+		Player owner = GetComponent<Controllable>().Owner;
 		foreach(ResourceAmount resourceCost in resourceCosts) {
 			if(resourceCost.IsUpkeepResource()) {
 				owner.PlayerStatus.GainResource(resourceCost.resource, resourceCost.amount);

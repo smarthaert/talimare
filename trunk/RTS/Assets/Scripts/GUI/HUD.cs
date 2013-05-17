@@ -141,7 +141,7 @@ public class HUD : MonoBehaviour {
 		GUILayout.BeginArea(new Rect((Screen.width/3)*2, 0, Screen.width/3, Screen.height/4));
 		
 		GUI.Box(new Rect(0, 0, Screen.width/3, Screen.height/4), "");
-		if(CurrentSelection is Controllable && ((Controllable)CurrentSelection).owner == Player) {
+		if(CurrentSelection is Controllable && ((Controllable)CurrentSelection).Owner == Player) {
 			RenderControls();
 		}
 		

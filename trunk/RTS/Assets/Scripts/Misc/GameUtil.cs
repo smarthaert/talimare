@@ -16,7 +16,6 @@ public abstract class GameUtil : Component {
 	public static GameObject InstantiateControllable(Controllable controllable, Player player, Vector3 position) {
 		GameObject newObject = (GameObject)Instantiate(controllable.gameObject, position, Quaternion.identity);
 		Controllable newControllable = newObject.GetComponent<Controllable>();
-		newControllable.owner = player;
 		newControllable.name = controllable.gameObject.name;
 		newControllable.transform.parent = player.transform;
 		//apply all applicable techs to the new object
@@ -46,7 +45,7 @@ public abstract class GameUtil : Component {
 	public static ICollection<T> FindAllOwnedInstancesOf<T>(Player player) where T : Component {
 		ICollection<T> components = new HashSet<T>();
 		foreach(T component in (T[])GameObject.FindObjectsOfType(typeof(T))) {
-			if(component.GetComponent<Controllable>() != null && component.GetComponent<Controllable>().owner == player) {
+			if(component.GetComponent<Controllable>() != null && component.GetComponent<Controllable>().Owner == player) {
 				components.Add(component);
 			}
 		}

@@ -24,8 +24,6 @@ public class PersonalAI : MonoBehaviour {
 	
 	protected Controllable Controllable { get; set; }
 	
-	protected virtual void Awake() {}
-	
 	protected virtual void Start() {
 		Controllable = GetComponent<Controllable>();
 	}
@@ -62,11 +60,12 @@ public class PersonalAI : MonoBehaviour {
 	protected virtual void HandleObjectsInVision() {
 		// Determine if object is in a state to respond to other objects
 		if(State == AIState.Idle || (State == AIState.Working && combatOverridesWork)) {
+			//TODO low: sort visibleObjects by distance before looping through
 			foreach(GameObject obj in visibleObjects.ToArray()) {
 				// Determine if other object is an enemy unit
 				if(obj == null) {
 					visibleObjects.Remove(obj);
-				} else if(obj.CompareTag(GameUtil.TAG_UNIT) && Controllable.owner.Relationships[obj.GetComponent<Controllable>().owner] == PlayerRelationship.HOSTILE) {
+				} else if(obj.CompareTag(GameUtil.TAG_UNIT) && Controllable.Owner.Relationships[obj.GetComponent<Controllable>().Owner] == PlayerRelationship.HOSTILE) {
 					// Act based on object's stance
 					if(stance == AIStance.Aggressive) {
 						Fight(obj);
@@ -99,12 +98,14 @@ public class PersonalAI : MonoBehaviour {
 	// Decides what action to take to get to AIState.WORKING.
 	// Default implementation is to ask the strategic AI
 	protected virtual void CheckForWork() {
-		Controllable.owner.StrategicAI.AssignJob(Controllable, true);
+		Controllable.Owner.StrategicAI.AssignJob(Controllable, true);
 	}
 	
 	// Called when another object moves into visual range
 	public virtual void ObjectEnteredVision(GameObject obj) {
-		visibleObjects.Add(obj);
+		if(!visibleObjects.Contains(obj)) {
+			visibleObjects.Add(obj);
+		}
 	}
 	
 	// Called when another object moves out of visual range
@@ -117,7 +118,7 @@ public class PersonalAI : MonoBehaviour {
 		// Determine if object is in a state to respond
 		if(State == AIState.Idle || (State == AIState.Working && combatOverridesWork)) {
 			// Determine if other object is an enemy
-			if(Controllable.owner.Relationships[source.GetComponent<Controllable>().owner] == PlayerRelationship.HOSTILE) {
+			if(Controllable.Owner.Relationships[source.GetComponent<Controllable>().Owner] == PlayerRelationship.HOSTILE) {
 				// Act based on object's stance
 				if(stance == AIStance.Aggressive || stance == AIStance.Defensive) {
 					Fight(source);

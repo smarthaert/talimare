@@ -14,7 +14,7 @@ public class Player : MonoBehaviour {
 	
 	protected virtual void Awake() {
 		Relationships = new Dictionary<Player, PlayerRelationship>();
-		
+		//TODO SET all simple cached references in awake. instantiate all simple objects in awake. start is for more complex functions
 		PlayerStatus = GetComponent<PlayerStatus>();
 		StrategicAI = GetComponent<StrategicAI>();
 	}

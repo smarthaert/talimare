@@ -9,7 +9,7 @@ public class ResourceSupplier : MonoBehaviour {
 	protected Player player;
 
 	protected void Start () {
-		player = GetComponent<Controllable>().owner;
+		player = GetComponent<Controllable>().Owner;
 		
 		// Add all supplied resources to the player's pool
 		foreach(ResourceAmount suppliedResource in suppliedResources) {

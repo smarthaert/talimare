@@ -7,16 +7,6 @@ using System.Reflection;
 // Keeps information about a player's current status
 public class PlayerStatus : MonoBehaviour {
 	
-	// Resources - use these fields only for the initial setting of values in the editor
-	[NonSerialized]
-	public int food = 0; //TODO remove resource amounts from player status
-	public int copper = 0;
-	public int iron = 0;
-	public int coal = 0;
-	public int steel = 0;
-	public int oil = 0;
-	public int uranium = 0;
-	
 	// Current upkeep resource maximums - use these fields only for the initial setting of values in the editor
 	public int maxFood = 0;
 	
@@ -35,26 +25,24 @@ public class PlayerStatus : MonoBehaviour {
 	
 	protected Player player;
 	
-	void Awake() {
-		player = gameObject.GetComponent<Player>();
-		
-		food = maxFood;
-		
+	protected void Awake() {
 		upkeepMaximums.Add(Resource.Food, maxFood);
 		
 		// Initialize the dictionaries by loading each with every resource
 		foreach(object resource in Enum.GetValues(typeof(Resource))) {
-			resourceLevels.Add((Resource)resource, (int)this.GetType().GetField(resource.ToString().ToLower()).GetValue(this));
+			resourceLevels.Add((Resource)resource, 0);
 			capturedUpkeepResources.Add((Resource)resource, new Dictionary<UnityEngine.Object, int>());
 		}
 	}
 	
-	void Start() {
+	protected void Start() {
+		player = gameObject.GetComponent<Player>();
+		
 		// Find all Creatables that currently exist and spend their resources.
 		// (This needs to be done since Creatables that exist when the game starts were never queued,
 		// and thus were never spent for)
 		foreach(Creatable creatable in FindObjectsOfType(typeof(Creatable)).Cast<Creatable>()) {
-			if(creatable.gameObject.GetComponent<Controllable>().owner == player) {
+			if(creatable.gameObject.GetComponent<Controllable>().Owner == player) {
 				foreach(ResourceAmount resourceCost in creatable.resourceCosts) {
 					if(resourceCost.IsUpkeepResource()) { //only really need to do upkeep resources
 						LoseResource(resourceCost.resource, resourceCost.amount);
@@ -62,10 +50,6 @@ public class PlayerStatus : MonoBehaviour {
 				}
 			}
 		}
-	}
-	
-	void Update() {
-		//later on, this will be checking if upkeep resources used have exceeded maximum limits
 	}
 	
 	// Gains an amount of the given resource

@@ -90,22 +90,22 @@ public class WaterSupplier : LocalResourceSupplier {
 	}
 	
 	public override void OnTriggerEnter(Collider other) {
-		if(IsControllableWithSameOwner(other) && other.GetComponent<UnitStatus>() != null) {
+		if(IsControllableWithSameOwner(other) && other.GetComponent<UnitStatus>() != null && !suppliablesInRange.Contains(other.GetComponent<UnitStatus>())) {
 			suppliablesInRange.Add(other.GetComponent<UnitStatus>());
-			other.GetComponent<UnitStatus>().WaterSuppliersInRange.Add(this);
+			other.GetComponent<UnitStatus>().waterSuppliersInRange.Add(this);
 		}
 	}
 	
 	public override void OnTriggerExit(Collider other) {
 		if(suppliablesInRange.Contains(other.GetComponent<UnitStatus>())) {
 			suppliablesInRange.Remove(other.GetComponent<UnitStatus>());
-			other.GetComponent<UnitStatus>().WaterSuppliersInRange.Remove(this);
+			other.GetComponent<UnitStatus>().waterSuppliersInRange.Remove(this);
 		}
 	}
 	
 	protected void OnDestroy() {
 		foreach(UnitStatus unitStatus in suppliablesInRange) {
-			unitStatus.WaterSuppliersInRange.Remove(this);
+			unitStatus.waterSuppliersInRange.Remove(this);
 		}
 	}
 }

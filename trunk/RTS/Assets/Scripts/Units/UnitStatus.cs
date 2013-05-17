@@ -10,20 +10,17 @@ public class UnitStatus : ControllableStatus {
 	public int Water { get; protected set; }
 	public float WaterPercentage { get { return Water / maxWater; } }
 	// Holds all of the water suppliers of which this object is in range
-	public List<WaterSupplier> WaterSuppliersInRange { get; protected set; }
+	public List<WaterSupplier> waterSuppliersInRange = new List<WaterSupplier>();
 	
 	// Amount of time since last water tick
 	protected float waterTickTimer = 0;
 	// Used by a water supplier to mark that water should not be lost on the next water tick
 	public bool CounteractWaterLoss { get; set; }
 	
-	protected override void Awake() {}
-	
 	protected override void Start() {
 		base.Start();
 		
 		Water = maxWater;
-		WaterSuppliersInRange = new List<WaterSupplier>();
 		CounteractWaterLoss = false;
 	}
 	
@@ -55,7 +52,7 @@ public class UnitStatus : ControllableStatus {
 	}
 	
 	protected void OnDestroy() {
-		foreach(WaterSupplier waterSupplier in WaterSuppliersInRange.ToArray()) {
+		foreach(WaterSupplier waterSupplier in waterSuppliersInRange.ToArray()) {
 			waterSupplier.OnTriggerExit(collider);
 		}
 	}

@@ -5,11 +5,11 @@ using Wintellect.PowerCollections;
 // Defines the behavior of a Selectable which can be controlled, i.e. issued actions
 public abstract class Controllable : Selectable {
 	
-	// This is the object's major reference point to its Player object, aka the object's owner
-	public Player owner;
-	
 	// A list of Techs which apply to this object when they are gained
 	public List<Tech> applicableTechs;
+	
+	// This is the object's major reference point to its Player object, aka the object's owner
+	public Player Owner { get; protected set; }
 	
 	// A collection of ControlMenus which this Controllable has and can be displayed on the HUD, keyed by menu name
 	protected Dictionary<string, ControlMenu> ControlMenus { get; set; }
@@ -24,19 +24,18 @@ public abstract class Controllable : Selectable {
 	protected override void Awake() {
 		base.Awake();
 		
-		// Add a kinematic rigidbody if there isn't already one in order to make collisions work
-		if(GetComponent<Rigidbody>() == null) {
-			gameObject.AddComponent<Rigidbody>().isKinematic = true;
-		}
+		// Add a kinematic rigidbody in order to make collisions work
+		gameObject.AddComponent<Rigidbody>().isKinematic = true;
+		
+		Owner = transform.parent.GetComponent<Player>();
 	}
 	
 	protected override void Start() {
 		base.Start();
 		
-		owner = transform.parent.GetComponent<Player>();
-		
-		if(owner == null)
-			Debug.Log("Player was never set for the Controllable: "+name+". It should be set immediately after instantiating the object.");
+		if(Owner == null) {
+			Debug.LogError("Player was never set for the Controllable: "+name+". It should be set immediately after instantiating the object.");
+		}
 		
 		ControlMenus = new Dictionary<string, ControlMenu>();
 		BuildControlMenus();
@@ -56,7 +55,7 @@ public abstract class Controllable : Selectable {
 				if(menuItem.RequiresPower && GetComponent<BuildingStatus>() != null && !GetComponent<BuildingStatus>().Powered) {
 					menuItem.Enabled = new BoolAndString(false, "Power is required for that.");
 				} else if(menuItem.Creatable != null) {
-					menuItem.Enabled = menuItem.Creatable.CanCreate(owner);
+					menuItem.Enabled = menuItem.Creatable.CanCreate(Owner);
 				} else {
 					menuItem.Enabled = new BoolAndString(true);
 				}

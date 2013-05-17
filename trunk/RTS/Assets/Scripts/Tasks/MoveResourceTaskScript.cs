@@ -57,7 +57,7 @@ public class MoveResourceTaskScript : MonoBehaviour {
 		} else {
 			//TODO med: check for updated DepotFetchTarget every x seconds (equal to seeker update rate)
 			if(DepotFetchTarget == null) {
-				DepotFetchTarget = ResourceDepot.FindNearestDepotWithResource(MoveResourceJob.Resource, Controllable.owner, transform.position);
+				DepotFetchTarget = ResourceDepot.FindNearestDepotWithResource(MoveResourceJob.Resource, Controllable.Owner, transform.position);
 				if(DepotFetchTarget == null) {
 					Debug.Log("No "+MoveResourceJob.Resource+" is available to move as requested.");
 					StopTask();
@@ -105,7 +105,7 @@ public class MoveResourceTaskScript : MonoBehaviour {
 	// Starts this task as a special case where all currently-held resources will be moved to the nearest depot
 	public void StartTask() {
 		if(HeldResource != null) {
-			DepotReturnTarget = ResourceDepot.FindNearestDepotForResource(HeldResource.resource, Controllable.owner, transform.position);
+			DepotReturnTarget = ResourceDepot.FindNearestDepotForResource(HeldResource.resource, Controllable.Owner, transform.position);
 		}
 	}
 	
