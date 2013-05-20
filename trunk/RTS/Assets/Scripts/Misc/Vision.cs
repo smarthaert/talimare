@@ -39,9 +39,7 @@ public class Vision : MonoBehaviour {
 		VisionCollider = child.AddComponent<SphereCollider>();
 		VisionCollider.isTrigger = true;
 		VisionCollider.radius = visionRange;
-	}
-	
-	protected void Start() {
+		
 		// Determine if this is a unit (the alternative would be a building)
 		if(gameObject.CompareTag(GameUtil.TAG_UNIT)) {
 			isUnit = true;
@@ -49,6 +47,9 @@ public class Vision : MonoBehaviour {
 		}
 		controllable = GetComponent<Controllable>();
 		personalAI = GetComponent<PersonalAI>();
+	}
+	
+	protected void Start() {
 		ConfigureVisionSettings();
 		
 		GameObject fogOfWar = GameObject.Find("FogOfWar");

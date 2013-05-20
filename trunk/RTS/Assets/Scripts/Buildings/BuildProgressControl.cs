@@ -23,12 +23,12 @@ public class BuildProgressControl : Controllable {
 	// Whether or not this building was completed (this is probably only available for one frame before this GameObject is destroyed)
 	public bool Completed { get; protected set; }
 	
-	protected override void Start() {
-		base.Start();
+	protected override void Awake() {
+		base.Awake();
 		
-		Creatable = finishedObject.GetComponent<Creatable>();
 		BuildingStatus = gameObject.AddComponent<BuildingStatus>();
 		gameObject.AddComponent<Vision>().visionRange = 2;
+		Creatable = finishedObject.GetComponent<Creatable>();
 		
 		StoredResources = new Dictionary<Resource, int>();
 		foreach(ResourceAmount resourceAmount in Creatable.resourceCosts) {
@@ -36,6 +36,10 @@ public class BuildProgressControl : Controllable {
 				StoredResources.Add(resourceAmount.resource, 0);
 			}
 		}
+	}
+	
+	protected override void Start() {
+		base.Start();
 	}
 	
 	protected override void BuildControlMenus() {

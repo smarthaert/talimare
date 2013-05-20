@@ -10,11 +10,12 @@ public class StrategicAI : MonoBehaviour {
 	
 	protected List<Job> Jobs { get; set; }
 	
-	protected void Start() {
-		Player = GetComponent<Player>();
-		
+	protected void Awake() {
 		Jobs = new List<Job>();
+		Player = GetComponent<Player>();
 	}
+	
+	protected void Start() {}
 	
 	public void AddJob(Job job) {
 		Jobs.Add(job);
