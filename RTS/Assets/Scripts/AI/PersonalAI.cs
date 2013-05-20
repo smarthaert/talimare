@@ -24,9 +24,11 @@ public class PersonalAI : MonoBehaviour {
 	
 	protected Controllable Controllable { get; set; }
 	
-	protected virtual void Start() {
+	protected virtual void Awake() {
 		Controllable = GetComponent<Controllable>();
 	}
+	
+	protected virtual void Start() {}
 	
 	protected virtual void Update() {
 		UpdateState();

@@ -24,10 +24,12 @@ public abstract class Controllable : Selectable {
 	protected override void Awake() {
 		base.Awake();
 		
-		// Add a kinematic rigidbody in order to make collisions work
-		gameObject.AddComponent<Rigidbody>().isKinematic = true;
+		ControlMenus = new Dictionary<string, ControlMenu>();
 		
 		Owner = transform.parent.GetComponent<Player>();
+		
+		// Add a kinematic rigidbody in order to make collisions work
+		gameObject.AddComponent<Rigidbody>().isKinematic = true;
 	}
 	
 	protected override void Start() {
@@ -37,7 +39,6 @@ public abstract class Controllable : Selectable {
 			Debug.LogError("Player was never set for the Controllable: "+name+". It should be set immediately after instantiating the object.");
 		}
 		
-		ControlMenus = new Dictionary<string, ControlMenu>();
 		BuildControlMenus();
 	}
 	

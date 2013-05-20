@@ -6,12 +6,14 @@ public class ControllableStatus : MonoBehaviour {
 
 	public int maxHP;
 	public int HP { get; protected set; }
-
-	protected virtual void Start () {
+	
+	protected virtual void Awake() {
 		HP = maxHP;
 	}
+
+	protected virtual void Start() {}
 	
-	protected virtual void Update () {}
+	protected virtual void Update() {}
 	
 	public void SetHPToZero() {
 		HP = 0;

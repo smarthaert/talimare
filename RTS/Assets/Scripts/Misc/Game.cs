@@ -13,8 +13,11 @@ public class Game : MonoBehaviour {
 	// Set of all players currently active in the game
 	protected static HashSet<Player> players = new HashSet<Player>();
 	
-	protected void Start() {
+	protected void Awake() {
 		PlayerInput = GetComponent<PlayerInput>();
+	}
+	
+	protected void Start() {
 		ThisPlayer = (Player)GameObject.FindSceneObjectsOfType(typeof(HumanPlayer))[0];
 	}
 	
