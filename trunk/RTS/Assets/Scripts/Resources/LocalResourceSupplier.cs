@@ -8,6 +8,8 @@ public class LocalResourceSupplier : MonoBehaviour {
 	protected SphereCollider SupplyCollider { get; set; }
 	
 	protected virtual void Awake() {
+		controllable = GetComponent<Controllable>();
+		
 		// A child GameObject is needed to attach a collider to. Attaching the collider to the parent object causes problems
 		GameObject child = new GameObject(this.GetType().Name);
 		child.transform.parent = transform;
@@ -21,8 +23,6 @@ public class LocalResourceSupplier : MonoBehaviour {
 	}
 	
 	protected virtual void Start() {
-		controllable = GetComponent<Controllable>();
-		
 		// Evaluate objects already colliding
 		foreach(Collider collider in Physics.OverlapSphere(SupplyCollider.transform.position, SupplyCollider.radius)) {
 			OnTriggerEnter(collider);

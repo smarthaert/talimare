@@ -10,11 +10,18 @@ public class ResourceNode : Selectable {
 	
 	protected static AstarPath Pathfinding { get; set; }
 	
+	protected override void Awake() {
+		base.Awake();
+		
+		CurrentAmount = startingAmount;
+	}
+	
 	protected override void Start() {
 		base.Start();
-		CurrentAmount = startingAmount;
-		if(Pathfinding == null)
+		
+		if(Pathfinding == null) {
 			Pathfinding = (AstarPath)GameObject.FindObjectOfType(typeof(AstarPath));
+		}
 	}
 	
 	public int GatherFrom(int maxAmount) {

@@ -12,7 +12,7 @@ public class BuildTaskScript : MonoBehaviour {
 	protected Controllable Controllable { get; set; }
 	protected MoveTaskScript MoveTaskScript { get; set; }
 	
-	protected void Start() {
+	protected void Awake() {
 		Controllable = GetComponent<Controllable>();
 		MoveTaskScript = GetComponent<MoveTaskScript>();
 	}

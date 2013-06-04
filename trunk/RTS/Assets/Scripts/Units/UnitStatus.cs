@@ -17,8 +17,8 @@ public class UnitStatus : ControllableStatus {
 	// Used by a water supplier to mark that water should not be lost on the next water tick
 	public bool CounteractWaterLoss { get; set; }
 	
-	protected override void Start() {
-		base.Start();
+	protected override void Awake() {
+		base.Awake();
 		
 		Water = maxWater;
 		CounteractWaterLoss = false;

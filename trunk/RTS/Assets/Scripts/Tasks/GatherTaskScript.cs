@@ -19,7 +19,7 @@ public class GatherTaskScript : MonoBehaviour {
 	protected MoveTaskScript MoveTaskScript { get; set; }
 	protected MoveResourceTaskScript MoveResourceTaskScript { get; set; }
 	
-	protected void Start() {
+	protected void Awake() {
 		Controllable = GetComponent<Controllable>();
 		MoveTaskScript = GetComponent<MoveTaskScript>();
 		MoveResourceTaskScript = GetComponent<MoveResourceTaskScript>();

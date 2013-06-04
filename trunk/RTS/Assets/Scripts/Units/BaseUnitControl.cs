@@ -6,10 +6,6 @@ using Pathfinding;
 [RequireComponent(typeof(MoveTaskScript))]
 [RequireComponent(typeof(AttackTaskScript))]
 public class BaseUnitControl : Controllable {
-
-	protected override void Start() {
-		base.Start();
-	}
 	
 	protected override void BuildControlMenus() {
 		ControlMenu baseUnitMenu = new ControlMenu();

@@ -3,14 +3,13 @@ using System.Collections.Generic;
 
 // Defines values for a Creatable object (unit, building, or tech)
 [RequireComponent(typeof(Controllable))]
-public class Creatable : MonoBehaviour {
+public abstract class Creatable : MonoBehaviour {
 	
 	public float creationTime;
 	public List<ResourceAmount> resourceCosts;
 	// Holds the resource costs in another format which is more convenient for some scripts to access
 	public Dictionary<Resource, int> ResourceCostsMap { get; protected set; }
 	public List<Tech> techDependencies;
-	public BuildProgressControl buildProgressObject;
 	
 	public string ControlCode {
 		get { return "Create" + name; }
@@ -37,15 +36,6 @@ public class Creatable : MonoBehaviour {
 				if(!player.PlayerStatus.techs.Contains(techDependency)) {
 					canCreate.Bool = false;
 					canCreate.String += "Player does not have the required technology: "+techDependency;
-				}
-			}
-		}
-		if(canCreate.Bool) {
-			// Can still create, so continue checking resource levels
-			foreach(ResourceAmount resourceCost in resourceCosts) {
-				if(player.PlayerStatus.resourceLevels[resourceCost.resource] < resourceCost.amount) {
-					canCreate.Bool = false;
-					canCreate.String += "You do not have the required resource amount. Resource: "+resourceCost.resource+", Amount: "+resourceCost.amount+".";
 				}
 			}
 		}

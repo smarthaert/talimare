@@ -85,7 +85,6 @@ public class BuildingStatus : ControllableStatus {
 			foreach(PowerSupplier powerSupplier in PowerSuppliersInRange) {
 				powerSupplier.ReleasePower(this);
 			}
-			Debug.Log("Unpowering "+name);
 			Powered = false;
 		}
 	}
