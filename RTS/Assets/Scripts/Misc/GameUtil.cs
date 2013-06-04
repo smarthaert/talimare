@@ -18,6 +18,8 @@ public abstract class GameUtil : Component {
 		Controllable newControllable = newObject.GetComponent<Controllable>();
 		newControllable.name = controllable.gameObject.name;
 		newControllable.transform.parent = player.transform;
+		newControllable.Owner = player;
+		
 		//apply all applicable techs to the new object
 		PlayerStatus playerStatus = player.GetComponent<PlayerStatus>();
 		foreach(Tech appliedTech in newControllable.applicableTechs) {

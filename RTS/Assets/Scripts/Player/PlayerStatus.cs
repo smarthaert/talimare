@@ -26,6 +26,8 @@ public class PlayerStatus : MonoBehaviour {
 	protected Player player;
 	
 	protected void Awake() {
+		player = GetComponent<Player>();
+		
 		upkeepMaximums.Add(Resource.Food, maxFood);
 		
 		// Initialize the dictionaries by loading each with every resource
@@ -36,8 +38,6 @@ public class PlayerStatus : MonoBehaviour {
 	}
 	
 	protected void Start() {
-		player = gameObject.GetComponent<Player>();
-		
 		// Find all Creatables that currently exist and spend their resources.
 		// (This needs to be done since Creatables that exist when the game starts were never queued,
 		// and thus were never spent for)

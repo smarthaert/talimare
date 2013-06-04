@@ -13,11 +13,11 @@ public class PlayerInput : MonoBehaviour {
 	protected Vision CurrentSelectionVision { get; set; }
 	protected GameObject CurrentMarker { get; set; }
 	
-	protected void Start () {
+	protected void Awake() {
 		ClickLayerMask = ~((1 << LayerMask.NameToLayer("FogOfWar")) + (1 << LayerMask.NameToLayer("Ignore Raycast")));
 	}
 	
-	protected void Update () {
+	protected void Update() {
 		if(CurrentSelection != null) {
 			if((CurrentSelectionVision != null && CurrentSelectionVision.IsHiddenByFog)
 					|| (Input.GetKeyDown(KeyCode.Escape) && (!CurrentSelectionIsMyControllable() || !MenuHasBackButton(((Controllable)CurrentSelection).CurrentControlMenu)))) {

@@ -17,10 +17,14 @@ public class WaterSupplier : LocalResourceSupplier {
 	// The objects which are currently within supply range and eligible for supply
 	protected List<UnitStatus> suppliablesInRange = new List<UnitStatus>();
 	
-	protected override void Start() {
-		base.Start();
+	protected override void Awake() {
+		base.Awake();
 		
 		WaterHeld = 0;
+	}
+	
+	protected override void Start() {
+		base.Start();
 	}
 	
 	protected void Update() {

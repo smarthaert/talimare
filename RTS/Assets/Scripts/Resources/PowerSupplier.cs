@@ -12,10 +12,14 @@ public class PowerSupplier : LocalResourceSupplier {
 	// Holds all objects which are currently powered by this supply
 	protected Dictionary<BuildingStatus, int> powerUsers = new Dictionary<BuildingStatus, int>();
 	
-	protected override void Start() {
-		base.Start();
+	protected override void Awake() {
+		base.Awake();
 		
 		FreePower = powerSupplied;
+	}
+	
+	protected override void Start() {
+		base.Start();
 	}
 	
 	public override void OnTriggerEnter(Collider other) {

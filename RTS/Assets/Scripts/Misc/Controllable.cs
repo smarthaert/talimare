@@ -9,7 +9,7 @@ public abstract class Controllable : Selectable {
 	public List<Tech> applicableTechs;
 	
 	// This is the object's major reference point to its Player object, aka the object's owner
-	public Player Owner { get; protected set; }
+	public Player Owner { get; set; }
 	
 	// A collection of ControlMenus which this Controllable has and can be displayed on the HUD, keyed by menu name
 	protected Dictionary<string, ControlMenu> ControlMenus { get; set; }
@@ -24,9 +24,9 @@ public abstract class Controllable : Selectable {
 	protected override void Awake() {
 		base.Awake();
 		
-		ControlMenus = new Dictionary<string, ControlMenu>();
-		
-		Owner = transform.parent.GetComponent<Player>();
+		if(transform.parent != null) {
+			Owner = transform.parent.GetComponent<Player>();
+		}
 		
 		// Add a kinematic rigidbody in order to make collisions work
 		gameObject.AddComponent<Rigidbody>().isKinematic = true;
@@ -39,6 +39,7 @@ public abstract class Controllable : Selectable {
 			Debug.LogError("Player was never set for the Controllable: "+name+". It should be set immediately after instantiating the object.");
 		}
 		
+		ControlMenus = new Dictionary<string, ControlMenu>();
 		BuildControlMenus();
 	}
 	

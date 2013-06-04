@@ -4,10 +4,10 @@ using System.Collections.Generic;
 // Handles the status of a building being placed and built
 public class BuildProgressControl : Controllable {
 	
-	public Controllable finishedObject;
+	public BaseBuildingControl finishedBuilding;
 	
 	protected BuildingStatus BuildingStatus { get; set; }
-	public Creatable Creatable { get; protected set; }
+	public CreatableBuilding FinishedBuildingCreatable { get; protected set; }
 	// The global job associated with building this object
 	public BuildJob BuildJob { get; protected set; }
 	
@@ -28,18 +28,18 @@ public class BuildProgressControl : Controllable {
 		
 		BuildingStatus = gameObject.AddComponent<BuildingStatus>();
 		gameObject.AddComponent<Vision>().visionRange = 2;
-		Creatable = finishedObject.GetComponent<Creatable>();
-		
-		StoredResources = new Dictionary<Resource, int>();
-		foreach(ResourceAmount resourceAmount in Creatable.resourceCosts) {
-			if(!resourceAmount.IsUpkeepResource()) {
-				StoredResources.Add(resourceAmount.resource, 0);
-			}
-		}
+		FinishedBuildingCreatable = finishedBuilding.GetComponent<CreatableBuilding>();
 	}
 	
 	protected override void Start() {
 		base.Start();
+		
+		StoredResources = new Dictionary<Resource, int>();
+		foreach(ResourceAmount resourceAmount in FinishedBuildingCreatable.resourceCosts) {
+			if(!resourceAmount.IsUpkeepResource()) {
+				StoredResources.Add(resourceAmount.resource, 0);
+			}
+		}
 	}
 	
 	protected override void BuildControlMenus() {
@@ -61,7 +61,7 @@ public class BuildProgressControl : Controllable {
 	// Called when this building is committed (goes from a queued/placement state to actually being in the world)
 	public void Commit() {
 		Completed = false;
-		BuildingStatus.maxHP = finishedObject.GetComponent<BuildingStatus>().maxHP;
+		BuildingStatus.maxHP = finishedBuilding.GetComponent<BuildingStatus>().maxHP;
 		BuildingStatus.SetHPToZero();
 		GameUtil.RescanPathfinding();
 		BuildJob = new BuildJob(this, Owner, true);
@@ -71,19 +71,19 @@ public class BuildProgressControl : Controllable {
 	public void Building(float timeSpent) {
 		// Development error checking
 		if(timeSpentCreating == 0f) {
-			foreach(ResourceAmount resourceAmount in Creatable.resourceCosts) {
+			foreach(ResourceAmount resourceAmount in FinishedBuildingCreatable.resourceCosts) {
 				if(!resourceAmount.IsUpkeepResource() && StoredResources[resourceAmount.resource] < resourceAmount.amount) {
 					Debug.LogError(this+" is being built but is missing some of resource: "+resourceAmount.resource);
 				}
 			}
 		}
 		timeSpentCreating += timeSpent;
-		if(timeSpentCreating >= Creatable.creationTime) {
+		if(timeSpentCreating >= FinishedBuildingCreatable.creationTime) {
 			Complete();
 		} else {
 			timeSinceLastUpdate += timeSpent;
 			if(timeSinceLastUpdate >= statusUpdateRate) {
-				BuildingStatus.Heal((int)((timeSinceLastUpdate / Creatable.creationTime) * BuildingStatus.maxHP));
+				BuildingStatus.Heal((int)((timeSinceLastUpdate / FinishedBuildingCreatable.creationTime) * BuildingStatus.maxHP));
 				timeSinceLastUpdate = 0f;
 			}
 		}
@@ -94,7 +94,7 @@ public class BuildProgressControl : Controllable {
 		// If multiple civs are building this, there's a chance that Complete gets called more than once
 		if(!Completed) {
 			Completed = true;
-			GameObject newObject = GameUtil.InstantiateControllable(finishedObject, Owner, this.transform.position); //might also need to pass this.transform.rotation
+			GameObject newObject = GameUtil.InstantiateControllable(finishedBuilding, Owner, this.transform.position); //might also need to pass this.transform.rotation
 			if(Game.PlayerInput.CurrentSelection == this) {
 				Game.PlayerInput.Select(newObject.GetComponent<Selectable>());
 			}
@@ -109,6 +109,6 @@ public class BuildProgressControl : Controllable {
 	
 	// Returns the creation percentage complete as an integer
 	public int PercentComplete() {
-		return Mathf.FloorToInt(timeSpentCreating / Creatable.creationTime);
+		return Mathf.FloorToInt(timeSpentCreating / FinishedBuildingCreatable.creationTime);
 	}
 }

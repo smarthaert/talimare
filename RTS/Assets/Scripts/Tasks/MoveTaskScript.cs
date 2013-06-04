@@ -117,15 +117,17 @@ public class MoveTaskScript : MonoBehaviour {
 	/** Only when the previous path has been returned should be search for a new path */
 	protected bool canSearchAgain = true;
 	
-	protected void Start () {
+	protected void Awake() {
 		seeker = GetComponent<Seeker>();
-		//This is a simple optimization, cache the transform component lookup
-		tr = transform;
-		seeker.pathCallback += OnPathComplete;
-		
 		controller = GetComponent<CharacterController>();
 		navController = GetComponent<NavmeshController>();
+	}
+	
+	protected void Start() {
+		//This is a simple optimization, cache the transform component lookup
+		tr = transform;
 		rigid = rigidbody;
+		seeker.pathCallback += OnPathComplete;
 	}
 	
 	public void StartTask(Transform target) {
