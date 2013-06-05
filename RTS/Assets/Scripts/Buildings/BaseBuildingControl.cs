@@ -1,8 +1,9 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System;
 
 // Contains general building utility functions
-public class BaseBuildingControl : Controllable {
+public class BaseBuildingControl : BuildingCommonControl {
 	
 	// Units this building can train
 	public List<CreatableUnit> units;
@@ -11,8 +12,8 @@ public class BaseBuildingControl : Controllable {
 	public List<CreatableTech> techs;
 	
 	// Used for keeping track of creation in this building
-	protected Queue<CreatableUnit> unitQueue = new Queue<CreatableUnit>();
-	protected float unitTimer = 0;
+	protected Queue<UnitQueueEntry> unitQueue = new Queue<UnitQueueEntry>();
+	protected CreateUnitJob currentUnitJob;
 	protected Queue<CreatableTech> techQueue = new Queue<CreatableTech>();
 	protected float techTimer = 0;
 	
@@ -23,6 +24,11 @@ public class BaseBuildingControl : Controllable {
 	
 	protected override void Start() {
 		base.Start();
+		
+		StoredResources = new Dictionary<Resource, int>();
+		foreach(object resource in Enum.GetValues(typeof(Resource))) {
+			StoredResources.Add((Resource)resource, 0);
+		}
 		
 		GameUtil.RescanPathfinding();
 	}
@@ -57,11 +63,22 @@ public class BaseBuildingControl : Controllable {
 		base.Update();
 		
 		// Advance creation queues
-		if(unitQueue.Count > 0) {
-			unitTimer += Time.deltaTime;
-			if(unitTimer >= unitQueue.Peek().creationTime)
-				CompleteUnit();
+		if(currentUnitJob != null) {
+			if(currentUnitJob.HasAssignee) {
+				if(currentUnitJob.CreationStarted) {
+					currentUnitJob.AdvanceCreationTime(Time.deltaTime);
+					if(currentUnitJob.Completed) {
+						CompleteUnitCreation();
+					}
+				} else if(UnitIsInCreationRange(currentUnitJob.Assignee)) {
+					BeginUnitCreation();
+				}
+			}
+		} else if(unitQueue.Count > 0) {
+			StartCreateUnitJob();
 		}
+		
+		//TODO high: required resources need to be delivered to building - make a CreateTechJob
 		if(techQueue.Count > 0) {
 			techTimer += Time.deltaTime;
 			if(techTimer >= techQueue.Peek().creationTime)
@@ -86,9 +103,9 @@ public class BaseBuildingControl : Controllable {
 			// See if ControlCode exists in units or techs and if so, queue that Creatable
 			foreach(CreatableUnit unit in units) {
 				if(unit.ControlCode.Equals(controlCode) && unit.CanCreate(Owner).Bool) {
-					//TODO high: required resources need to be delivered to building - make a CreateUnitJob and CreateTechJob - sub jobs are: MoveResourceJob, MoveUnitJob
 					unit.SpendResources(Owner);
-					unitQueue.Enqueue(unit);
+					//TODO figure out how to specify a unit to be converted
+					unitQueue.Enqueue(new UnitQueueEntry(null, unit));
 				}
 			}
 			foreach(CreatableTech tech in techs) {
@@ -100,15 +117,53 @@ public class BaseBuildingControl : Controllable {
 		}
 	}
 	
+	protected void StartCreateUnitJob() {
+		UnitQueueEntry dequeuedEntry = unitQueue.Dequeue();
+		currentUnitJob = new CreateUnitJob(this, dequeuedEntry.UnitToConvert, dequeuedEntry.DestinationUnit, Owner, true);
+	}
+	
+	// Begin a unit, making any converting unit disappear inside the building
+	protected void BeginUnitCreation() {
+		bool resourcesAllHere = true;
+		foreach(ResourceAmount resourceAmount in currentUnitJob.DestinationUnit.resourceCosts) {
+			if(!resourceAmount.IsUpkeepResource() && StoredResources[resourceAmount.resource] < resourceAmount.amount) {
+				resourcesAllHere = false;
+			}
+		}
+		if(resourcesAllHere) {
+			if(currentUnitJob.IsConversion) {
+				//TODO make currentUnitJob.Assignee disappear
+			}
+			foreach(ResourceAmount resourceAmount in currentUnitJob.DestinationUnit.resourceCosts) {
+				if(!resourceAmount.IsUpkeepResource()) {
+					StoredResources[resourceAmount.resource] -= resourceAmount.amount;
+				}
+			}
+			currentUnitJob.CreationStarted = true;
+		} else {
+			Debug.LogError("Resources missing while beginning unit creation. Unit :"+currentUnitJob.DestinationUnit+", Building: "+this);
+		}
+	}
+	
 	// Complete a unit, instantiating it at a proper location, and giving it a rally point if necessary
-	protected void CompleteUnit() {
-		CreatableUnit unit = unitQueue.Dequeue();
-		float distance = collider.bounds.size.magnitude + unit.gameObject.collider.bounds.size.magnitude;
-		GameObject newUnit = GameUtil.InstantiateControllable(unit.GetComponent<Controllable>(), gameObject.GetComponent<Controllable>().Owner, transform.position + (transform.right * distance));
+	protected void CompleteUnitCreation() {
+		GameObject newUnit;
+		float distance = collider.bounds.size.magnitude + currentUnitJob.DestinationUnit.collider.bounds.size.magnitude;
+		if(currentUnitJob.IsConversion) {
+			newUnit = GameUtil.InstantiateConvertedControllable(currentUnitJob.Assignee, currentUnitJob.DestinationUnit.GetComponent<Controllable>(), Owner, transform.position + (transform.right * distance));
+		} else {
+			newUnit = GameUtil.InstantiateControllable(currentUnitJob.DestinationUnit.GetComponent<Controllable>(), Owner, transform.position + (transform.right * distance));
+		}
 		if(rallyPoint != null) {
 			newUnit.GetComponent<Controllable>().AddTask(new MoveTask(newUnit.GetComponent<MoveTaskScript>(), rallyPoint), false);
 		}
-		unitTimer = 0;
+		currentUnitJob.RemoveAssignee(currentUnitJob.Assignee);
+		currentUnitJob = null;
+	}
+	
+	protected bool UnitIsInCreationRange(Controllable unit) {
+		float range = unit.collider.bounds.size.magnitude/2 + this.collider.bounds.size.magnitude/2 + 0.5f;
+		return (this.transform.position - unit.transform.position).magnitude <= range;
 	}
 	
 	// Complete a tech, adding it to the player's tech list
