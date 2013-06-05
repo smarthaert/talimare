@@ -119,13 +119,22 @@ public class HUD : MonoBehaviour {
 					GUILayout.Label("Power is " + (buildingStatus.PowerEnabled ? "enabled" : "disabled") + " and" + (buildingStatus.Powered ? " " : " not ") + "supplied");
 				}
 			}
+			if(CurrentSelection.GetComponent<BuildingCommonControl>() != null) {
+				BuildingCommonControl buildingCommonControl = CurrentSelection.GetComponent<BuildingCommonControl>();
+				foreach(Resource resource in buildingCommonControl.StoredResources.Keys) {
+					if(buildingCommonControl.StoredResources[resource] > 0) {
+						GUILayout.Label("Stored: " + resource + " x " + buildingCommonControl.StoredResources[resource]);
+					}
+				}
+			}
 		}
 		
+		//check if build progress
 		if(CurrentSelection.CompareTag(GameUtil.TAG_BUILD_PROGRESS)) {
-			if(CurrentSelection.GetComponent<BuildProgressControl>() != null) {
-				BuildProgressControl buildProgressControl = CurrentSelection.GetComponent<BuildProgressControl>();
-				foreach(Resource resourse in buildProgressControl.StoredResources.Keys) {
-					GUILayout.Label("Stored: " + resourse + " x " + buildProgressControl.StoredResources[resourse]);
+			if(CurrentSelection.GetComponent<BuildingCommonControl>() != null) {
+				BuildingCommonControl buildingCommonControl = CurrentSelection.GetComponent<BuildingCommonControl>();
+				foreach(Resource resource in buildingCommonControl.StoredResources.Keys) {
+					GUILayout.Label("Stored: " + resource + " x " + buildingCommonControl.StoredResources[resource]);
 				}
 			}
 		}

@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 
 // Handles the status of a building being placed and built
-public class BuildProgressControl : Controllable {
+public class BuildProgressControl : BuildingCommonControl {
 	
 	public BaseBuildingControl finishedBuilding;
 	
@@ -10,9 +10,6 @@ public class BuildProgressControl : Controllable {
 	public CreatableBuilding FinishedBuildingCreatable { get; protected set; }
 	// The global job associated with building this object
 	public BuildJob BuildJob { get; protected set; }
-	
-	// The resources which are currently stored in this building in order to begin construction
-	public Dictionary<Resource, int> StoredResources { get; protected set; }
 	
 	// The amount of time that has been spent creating this building
 	protected float timeSpentCreating = 0f;

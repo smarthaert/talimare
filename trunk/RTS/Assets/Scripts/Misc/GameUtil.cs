@@ -30,6 +30,24 @@ public abstract class GameUtil : Component {
 		return newObject;
 	}
 	
+	public static GameObject InstantiateConvertedControllable(Controllable oldControllable, Controllable targetControllable, Player player, Vector3 position) {
+		//TODO complete GameUtil.InstantiateConvertedControllable
+		GameObject newObject = (GameObject)Instantiate(targetControllable.gameObject, position, Quaternion.identity);
+		Controllable newControllable = newObject.GetComponent<Controllable>();
+		newControllable.name = targetControllable.gameObject.name;
+		newControllable.transform.parent = player.transform;
+		newControllable.Owner = player;
+		
+		//apply all applicable techs to the new object
+		PlayerStatus playerStatus = player.GetComponent<PlayerStatus>();
+		foreach(Tech appliedTech in newControllable.applicableTechs) {
+			if(playerStatus.techs.Contains(appliedTech)) {
+				appliedTech.ApplyTechTo(newObject);
+			}
+		}
+		return newObject;
+	}
+	
 	// Returns the instance of the given Component type (on a GameObject) that is nearest to the given point in space and owned by the given player
 	public static T FindNearestOwnedInstanceOf<T>(Vector3 point, Player player) where T : Component {
 		float minDist = Mathf.Infinity;

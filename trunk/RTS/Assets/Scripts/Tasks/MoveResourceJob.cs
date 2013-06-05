@@ -7,7 +7,7 @@ public class MoveResourceJob : Job {
 	// Amount of resource to be moved
 	public int Amount { get; protected set; }
 	// Destination for the moved resources
-	public BuildProgressControl Destination { get; protected set; }
+	public BuildingCommonControl Destination { get; protected set; }
 	
 	protected int MovedAmount { get; set; }
 	public int AmountRemaining { get { return Amount - MovedAmount; } }
@@ -18,7 +18,7 @@ public class MoveResourceJob : Job {
 		}
 	}
 	
-	public MoveResourceJob(Resource resource, int amount, BuildProgressControl destination, Player owner, bool isRootJob) : base(owner, isRootJob) {
+	public MoveResourceJob(Resource resource, int amount, BuildingCommonControl destination, Player owner, bool isRootJob) : base(owner, isRootJob) {
 		Resource = resource;
 		Amount = amount;
 		Destination = destination;

@@ -53,7 +53,9 @@ public abstract class Creatable : MonoBehaviour {
 	// Note: this function is called before the Creatable is instantiated
 	public void SpendResources(Player player) {
 		foreach(ResourceAmount resourceCost in resourceCosts) {
-			player.PlayerStatus.LoseResource(resourceCost.resource, resourceCost.amount);
+			if(resourceCost.IsUpkeepResource()) {
+				player.PlayerStatus.LoseResource(resourceCost.resource, resourceCost.amount);
+			}
 		}
 	}
 	
