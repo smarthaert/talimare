@@ -64,15 +64,13 @@ public class BaseBuildingControl : BuildingCommonControl {
 		
 		// Advance creation queues
 		if(currentUnitJob != null) {
-			if(currentUnitJob.HasAssignee) {
-				if(currentUnitJob.CreationStarted) {
-					currentUnitJob.AdvanceCreationTime(Time.deltaTime);
-					if(currentUnitJob.Completed) {
-						CompleteUnitCreation();
-					}
-				} else if(UnitIsInCreationRange(currentUnitJob.Assignee)) {
-					BeginUnitCreation();
+			if(currentUnitJob.CreationStarted) {
+				currentUnitJob.AdvanceCreationTime(Time.deltaTime);
+				if(currentUnitJob.Completed) {
+					CompleteUnitCreation();
 				}
+			} else if(currentUnitJob.ReadyForCreationStart) {
+				BeginUnitCreation();
 			}
 		} else if(unitQueue.Count > 0) {
 			StartCreateUnitJob();
@@ -105,7 +103,8 @@ public class BaseBuildingControl : BuildingCommonControl {
 				if(unit.ControlCode.Equals(controlCode) && unit.CanCreate(Owner).Bool) {
 					unit.SpendResources(Owner);
 					//TODO figure out how to specify a unit to be converted
-					unitQueue.Enqueue(new UnitQueueEntry(null, unit));
+					Controllable unitToConvert = ((UnitStatus)GameObject.FindObjectOfType(typeof(UnitStatus))).GetComponent<Controllable>();
+					unitQueue.Enqueue(new UnitQueueEntry(unitToConvert, unit));
 				}
 			}
 			foreach(CreatableTech tech in techs) {
@@ -133,6 +132,7 @@ public class BaseBuildingControl : BuildingCommonControl {
 		if(resourcesAllHere) {
 			if(currentUnitJob.IsConversion) {
 				//TODO make currentUnitJob.Assignee disappear
+				currentUnitJob.Assignee.gameObject.SetActive(false);
 			}
 			foreach(ResourceAmount resourceAmount in currentUnitJob.DestinationUnit.resourceCosts) {
 				if(!resourceAmount.IsUpkeepResource()) {
@@ -159,11 +159,6 @@ public class BaseBuildingControl : BuildingCommonControl {
 		}
 		currentUnitJob.RemoveAssignee(currentUnitJob.Assignee);
 		currentUnitJob = null;
-	}
-	
-	protected bool UnitIsInCreationRange(Controllable unit) {
-		float range = unit.collider.bounds.size.magnitude/2 + this.collider.bounds.size.magnitude/2 + 0.5f;
-		return (this.transform.position - unit.transform.position).magnitude <= range;
 	}
 	
 	// Complete a tech, adding it to the player's tech list

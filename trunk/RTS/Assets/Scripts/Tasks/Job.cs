@@ -30,7 +30,7 @@ public abstract class Job {
 	
 	// Assigns the next available sub job or this job to the given Controllable. Returns whether or not a job was assigned
 	public bool AssignNextJob(Controllable assignee, bool? appendToTaskQueue) {
-		if(AllSubJobsComplete()) {
+		if(AllSubJobsComplete) {
 			// All sub jobs are complete, so try to assign this job
 			if(CanTakeThisJob(assignee)) {
 				AssignThisJob(assignee, appendToTaskQueue);
@@ -67,12 +67,14 @@ public abstract class Job {
 		}
 	}
 	
-	public bool AllSubJobsComplete() {
-		foreach(Job job in SubJobs) {
-			if(!job.Completed) {
-				return false;
+	public bool AllSubJobsComplete {
+		get {
+			foreach(Job job in SubJobs) {
+				if(!job.Completed) {
+					return false;
+				}
 			}
+			return true;
 		}
-		return true;
 	}
 }

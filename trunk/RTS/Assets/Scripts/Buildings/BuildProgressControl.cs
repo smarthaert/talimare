@@ -59,7 +59,7 @@ public class BuildProgressControl : BuildingCommonControl {
 	public void Commit() {
 		Completed = false;
 		BuildingStatus.maxHP = finishedBuilding.GetComponent<BuildingStatus>().maxHP;
-		BuildingStatus.SetHPToZero();
+		BuildingStatus.SetHP(1);
 		GameUtil.RescanPathfinding();
 		BuildJob = new BuildJob(this, Owner, true);
 	}
