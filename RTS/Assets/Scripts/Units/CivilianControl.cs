@@ -96,7 +96,7 @@ public class CivilianControl : BaseUnitControl {
 		}
 	}
 	
-	// Commits the currently queued building at its current position and begins building
+	// Commits the currently queued building at its current position and immediately tasks this unit on its BuildJob
 	protected void CommitQueuedBuilding() {
 		if(queuedBuildTarget.FinishedBuildingCreatable.CanCreate(Owner).Bool) {
 			queuedBuildTarget.Commit();

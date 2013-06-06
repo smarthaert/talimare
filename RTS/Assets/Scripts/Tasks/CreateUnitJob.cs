@@ -16,12 +16,20 @@ public class CreateUnitJob : Job {
 	}
 	public Controllable Assignee {
 		get {
-			return Assignees[0];
+			if(Assignees.Count == 0)
+				return null;
+			else
+				return Assignees[0];
 		}
 	}
 	public bool IsConversion {
 		get {
 			return UnitToConvert != null;
+		}
+	}
+	public bool ReadyForCreationStart {
+		get {
+			return (IsConversion && HasAssignee && AssigneeIsInCreationRange()) || (!IsConversion && AllSubJobsComplete);
 		}
 	}
 	public override bool Completed {
@@ -44,7 +52,7 @@ public class CreateUnitJob : Job {
 	}
 	
 	protected override bool CanTakeThisJob(Controllable assignee) {
-		return Assignees.Count == 0 && (UnitToConvert == null || assignee == UnitToConvert);
+		return IsConversion && Assignees.Count == 0 && assignee == UnitToConvert;
 	}
 
 	protected override void AssignThisJob(Controllable assignee, bool? appendToTaskQueue) {
@@ -59,5 +67,10 @@ public class CreateUnitJob : Job {
 	
 	public void AdvanceCreationTime(float deltaTime) {
 		CreationTime += deltaTime;
+	}
+	
+	protected bool AssigneeIsInCreationRange() {
+		float range = Assignee.collider.bounds.size.magnitude/2 + Building.collider.bounds.size.magnitude/2 + 0.5f;
+		return (Building.transform.position - Assignee.transform.position).magnitude <= range;
 	}
 }

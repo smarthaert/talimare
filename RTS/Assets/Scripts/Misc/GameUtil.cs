@@ -31,7 +31,6 @@ public abstract class GameUtil : Component {
 	}
 	
 	public static GameObject InstantiateConvertedControllable(Controllable oldControllable, Controllable targetControllable, Player player, Vector3 position) {
-		//TODO complete GameUtil.InstantiateConvertedControllable
 		GameObject newObject = (GameObject)Instantiate(targetControllable.gameObject, position, Quaternion.identity);
 		Controllable newControllable = newObject.GetComponent<Controllable>();
 		newControllable.name = targetControllable.gameObject.name;
@@ -45,6 +44,13 @@ public abstract class GameUtil : Component {
 				appliedTech.ApplyTechTo(newObject);
 			}
 		}
+		
+		//update the new object's hp
+		ControllableStatus oldStatus = oldControllable.GetComponent<ControllableStatus>();
+		ControllableStatus newStatus = newControllable.GetComponent<ControllableStatus>();
+		newStatus.SetHP((oldStatus.HP / oldStatus.maxHP) * newStatus.maxHP);
+		
+		Destroy(oldControllable.gameObject);
 		return newObject;
 	}
 	

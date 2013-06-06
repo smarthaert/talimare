@@ -15,21 +15,20 @@ public class ControllableStatus : MonoBehaviour {
 	
 	protected virtual void Update() {}
 	
-	public void SetHPToZero() {
-		HP = 0;
-	}
-	
-	public void Damage(int amount) {
-		HP -= amount;
+	public void SetHP(int hp) {
+		HP = hp;
 		HP = Mathf.Clamp(HP, 0, maxHP);
 		if(HP <= 0) {
 			Die();
 		}
 	}
 	
+	public void Damage(int amount) {
+		SetHP(HP-amount);
+	}
+	
 	public void Heal(int amount) {
-		HP += amount;
-		HP = Mathf.Clamp(HP, 0, maxHP);
+		SetHP(HP+amount);
 	}
 	
 	protected void Die() {

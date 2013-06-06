@@ -46,7 +46,7 @@ public class BuildTaskScript : MonoBehaviour {
 		if(BuildJob != buildJob) {
 			BuildJob = buildJob;
 			HasStartedBuilding = false;
-			if(!BuildJob.AllSubJobsComplete()) {
+			if(!BuildJob.AllSubJobsComplete) {
 				Debug.LogError("All build sub jobs are not complete! We shouldn't be building yet.");
 			}
 		}
