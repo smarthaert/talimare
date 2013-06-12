@@ -42,9 +42,9 @@ public class BuildProgressControl : BuildingCommonControl {
 	protected override void BuildControlMenus() {
 		ControlMenu baseBuildProgressMenu = new ControlMenu();
 		baseBuildProgressMenu.MenuItems.Add(new ControlMenuItem(ControlStore.DESTROY));
-		ControlMenus.Add(BASE_MENU_NAME, baseBuildProgressMenu);
+		ControlMenus.Add(ControlStore.MENU_BASE, baseBuildProgressMenu);
 		
-		CurrentControlMenu = ControlMenus[BASE_MENU_NAME];
+		CurrentControlMenu = ControlMenus[ControlStore.MENU_BASE];
 	}
 	
 	public override void ReceiveControlCode(string controlCode) {

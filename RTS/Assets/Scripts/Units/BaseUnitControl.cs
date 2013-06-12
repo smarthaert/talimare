@@ -9,10 +9,17 @@ public class BaseUnitControl : Controllable {
 	
 	protected override void BuildControlMenus() {
 		ControlMenu baseUnitMenu = new ControlMenu();
+		baseUnitMenu.MenuItems.Add(new ControlMenuItem(ControlStore.MENU_CONVERT_UNIT, ControlStore.MENU_CONVERT_UNIT));
 		baseUnitMenu.MenuItems.Add(new ControlMenuItem(ControlStore.STOP));
-		ControlMenus.Add(BASE_MENU_NAME, baseUnitMenu);
+		ControlMenus.Add(ControlStore.MENU_BASE, baseUnitMenu);
 		
-		CurrentControlMenu = ControlMenus[BASE_MENU_NAME];
+		ControlMenu convertMenu = new ControlMenu();
+		foreach(CreatableUnit creatableUnit in GameUtil.GetAllCurrentUnitTypes(Owner)) {
+			convertMenu.MenuItems.Add(new ControlMenuItem(creatableUnit, ControlStore.MENU_BASE));
+		}
+		ControlMenus.Add(ControlStore.MENU_CONVERT_UNIT, convertMenu);
+		
+		CurrentControlMenu = ControlMenus[ControlStore.MENU_BASE];
 	}
 	
 	protected override void Update() {
@@ -35,6 +42,17 @@ public class BaseUnitControl : Controllable {
 		
 		if(controlCode.Equals(ControlStore.STOP)) {
 			AbortTaskQueue();
+		} else {
+			foreach(ControlMenuItem menuItem in ControlMenus[ControlStore.MENU_CONVERT_UNIT].MenuItems) {
+				if(menuItem.Creatable.ControlCode.Equals(controlCode) && menuItem.Creatable.CanCreate(Owner).Bool) {
+					BaseBuildingControl nearestBuilding = GameUtil.FindNearestBuildingToCreateUnit((CreatableUnit)menuItem.Creatable, this.transform.position, Owner);
+					if(nearestBuilding != null) {
+						nearestBuilding.QueueUnitToCreate(this, (CreatableUnit)menuItem.Creatable);
+					} else {
+						Debug.Log("No buildings are available to create that unit.");
+					}
+				}
+			}
 		}
 	}
 }

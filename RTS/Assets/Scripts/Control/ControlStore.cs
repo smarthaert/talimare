@@ -11,11 +11,13 @@ public class ControlStore {
 	public const string DESTROY = "Destroy";
 	
 	//Menu Navigation
+	public const string MENU_BASE = "MenuBase";
+	public const string MENU_CANCEL = "MenuCancel";
 	public const string MENU_UNITS = "MenuUnits";
 	public const string MENU_BUILDINGS = "MenuBuildings";
 	public const string MENU_TECHS = "MenuTechs";
 	public const string MENU_BACK = "MenuBack";
-	public const string MENU_CANCEL = "MenuCancel";
+	public const string MENU_CONVERT_UNIT = "MenuConvert";
 	
 	public static Dictionary<string, Control> ControlMap { get; protected set; }
 	
@@ -35,6 +37,7 @@ public class ControlStore {
 		ControlMap.Add(MENU_BUILDINGS, new Control("Buildings", KeyCode.B));
 		ControlMap.Add(MENU_TECHS, new Control("Techs", KeyCode.T));
 		ControlMap.Add(MENU_BACK, new Control("Back", KeyCode.Escape));
+		ControlMap.Add(MENU_CONVERT_UNIT, new Control("Convert", KeyCode.C));
 		
 		//Units
 		ControlMap.Add("CreateCivilian", new Control("Civilian", KeyCode.C));

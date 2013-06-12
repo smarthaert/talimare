@@ -11,9 +11,6 @@ public class CivilianControl : BaseUnitControl {
 	protected BuildProgressControl queuedBuildTarget;
 	
 	protected static int? terrainLayer;
-	
-	public const string BUILDING_MENU_NAME = "buildingMenu";
-	public const string BUILD_CANCEL_MENU_NAME = "buildCancelMenu";
 
 	protected override void Start() {
 		base.Start();
@@ -26,19 +23,18 @@ public class CivilianControl : BaseUnitControl {
 	protected override void BuildControlMenus() {
 		base.BuildControlMenus();
 		
-		ControlMenu baseUnitMenu = ControlMenus[BASE_MENU_NAME];
-		baseUnitMenu.MenuItems.Add(new ControlMenuItem(ControlStore.MENU_BUILDINGS, BUILDING_MENU_NAME));
+		ControlMenus[ControlStore.MENU_BASE].MenuItems.Add(new ControlMenuItem(ControlStore.MENU_BUILDINGS, ControlStore.MENU_BUILDINGS));
 		
 		ControlMenu createBuildingMenu = new ControlMenu();
 		foreach(CreatableBuilding building in buildings) {
-			createBuildingMenu.MenuItems.Add(new ControlMenuItem(building, BUILD_CANCEL_MENU_NAME));
+			createBuildingMenu.MenuItems.Add(new ControlMenuItem(building, ControlStore.MENU_CANCEL));
 		}
-		createBuildingMenu.MenuItems.Add(new ControlMenuItem(ControlStore.MENU_BACK, BASE_MENU_NAME));
-		ControlMenus.Add(BUILDING_MENU_NAME, createBuildingMenu);
+		createBuildingMenu.MenuItems.Add(new ControlMenuItem(ControlStore.MENU_BACK, ControlStore.MENU_BASE));
+		ControlMenus.Add(ControlStore.MENU_BUILDINGS, createBuildingMenu);
 		
 		ControlMenu cancelCreateMenu = new ControlMenu();
-		cancelCreateMenu.MenuItems.Add(new ControlMenuItem(ControlStore.MENU_CANCEL, BUILDING_MENU_NAME));
-		ControlMenus.Add(BUILD_CANCEL_MENU_NAME, cancelCreateMenu);
+		cancelCreateMenu.MenuItems.Add(new ControlMenuItem(ControlStore.MENU_CANCEL, ControlStore.MENU_BUILDINGS));
+		ControlMenus.Add(ControlStore.MENU_CANCEL, cancelCreateMenu);
 	}
 	
 	protected override void Update() {
@@ -123,7 +119,7 @@ public class CivilianControl : BaseUnitControl {
 			Destroy(queuedBuildTarget.gameObject);
 		} else {
 			queuedBuildTarget = null;
-			CurrentControlMenu = ControlMenus[BASE_MENU_NAME];
+			CurrentControlMenu = ControlMenus[ControlStore.MENU_BASE];
 		}
 	}
 }

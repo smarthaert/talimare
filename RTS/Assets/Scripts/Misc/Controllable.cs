@@ -19,8 +19,6 @@ public abstract class Controllable : Selectable {
 	// A queue to hold all current tasks this object is tasked complete
 	private Deque<Task> taskQueue = new Deque<Task>();
 	
-	public const string BASE_MENU_NAME = "baseMenu";
-	
 	protected override void Awake() {
 		base.Awake();
 		
@@ -136,7 +134,7 @@ public abstract class Controllable : Selectable {
 	public override void Deselected() {
 		base.Deselected();
 		
-		CurrentControlMenu = ControlMenus[BASE_MENU_NAME];
+		CurrentControlMenu = ControlMenus[ControlStore.MENU_BASE];
 	}
 }
 

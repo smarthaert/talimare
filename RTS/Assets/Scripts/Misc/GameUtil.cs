@@ -11,6 +11,8 @@ public abstract class GameUtil : Component {
 	public const string TAG_BUILD_PROGRESS = "BuildProgress";
 	public const string TAG_RESOURCE = "Resource";
 	
+	//TODO high: roads and walls. start by drawing a line between two clicked points on the ground
+	
 	// Creates a new instance of the given Controllable for the given Player at the given position.
 	// Also applies applicable techs to this new object
 	public static GameObject InstantiateControllable(Controllable controllable, Player player, Vector3 position) {
@@ -62,6 +64,7 @@ public abstract class GameUtil : Component {
 			float dist = Vector3.Distance(point, component.transform.position);
 			if(dist < minDist) {
 				minComp = component;
+				minDist = dist;
 			}
 		}
 		return minComp;
@@ -87,5 +90,35 @@ public abstract class GameUtil : Component {
 		if(Pathfinding != null) {
 			Pathfinding.Scan();
 		}
+	}
+	
+	// Returns all unit types that can currently be created in all buildings by the given player
+	public static HashSet<Creatable> GetAllCurrentUnitTypes(Player player) {
+		HashSet<Creatable> allUnitTypes = new HashSet<Creatable>();
+		Object[] allBuildings = GameObject.FindObjectsOfType(typeof(BaseBuildingControl));
+		foreach(Object building in allBuildings) {
+			if(((BaseBuildingControl)building).Owner == player) {
+				foreach(CreatableUnit unit in ((BaseBuildingControl)building).units) {
+					allUnitTypes.Add(unit);
+				}
+			}
+		}
+		return allUnitTypes;
+	}
+	
+	// Returns the building that can create the given unit that is nearest to the given point in space and owned by the given player
+	public static BaseBuildingControl FindNearestBuildingToCreateUnit(CreatableUnit unit, Vector3 point, Player player) {
+		float minDist = Mathf.Infinity;
+		BaseBuildingControl minBuilding = null;
+		foreach(BaseBuildingControl building in FindAllOwnedInstancesOf<BaseBuildingControl>(player)) {
+			if(building.units.Contains(unit)) {
+				float dist = Vector3.Distance(point, building.transform.position);
+				if(dist < minDist) {
+					minBuilding = building;
+					minDist = dist;
+				}
+			}
+		}
+		return minBuilding;
 	}
 }
