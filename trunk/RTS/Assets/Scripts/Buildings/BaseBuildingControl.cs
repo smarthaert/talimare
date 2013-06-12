@@ -19,9 +19,6 @@ public class BaseBuildingControl : BuildingCommonControl {
 	
 	protected Vector3? rallyPoint = null;
 	
-	public const string UNIT_MENU_NAME = "unitMenu";
-	public const string TECH_MENU_NAME = "techMenu";
-	
 	protected override void Start() {
 		base.Start();
 		
@@ -35,28 +32,28 @@ public class BaseBuildingControl : BuildingCommonControl {
 	
 	protected override void BuildControlMenus() {
 		ControlMenu baseBuildingMenu = new ControlMenu();
-		baseBuildingMenu.MenuItems.Add(new ControlMenuItem(ControlStore.MENU_UNITS, UNIT_MENU_NAME));
-		baseBuildingMenu.MenuItems.Add(new ControlMenuItem(ControlStore.MENU_TECHS, TECH_MENU_NAME));
+		baseBuildingMenu.MenuItems.Add(new ControlMenuItem(ControlStore.MENU_UNITS, ControlStore.MENU_UNITS));
+		baseBuildingMenu.MenuItems.Add(new ControlMenuItem(ControlStore.MENU_TECHS, ControlStore.MENU_TECHS));
 		if(GetComponent<BuildingStatus>() != null && GetComponent<BuildingStatus>().powerRequired > 0) {
 			baseBuildingMenu.MenuItems.Add(new ControlMenuItem(ControlStore.TOGGLE_POWER));
 		}
-		ControlMenus.Add(BASE_MENU_NAME, baseBuildingMenu);
+		ControlMenus.Add(ControlStore.MENU_BASE, baseBuildingMenu);
 		
 		ControlMenu createUnitMenu = new ControlMenu();
 		foreach(CreatableUnit unit in units) {
 			createUnitMenu.MenuItems.Add(new ControlMenuItem(unit));
 		}
-		createUnitMenu.MenuItems.Add(new ControlMenuItem(ControlStore.MENU_BACK, BASE_MENU_NAME));
-		ControlMenus.Add(UNIT_MENU_NAME, createUnitMenu);
+		createUnitMenu.MenuItems.Add(new ControlMenuItem(ControlStore.MENU_BACK, ControlStore.MENU_BASE));
+		ControlMenus.Add(ControlStore.MENU_UNITS, createUnitMenu);
 		
 		ControlMenu createTechMenu = new ControlMenu();
 		foreach(CreatableTech tech in techs) {
 			createTechMenu.MenuItems.Add(new ControlMenuItem(tech, true));
 		}
-		createTechMenu.MenuItems.Add(new ControlMenuItem(ControlStore.MENU_BACK, BASE_MENU_NAME));
-		ControlMenus.Add(TECH_MENU_NAME, createTechMenu);
+		createTechMenu.MenuItems.Add(new ControlMenuItem(ControlStore.MENU_BACK, ControlStore.MENU_BASE));
+		ControlMenus.Add(ControlStore.MENU_TECHS, createTechMenu);
 		
-		CurrentControlMenu = ControlMenus[BASE_MENU_NAME];
+		CurrentControlMenu = ControlMenus[ControlStore.MENU_BASE];
 	}
 	
 	protected override void Update() {
@@ -76,7 +73,7 @@ public class BaseBuildingControl : BuildingCommonControl {
 			StartCreateUnitJob();
 		}
 		
-		//TODO high: required resources need to be delivered to building - make a CreateTechJob
+		//TODO high: CreateTechJob
 		if(techQueue.Count > 0) {
 			techTimer += Time.deltaTime;
 			if(techTimer >= techQueue.Peek().creationTime)
@@ -101,10 +98,8 @@ public class BaseBuildingControl : BuildingCommonControl {
 			// See if ControlCode exists in units or techs and if so, queue that Creatable
 			foreach(CreatableUnit unit in units) {
 				if(unit.ControlCode.Equals(controlCode) && unit.CanCreate(Owner).Bool) {
-					unit.SpendResources(Owner);
-					//TODO figure out how to specify a unit to be converted
-					Controllable unitToConvert = ((UnitStatus)GameObject.FindObjectOfType(typeof(UnitStatus))).GetComponent<Controllable>();
-					unitQueue.Enqueue(new UnitQueueEntry(unitToConvert, unit));
+					//chooses a random unit to convert. only for development
+					QueueUnitToCreate(((UnitStatus)GameObject.FindObjectOfType(typeof(UnitStatus))).GetComponent<Controllable>(), unit);
 				}
 			}
 			foreach(CreatableTech tech in techs) {
@@ -116,9 +111,17 @@ public class BaseBuildingControl : BuildingCommonControl {
 		}
 	}
 	
+	public void QueueUnitToCreate(Controllable unitToConvert, CreatableUnit unitToCreate) {
+		unitToCreate.SpendResources(Owner);
+		unitQueue.Enqueue(new UnitQueueEntry(unitToConvert, unitToCreate));
+	}
+	
 	protected void StartCreateUnitJob() {
 		UnitQueueEntry dequeuedEntry = unitQueue.Dequeue();
 		currentUnitJob = new CreateUnitJob(this, dequeuedEntry.UnitToConvert, dequeuedEntry.DestinationUnit, Owner, true);
+		if(dequeuedEntry.UnitToConvert != null) {
+			currentUnitJob.AssignNextJob(dequeuedEntry.UnitToConvert, false);
+		}
 	}
 	
 	// Begin a unit, making any converting unit disappear inside the building
@@ -131,7 +134,6 @@ public class BaseBuildingControl : BuildingCommonControl {
 		}
 		if(resourcesAllHere) {
 			if(currentUnitJob.IsConversion) {
-				//TODO make currentUnitJob.Assignee disappear
 				currentUnitJob.Assignee.gameObject.SetActive(false);
 			}
 			foreach(ResourceAmount resourceAmount in currentUnitJob.DestinationUnit.resourceCosts) {
