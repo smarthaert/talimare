@@ -2,7 +2,9 @@ using UnityEngine;
 using System.Collections.Generic;
 
 // Handles unit building
+[RequireComponent(typeof(Controllable))]
 [RequireComponent(typeof(MoveTaskScript))]
+[AddComponentMenu("Tasks/Build")]
 public class BuildTaskScript : MonoBehaviour {
 	
 	// The current job this unit is tasked to complete

@@ -2,7 +2,9 @@ using UnityEngine;
 using System.Collections;
 
 // Handles unit attacking
+[RequireComponent(typeof(Controllable))]
 [RequireComponent(typeof(MoveTaskScript))]
+[AddComponentMenu("Tasks/Attack")]
 public class AttackTaskScript : MonoBehaviour {
 	
 	public float attackRange = 0;

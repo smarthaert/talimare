@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
+[AddComponentMenu("Camera/Camera Move")]
 public class CameraMove : MonoBehaviour {
 	
 	public float moveSpeed = 30;

@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[AddComponentMenu("Techs/Civilian HP")]
 public class CivHP : Tech {
 	private static int bonusAmount = 20;
 	

@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 
 // This class can be used to control the overall game and any game-wide classes that are not MonoBehaviours
+[AddComponentMenu("Misc RTS/Game")]
 public class Game : MonoBehaviour {
 	
 	// The human player controlled by this instance of the game

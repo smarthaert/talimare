@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[AddComponentMenu("Camera/Camera Zoom")]
 public class CameraZoom : MonoBehaviour {
 	
 	public float zoomSpeed = 10;

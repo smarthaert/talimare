@@ -1,7 +1,8 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-public class WaterSupplier : LocalResourceSupplier {
+[AddComponentMenu("Resources/Water Source")]
+public class WaterSource : LocalResourceSupplier {
 	
 	public int maxWaterHeld;
 	public int waterGainRate;

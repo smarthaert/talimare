@@ -2,6 +2,7 @@ using UnityEngine;
 using System;
 
 // Defines the behavior of a selectable GameObject
+[AddComponentMenu("Misc RTS/Selectable")]
 public class Selectable : MonoBehaviour {
 	
 	protected virtual void Awake() {}

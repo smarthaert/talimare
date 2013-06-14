@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class LocalResourceSupplier : MonoBehaviour {
+public abstract class LocalResourceSupplier : MonoBehaviour {
 
 	public float supplyRange;
 	protected Controllable controllable;

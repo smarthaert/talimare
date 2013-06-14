@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
+[AddComponentMenu("Misc RTS/Fog Of War")]
 public class FogOfWar : MonoBehaviour {
 	
 	public Material newMaterial;

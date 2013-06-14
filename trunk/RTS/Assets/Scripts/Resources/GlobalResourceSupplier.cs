@@ -2,7 +2,8 @@ using UnityEngine;
 using System.Collections.Generic;
 
 // Defines a GameObject whose existence supplies an amount of a resource
-public class ResourceSupplier : MonoBehaviour {
+[AddComponentMenu("Resources/Global Supplier")]
+public class GlobalResourceSupplier : MonoBehaviour {
 	
 	public List<ResourceAmount> suppliedResources;
 	

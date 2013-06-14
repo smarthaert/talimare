@@ -38,7 +38,7 @@ public abstract class Controllable : Selectable {
 		}
 		
 		ControlMenus = new Dictionary<string, ControlMenu>();
-		BuildControlMenus();
+		SendMessage("BuildControlMenus", SendMessageOptions.DontRequireReceiver);
 	}
 	
 	protected abstract void BuildControlMenus();
@@ -119,7 +119,7 @@ public abstract class Controllable : Selectable {
 	}
 	
 	// Called when mouse action button is clicked on any object while this Controllable is selected
-	public virtual void MouseAction(RaycastHit hit) {}
+	public virtual void ReceiveMouseAction(RaycastHit hit) {}
 	
 	// Called when a ControlCode is received while this Controllable is selected
 	public virtual void ReceiveControlCode(string controlCode) {

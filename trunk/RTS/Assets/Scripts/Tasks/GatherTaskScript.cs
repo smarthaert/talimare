@@ -1,15 +1,17 @@
 using UnityEngine;
 
 // Handles unit gathering
+[RequireComponent(typeof(Controllable))]
 [RequireComponent(typeof(MoveTaskScript))]
 [RequireComponent(typeof(MoveResourceTaskScript))]
+[AddComponentMenu("Tasks/Gather")]
 public class GatherTaskScript : MonoBehaviour {
 	
 	// The amount this unit gathers each time gathering triggers on a resource node
 	public int gatherAmount;
 	
 	// Gathering triggers once per this many seconds
-	protected float gatherTime = 5;
+	const float gatherTime = 5;
 	
 	// The resource node this unit is currently gathering from
 	protected ResourceNode GatherTarget { get; set; }
@@ -25,8 +27,14 @@ public class GatherTaskScript : MonoBehaviour {
 		MoveResourceTaskScript = GetComponent<MoveResourceTaskScript>();
 	}
 	
+	public void ReceiveMouseAction(RaycastHit hit) {
+		if(hit.collider.gameObject.CompareTag(GameUtil.TAG_RESOURCE)) {
+			Controllable.AddTask(new GatherTask(this, hit.collider.gameObject.GetComponent<ResourceNode>()), Game.PlayerInput.IsMultiKeyPressed());
+		}
+	}
+	
 	protected void Update () {
-		if(GatherTarget != null) {
+		if(GatherTarget != null && !MoveResourceTaskScript.IsTaskRunning()) {
 			UpdateGather();
 		}
 	}

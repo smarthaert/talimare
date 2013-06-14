@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
+[AddComponentMenu("Resources/Resource Node")]
 public class ResourceNode : Selectable {
 	
 	public Resource resource;

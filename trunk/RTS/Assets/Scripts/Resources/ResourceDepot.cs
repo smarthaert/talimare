@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 // A resource depot allows a GameObject to receive collected resources, adding them to the owning player's supply
 [RequireComponent(typeof(Controllable))]
+[AddComponentMenu("Resources/Resource Depot")]
 public class ResourceDepot : MonoBehaviour {
 
 	public List<ResourceAmount> storableResources;
