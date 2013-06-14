@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System;
 
 // Contains general building utility functions
+[AddComponentMenu("Buildings/Base Building Control")]
 public class BaseBuildingControl : BuildingCommonControl {
 	
 	// Units this building can train
@@ -81,7 +82,9 @@ public class BaseBuildingControl : BuildingCommonControl {
 		}
 	}
 	
-	public override void MouseAction(RaycastHit hit) {
+	public override void ReceiveMouseAction(RaycastHit hit) {
+		base.ReceiveMouseAction(hit);
+		
 		if(hit.collider.GetType() == typeof(TerrainCollider)) {
 			rallyPoint = hit.point;
 		} else if(hit.collider.gameObject == this.gameObject) {

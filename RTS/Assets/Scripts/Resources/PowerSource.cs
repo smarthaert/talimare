@@ -1,7 +1,8 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-public class PowerSupplier : LocalResourceSupplier {
+[AddComponentMenu("Resources/Power Source")]
+public class PowerSource : LocalResourceSupplier {
 	
 	public int powerSupplied;
 	public int FreePower { get; protected set; }

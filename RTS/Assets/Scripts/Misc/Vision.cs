@@ -1,6 +1,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Controllable))]
+[AddComponentMenu("Misc RTS/Vision")]
 public class Vision : MonoBehaviour {
 
 	public float visionRange = 10.0f;

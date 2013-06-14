@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 
 // Keeps information about a player's current status
+[AddComponentMenu("Player/Player Status")]
 public class PlayerStatus : MonoBehaviour {
 	
 	// Current upkeep resource maximums - use these fields only for the initial setting of values in the editor

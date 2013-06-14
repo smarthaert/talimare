@@ -5,6 +5,7 @@ using Pathfinding;
 // Contains general unit utility functions
 [RequireComponent(typeof(MoveTaskScript))]
 [RequireComponent(typeof(AttackTaskScript))]
+[AddComponentMenu("Units/Base Unit Control")]
 public class BaseUnitControl : Controllable {
 	
 	protected override void BuildControlMenus() {
@@ -26,7 +27,9 @@ public class BaseUnitControl : Controllable {
 		base.Update();
 	}
 	
-	public override void MouseAction(RaycastHit hit) {
+	public override void ReceiveMouseAction(RaycastHit hit) {
+		base.ReceiveMouseAction(hit);
+		
 		if(hit.collider.GetType() == typeof(TerrainCollider)) {
 			AddTask(new MoveTask(GetComponent<MoveTaskScript>(), hit.point), Game.PlayerInput.IsMultiKeyPressed());
 		} else if(hit.collider.gameObject.CompareTag(GameUtil.TAG_UNIT)) {

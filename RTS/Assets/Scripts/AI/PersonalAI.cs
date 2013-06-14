@@ -4,6 +4,7 @@ using System.Collections.Generic;
 // This class is the base for all personal AI.
 // It represents the ability for a unit to think and act on its own without input from any player (human or computer AI)
 [RequireComponent(typeof(Controllable))]
+[AddComponentMenu("AI/Personal AI")]
 public class PersonalAI : MonoBehaviour {
 	
 	public AIState targetStateOnIdle = AIState.Idle;

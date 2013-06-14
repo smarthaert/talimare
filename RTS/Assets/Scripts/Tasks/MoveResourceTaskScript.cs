@@ -2,7 +2,9 @@ using UnityEngine;
 using System.Collections.Generic;
 
 // Handles moving of resources
+[RequireComponent(typeof(Controllable))]
 [RequireComponent(typeof(MoveTaskScript))]
+[AddComponentMenu("Tasks/Move Resource")]
 public class MoveResourceTaskScript : MonoBehaviour {
 	
 	// The maximum amount of one resource this unit can hold
@@ -110,7 +112,7 @@ public class MoveResourceTaskScript : MonoBehaviour {
 	}
 	
 	public bool IsTaskRunning() {
-		return MoveResourceJob != null;
+		return MoveResourceJob != null || DepotReturnTarget != null;
 	}
 	
 	public void StopTask() {

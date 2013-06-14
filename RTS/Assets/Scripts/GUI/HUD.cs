@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
+[AddComponentMenu("GUI/HUD")]
 public class HUD : MonoBehaviour {
 	
 	public GUISkin skin;
@@ -102,14 +103,14 @@ public class HUD : MonoBehaviour {
 		//check if building
 		if(CurrentSelection.CompareTag(GameUtil.TAG_BUILDING)) {
 			//check if water supplier
-			if(CurrentSelection.GetComponent<WaterSupplier>() != null) {
-				WaterSupplier waterSupplier = CurrentSelection.GetComponent<WaterSupplier>();
+			if(CurrentSelection.GetComponent<WaterSource>() != null) {
+				WaterSource waterSupplier = CurrentSelection.GetComponent<WaterSource>();
 				GUILayout.Label("Water: " + waterSupplier.WaterHeld + " / " + waterSupplier.maxWaterHeld);
 			}
 			
 			//check if power supplier
-			if(CurrentSelection.GetComponent<PowerSupplier>() != null) {
-				PowerSupplier powerSupplier = CurrentSelection.GetComponent<PowerSupplier>();
+			if(CurrentSelection.GetComponent<PowerSource>() != null) {
+				PowerSource powerSupplier = CurrentSelection.GetComponent<PowerSource>();
 				GUILayout.Label("Power: " + (powerSupplier.powerSupplied-powerSupplier.FreePower) + " / " + powerSupplier.powerSupplied + " used");
 			}
 			

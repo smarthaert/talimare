@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 
 // Keeps information about a unit's current status
+[AddComponentMenu("Units/Unit Status")]
 public class UnitStatus : ControllableStatus {
 	
 	public int maxWater;
@@ -10,7 +11,7 @@ public class UnitStatus : ControllableStatus {
 	public int Water { get; protected set; }
 	public float WaterPercentage { get { return Water / maxWater; } }
 	// Holds all of the water suppliers of which this object is in range
-	public List<WaterSupplier> waterSuppliersInRange = new List<WaterSupplier>();
+	public List<WaterSource> waterSuppliersInRange = new List<WaterSource>();
 	
 	// Amount of time since last water tick
 	protected float waterTickTimer = 0;
@@ -29,7 +30,7 @@ public class UnitStatus : ControllableStatus {
 		
 		if(waterLossRate != 0) {
 			waterTickTimer += Time.deltaTime;
-			if(waterTickTimer >= WaterSupplier.waterTickRate) {
+			if(waterTickTimer >= WaterSource.waterTickRate) {
 				waterTickTimer = 0;
 				if(CounteractWaterLoss) {
 					CounteractWaterLoss = false;
@@ -52,7 +53,7 @@ public class UnitStatus : ControllableStatus {
 	}
 	
 	protected void OnDestroy() {
-		foreach(WaterSupplier waterSupplier in waterSuppliersInRange.ToArray()) {
+		foreach(WaterSource waterSupplier in waterSuppliersInRange.ToArray()) {
 			waterSupplier.OnTriggerExit(collider);
 		}
 	}

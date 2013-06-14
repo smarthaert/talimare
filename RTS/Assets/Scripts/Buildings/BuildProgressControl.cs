@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 
 // Handles the status of a building being placed and built
+[AddComponentMenu("Buildings/Build Progress Control")]
 public class BuildProgressControl : BuildingCommonControl {
 	
 	public BaseBuildingControl finishedBuilding;

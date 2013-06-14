@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[AddComponentMenu("Camera/Camera Rotate")]
 public class CameraRotate : MonoBehaviour {
 	public float rotateSpeed = 250;
 	

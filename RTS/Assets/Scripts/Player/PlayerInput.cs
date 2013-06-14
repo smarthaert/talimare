@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 
 // Handles general player input unrelated to specific objects. Can be placed anywhere as long as it is in the scene
+[AddComponentMenu("Player/Player Input")]
 public class PlayerInput : MonoBehaviour {
 	
 	// A visual marker for the current selection
@@ -32,7 +33,7 @@ public class PlayerInput : MonoBehaviour {
 				if(Input.anyKeyDown) {
 					foreach(ControlMenuItem menuItem in GetMenuItemsSelectedByCurrentKeys(currentControllable.CurrentControlMenu)) {
 						if(menuItem.Enabled.Bool) {
-							currentControllable.ReceiveControlCode(menuItem.ControlCode);
+							currentControllable.SendMessage("ReceiveControlCode", menuItem.ControlCode, SendMessageOptions.DontRequireReceiver);
 						} else {
 							//print this out in the middle of the player's screen
 							Debug.Log(menuItem.Enabled.String);
@@ -47,7 +48,7 @@ public class PlayerInput : MonoBehaviour {
 					RaycastHit hit;
 					
 					if(Physics.Raycast(ray, out hit, Mathf.Infinity, ClickLayerMask)) {
-						currentControllable.MouseAction(hit);
+						currentControllable.SendMessage("ReceiveMouseAction", hit, SendMessageOptions.DontRequireReceiver);
 					}
 				}
 			}
