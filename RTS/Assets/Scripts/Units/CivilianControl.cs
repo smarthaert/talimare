@@ -51,8 +51,8 @@ public class CivilianControl : BaseUnitControl {
 		
 		if(queuedBuildTarget != null) {
 			CommitQueuedBuilding();
-		} else if(hit.collider.gameObject.CompareTag(GameUtil.TAG_BUILD_PROGRESS)) {
-			hit.collider.gameObject.GetComponent<BuildProgressControl>().BuildJob.AssignNextJob(this, Game.PlayerInput.IsMultiKeyPressed());
+		} else if(hit.transform.gameObject.CompareTag(GameUtil.TAG_BUILD_PROGRESS)) {
+			hit.transform.gameObject.GetComponent<BuildProgressControl>().BuildJob.AssignNextJob(this, Game.PlayerInput.IsMultiKeyPressed());
 		}
 	}
 	//TODO mouse action & receive control code should move into task scripts

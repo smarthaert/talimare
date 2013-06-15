@@ -87,7 +87,7 @@ public class BaseBuildingControl : BuildingCommonControl {
 		
 		if(hit.collider.GetType() == typeof(TerrainCollider)) {
 			rallyPoint = hit.point;
-		} else if(hit.collider.gameObject == this.gameObject) {
+		} else if(hit.transform.gameObject == this.gameObject) {
 			rallyPoint = null;
 		}
 	}

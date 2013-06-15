@@ -43,7 +43,6 @@ public class PlayerInput : MonoBehaviour {
 				
 				// Handle mouse1 click (object action)
 				if(Input.GetMouseButtonDown(1)) {
-					// Make sure the current selection is owned by this player
 					Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 					RaycastHit hit;
 					
@@ -60,9 +59,10 @@ public class PlayerInput : MonoBehaviour {
 			RaycastHit hit;
 			
 			if(Physics.Raycast(ray, out hit, Mathf.Infinity, ClickLayerMask)) {
-				// Note: this currently only works if the collider we hit is the same gameobject
-				// in the hierarchy as has the Selectable script attached
-				GameObject clickedObject = hit.collider.gameObject;
+				// Note: this only works if the collider we hit is the same gameobject in the hierarchy
+				// as has the Selectable script attached, or if the main parent gameobject has a rigidbody attached
+				// (raycast hits 'bubble up' to the first found rigidbody)
+				GameObject clickedObject = hit.transform.gameObject;
 				Selectable selectable = clickedObject.GetComponent<Selectable>();
 				Vision vision = clickedObject.GetComponentInChildren<Vision>();
 				if(selectable != null && (vision == null || !vision.IsHiddenByFog)) {
