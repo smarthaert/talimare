@@ -32,8 +32,8 @@ public class BaseUnitControl : Controllable {
 		
 		if(hit.collider.GetType() == typeof(TerrainCollider)) {
 			AddTask(new MoveTask(GetComponent<MoveTaskScript>(), hit.point), Game.PlayerInput.IsMultiKeyPressed());
-		} else if(hit.collider.gameObject.CompareTag(GameUtil.TAG_UNIT)) {
-			Controllable targetControl = hit.collider.gameObject.GetComponent<Controllable>();
+		} else if(hit.transform.gameObject.CompareTag(GameUtil.TAG_UNIT)) {
+			Controllable targetControl = hit.transform.gameObject.GetComponent<Controllable>();
 			if(targetControl != null && Owner != targetControl.Owner && Owner.Relationships[targetControl.Owner] == PlayerRelationship.HOSTILE) {
 				AddTask(new AttackTask(GetComponent<AttackTaskScript>(), targetControl.gameObject), Game.PlayerInput.IsMultiKeyPressed());
 			}

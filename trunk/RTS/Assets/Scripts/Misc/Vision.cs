@@ -137,7 +137,7 @@ public class Vision : MonoBehaviour {
 		Debug.DrawRay(LOSorigin, LOSdir*LOSdist, Color.green);
 		
 		// By now it is assumed that we hit the fog of war mesh, so we use it
-		// directly and not hit.collider.gameObject.GetComponent(MeshFilter).mesh;
+		// directly and not hit.transform.gameObject.GetComponent(MeshFilter).mesh;
 		
 		// Get which vertices were hit
 		int p0 = fogOfWarScript.meshTriangles[hit.triangleIndex * 3 + 0];
@@ -160,7 +160,7 @@ public class Vision : MonoBehaviour {
 		}
 		
 		// By now it is assumed that we hit the fog of war mesh, so we use it
-		// directly and not hit.collider.gameObject.GetComponent(MeshFilter).mesh;
+		// directly and not hit.transform.gameObject.GetComponent(MeshFilter).mesh;
 	
 		// Get which vertices were hit
 		int p0 = fogOfWarScript.meshTriangles[hit.triangleIndex * 3 + 0];
