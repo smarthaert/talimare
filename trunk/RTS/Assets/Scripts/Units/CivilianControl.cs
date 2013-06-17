@@ -1,8 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-[RequireComponent(typeof(BuildTaskScript))]
-[RequireComponent(typeof(GatherTaskScript))]
 [AddComponentMenu("Units/Civilian Control")]
 public class CivilianControl : BaseUnitControl {
 	

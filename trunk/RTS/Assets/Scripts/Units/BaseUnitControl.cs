@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using Pathfinding;
 
 // Contains general unit utility functions
-[RequireComponent(typeof(MoveTaskScript))]
-[RequireComponent(typeof(AttackTaskScript))]
 [AddComponentMenu("Units/Base Unit Control")]
 public class BaseUnitControl : Controllable {
 	
@@ -29,15 +27,6 @@ public class BaseUnitControl : Controllable {
 	
 	public override void ReceiveMouseAction(RaycastHit hit) {
 		base.ReceiveMouseAction(hit);
-		
-		if(hit.collider.GetType() == typeof(TerrainCollider)) {
-			AddTask(new MoveTask(GetComponent<MoveTaskScript>(), hit.point), Game.PlayerInput.IsMultiKeyPressed());
-		} else if(hit.transform.gameObject.CompareTag(GameUtil.TAG_UNIT)) {
-			Controllable targetControl = hit.transform.gameObject.GetComponent<Controllable>();
-			if(targetControl != null && Owner != targetControl.Owner && Owner.Relationships[targetControl.Owner] == PlayerRelationship.HOSTILE) {
-				AddTask(new AttackTask(GetComponent<AttackTaskScript>(), targetControl.gameObject), Game.PlayerInput.IsMultiKeyPressed());
-			}
-		}
 	}
 	
 	public override void ReceiveControlCode(string controlCode) {
