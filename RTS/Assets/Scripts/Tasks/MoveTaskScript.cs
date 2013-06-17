@@ -119,10 +119,13 @@ public class MoveTaskScript : MonoBehaviour {
 	/** Only when the previous path has been returned should be search for a new path */
 	protected bool canSearchAgain = true;
 	
+	protected Controllable Controllable { get; set; }
+	
 	protected void Awake() {
 		seeker = GetComponent<Seeker>();
 		controller = GetComponent<CharacterController>();
 		navController = GetComponent<NavmeshController>();
+		Controllable = GetComponent<Controllable>();
 	}
 	
 	protected void Start() {
@@ -130,6 +133,12 @@ public class MoveTaskScript : MonoBehaviour {
 		tr = transform;
 		rigid = rigidbody;
 		seeker.pathCallback += OnPathComplete;
+	}
+	
+	public void ReceiveMouseAction(RaycastHit hit) {
+		if(hit.collider.GetType() == typeof(TerrainCollider)) {
+			Controllable.AddTask(new MoveTask(GetComponent<MoveTaskScript>(), hit.point), Game.PlayerInput.IsMultiKeyPressed());
+		}
 	}
 	
 	public void StartTask(Transform target) {

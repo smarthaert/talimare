@@ -34,6 +34,15 @@ public class AttackTaskScript : MonoBehaviour {
 		MoveTaskScript = GetComponent<MoveTaskScript>();
 	}
 	
+	public void ReceiveMouseAction(RaycastHit hit) {
+		if(hit.transform.gameObject.CompareTag(GameUtil.TAG_UNIT)) {
+			Controllable targetControl = hit.transform.gameObject.GetComponent<Controllable>();
+			if(targetControl != null && Controllable.Owner != targetControl.Owner && Controllable.Owner.Relationships[targetControl.Owner] == PlayerRelationship.HOSTILE) {
+				Controllable.AddTask(new AttackTask(GetComponent<AttackTaskScript>(), targetControl.gameObject), Game.PlayerInput.IsMultiKeyPressed());
+			}
+		}
+	}
+	
 	protected void Update() {
 		if(CurrentAttackTarget == null) {
 			// Not currently in an attack sequence (either due to being on cooldown, out of range, or have no target)
