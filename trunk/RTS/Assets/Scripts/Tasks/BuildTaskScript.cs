@@ -19,6 +19,12 @@ public class BuildTaskScript : MonoBehaviour {
 		MoveTaskScript = GetComponent<MoveTaskScript>();
 	}
 	
+	public void ReceiveMouseAction(RaycastHit hit) {
+		if(hit.transform.CompareTag(GameUtil.TAG_BUILD_PROGRESS)) {
+			hit.transform.GetComponent<BuildProgressControl>().BuildJob.AssignNextJob(Controllable, Game.PlayerInput.IsMultiKeyPressed());
+		}
+	}
+	
 	protected void Update () {
 		if(BuildJob != null) {
 			if(BuildJob.Completed) {

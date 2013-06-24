@@ -18,7 +18,7 @@ public class CivilianControl : BaseUnitControl {
 			terrainLayer = GameObject.Find("Terrain").layer;
 		}
 	}
-	//TODO control menus should be built inside task scripts
+	//TODO move/copy building placement into PlayerInput
 	protected override void BuildControlMenus() {
 		base.BuildControlMenus();
 		
@@ -49,11 +49,9 @@ public class CivilianControl : BaseUnitControl {
 		
 		if(queuedBuildTarget != null) {
 			CommitQueuedBuilding();
-		} else if(hit.transform.gameObject.CompareTag(GameUtil.TAG_BUILD_PROGRESS)) {
-			hit.transform.gameObject.GetComponent<BuildProgressControl>().BuildJob.AssignNextJob(this, Game.PlayerInput.IsMultiKeyPressed());
 		}
 	}
-	//TODO mouse action & receive control code should move into task scripts
+	
 	public override void ReceiveControlCode(string controlCode) {
 		base.ReceiveControlCode(controlCode);
 		
