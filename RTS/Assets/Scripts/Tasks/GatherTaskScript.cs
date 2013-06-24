@@ -28,8 +28,8 @@ public class GatherTaskScript : MonoBehaviour {
 	}
 	
 	public void ReceiveMouseAction(RaycastHit hit) {
-		if(hit.transform.gameObject.CompareTag(GameUtil.TAG_RESOURCE)) {
-			Controllable.AddTask(new GatherTask(this, hit.transform.gameObject.GetComponent<ResourceNode>()), Game.PlayerInput.IsMultiKeyPressed());
+		if(hit.transform.CompareTag(GameUtil.TAG_RESOURCE)) {
+			Controllable.AddTask(new GatherTask(this, hit.transform.GetComponent<ResourceNode>()), Game.PlayerInput.IsMultiKeyPressed());
 		}
 	}
 	

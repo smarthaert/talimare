@@ -35,8 +35,8 @@ public class AttackTaskScript : MonoBehaviour {
 	}
 	
 	public void ReceiveMouseAction(RaycastHit hit) {
-		if(hit.transform.gameObject.CompareTag(GameUtil.TAG_UNIT)) {
-			Controllable targetControl = hit.transform.gameObject.GetComponent<Controllable>();
+		if(hit.transform.CompareTag(GameUtil.TAG_UNIT)) {
+			Controllable targetControl = hit.transform.GetComponent<Controllable>();
 			if(targetControl != null && Controllable.Owner != targetControl.Owner && Controllable.Owner.Relationships[targetControl.Owner] == PlayerRelationship.HOSTILE) {
 				Controllable.AddTask(new AttackTask(GetComponent<AttackTaskScript>(), targetControl.gameObject), Game.PlayerInput.IsMultiKeyPressed());
 			}
