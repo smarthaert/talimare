@@ -12,9 +12,7 @@ public abstract class Controllable : Selectable {
 	public Player Owner { get; set; }
 	
 	// A collection of ControlMenus which this Controllable has and can be displayed on the HUD, keyed by menu name
-	protected Dictionary<string, ControlMenu> ControlMenus { get; set; }
-	// The current ControlMenu which is selected and should be displayed on the HUD
-	public ControlMenu CurrentControlMenu { get; set; }
+	public Dictionary<string, ControlMenu> ControlMenus { get; protected set; }
 	
 	// A queue to hold all current tasks this object is tasked complete
 	private Deque<Task> taskQueue = new Deque<Task>();
@@ -47,20 +45,6 @@ public abstract class Controllable : Selectable {
 		base.Update();
 		
 		ProcessTaskQueue();
-	}
-	
-	public virtual void DisableCurrentMenuItems() {
-		if(CurrentControlMenu != null) {
-			foreach(ControlMenuItem menuItem in CurrentControlMenu.MenuItems) {
-				if(menuItem.RequiresPower && GetComponent<BuildingStatus>() != null && !GetComponent<BuildingStatus>().Powered) {
-					menuItem.Enabled = new BoolAndString(false, "Power is required for that.");
-				} else if(menuItem.Creatable != null) {
-					menuItem.Enabled = menuItem.Creatable.CanCreate(Owner);
-				} else {
-					menuItem.Enabled = new BoolAndString(true);
-				}
-			}
-		}
 	}
 	
 	// Processes the action queue by starting the top action or removing it if it has completed
@@ -122,19 +106,10 @@ public abstract class Controllable : Selectable {
 	public virtual void ReceiveMouseAction(RaycastHit hit) {}
 	
 	// Called when a ControlCode is received while this Controllable is selected
-	public virtual void ReceiveControlCode(string controlCode) {
-		// Handle menu navigation
-		ControlMenuItem selectedMenuItem = CurrentControlMenu.GetMenuItemWithCode(controlCode);
-		if(selectedMenuItem.DestinationMenu != null) {
-			CurrentControlMenu = ControlMenus[selectedMenuItem.DestinationMenu];
-			DisableCurrentMenuItems();
-		}
-	}
+	public virtual void ReceiveControlCode(string controlCode) {}
 	
 	public override void Deselected() {
 		base.Deselected();
-		
-		CurrentControlMenu = ControlMenus[ControlStore.MENU_BASE];
 	}
 }
 

@@ -44,8 +44,6 @@ public class BuildProgressControl : BuildingCommonControl {
 		ControlMenu baseBuildProgressMenu = new ControlMenu();
 		baseBuildProgressMenu.MenuItems.Add(new ControlMenuItem(ControlStore.DESTROY));
 		ControlMenus.Add(ControlStore.MENU_BASE, baseBuildProgressMenu);
-		
-		CurrentControlMenu = ControlMenus[ControlStore.MENU_BASE];
 	}
 	
 	public override void ReceiveControlCode(string controlCode) {

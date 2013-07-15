@@ -17,8 +17,6 @@ public class BaseUnitControl : Controllable {
 			convertMenu.MenuItems.Add(new ControlMenuItem(creatableUnit, ControlStore.MENU_BASE));
 		}
 		ControlMenus.Add(ControlStore.MENU_CONVERT_UNIT, convertMenu);
-		
-		CurrentControlMenu = ControlMenus[ControlStore.MENU_BASE];
 	}
 	
 	protected override void Update() {
