@@ -6,14 +6,10 @@ public class HUD : MonoBehaviour {
 	
 	public GUISkin skin;
 	
-	protected Player Player { get; set; }
 	protected Rect ResourceLevelsLocation { get; set; }
-	protected PlayerInput PlayerInput { get; set; }
 	protected Selectable CurrentSelection { get; set; }
 	
 	protected void Start() {
-		Player = Game.ThisPlayer;
-		PlayerInput = Game.PlayerInput;
 		ResourceLevelsLocation = new Rect(5, Screen.height-170, 100, 100);
 	}
 	
@@ -28,11 +24,11 @@ public class HUD : MonoBehaviour {
 	
 	protected void RenderResourceLevels() {
 		int offset = 0;
-		foreach(KeyValuePair<Resource, int> resourceLevel in Player.PlayerStatus.resourceLevels) {
+		foreach(KeyValuePair<Resource, int> resourceLevel in Game.ThisPlayer.PlayerStatus.resourceLevels) {
 			Rect tempLocation = ResourceLevelsLocation;
 			tempLocation.y += offset;
 			if(resourceLevel.Key == Resource.Food) {
-				int resourceUpkeepMaximum = Player.PlayerStatus.upkeepMaximums[resourceLevel.Key];
+				int resourceUpkeepMaximum = Game.ThisPlayer.PlayerStatus.upkeepMaximums[resourceLevel.Key];
 				int resourceAmountUsed = resourceUpkeepMaximum - resourceLevel.Value;
 				GUI.Label(tempLocation, resourceLevel.Key.ToString()+": "+resourceAmountUsed+" / "+resourceUpkeepMaximum.ToString());
 			} else {
@@ -43,7 +39,7 @@ public class HUD : MonoBehaviour {
 	}
 	
 	protected void RenderLowerPane() {
-		CurrentSelection = PlayerInput.CurrentSelection;
+		CurrentSelection = Game.PlayerInput.CurrentSelection;
 		
 		GUI.BeginGroup(new Rect(0, Screen.height-Screen.height/4, Screen.width, Screen.height/4));
 		RenderMapPane();
@@ -151,17 +147,14 @@ public class HUD : MonoBehaviour {
 		GUILayout.BeginArea(new Rect((Screen.width/3)*2, 0, Screen.width/3, Screen.height/4));
 		
 		GUI.Box(new Rect(0, 0, Screen.width/3, Screen.height/4), "");
-		if(CurrentSelection is Controllable && ((Controllable)CurrentSelection).Owner == Player) {
-			RenderControls();
-		}
+		RenderControls();
 		
 		GUILayout.EndArea();
 		//GUI.EndGroup();
 	}
 	
 	protected void RenderControls() {
-		Controllable controllable = (Controllable)CurrentSelection;
-		foreach(ControlMenuItem controlMenuItem in controllable.CurrentControlMenu.MenuItems) {
+		foreach(ControlMenuItem controlMenuItem in Game.PlayerInput.CurrentControlMenu.MenuItems) {
 			if(controlMenuItem.Enabled.Bool) {
 				GUILayout.Label(controlMenuItem.Control.Name);
 			} else {

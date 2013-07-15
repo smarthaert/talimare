@@ -53,8 +53,6 @@ public class BaseBuildingControl : BuildingCommonControl {
 		}
 		createTechMenu.MenuItems.Add(new ControlMenuItem(ControlStore.MENU_BACK, ControlStore.MENU_BASE));
 		ControlMenus.Add(ControlStore.MENU_TECHS, createTechMenu);
-		
-		CurrentControlMenu = ControlMenus[ControlStore.MENU_BASE];
 	}
 	
 	protected override void Update() {
