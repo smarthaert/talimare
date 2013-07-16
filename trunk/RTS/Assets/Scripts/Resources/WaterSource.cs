@@ -4,30 +4,6 @@ using System.Collections.Generic;
 [AddComponentMenu("Resources/Water Source")]
 public class WaterSource : LocalResourceSupplier {
 	
-	public int maxWaterHeld;
-	public int waterGainRate;
-	// The maximum amount of water per tick that can be supplied
-	public int maxWaterSupplyRate = 25;
-	public int WaterHeld { get; protected set; }
-	
-	// Water ticks every this many seconds (supply and loss)
-	public static float waterTickRate = 2;
-	protected float waterTickTimer = 0;
-	protected bool waterGained = false;
-	
-	// The objects which are currently within supply range and eligible for supply
-	protected List<UnitStatus> suppliablesInRange = new List<UnitStatus>();
-	
-	protected override void Awake() {
-		base.Awake();
-		
-		WaterHeld = 0;
-	}
-	
-	protected override void Start() {
-		base.Start();
-	}
-	
 	protected void Update() {
 		waterTickTimer += Time.deltaTime;
 		if(waterTickTimer >= waterTickRate) {
