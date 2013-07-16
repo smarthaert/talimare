@@ -6,11 +6,9 @@ using Pathfinding;
 [AddComponentMenu("Units/Base Unit Control")]
 public class BaseUnitControl : Controllable {
 	
-	protected override void BuildControlMenus() {
-		ControlMenu baseUnitMenu = new ControlMenu();
-		baseUnitMenu.MenuItems.Add(new ControlMenuItem(ControlStore.MENU_CONVERT_UNIT, ControlStore.MENU_CONVERT_UNIT));
-		baseUnitMenu.MenuItems.Add(new ControlMenuItem(ControlStore.STOP));
-		ControlMenus.Add(ControlStore.MENU_BASE, baseUnitMenu);
+	protected virtual void BuildControlMenus() {
+		ControlMenus[ControlStore.MENU_BASE].MenuItems.Add(new ControlMenuItem(ControlStore.MENU_CONVERT_UNIT, ControlStore.MENU_CONVERT_UNIT));
+		ControlMenus[ControlStore.MENU_BASE].MenuItems.Add(new ControlMenuItem(ControlStore.STOP));
 		
 		ControlMenu convertMenu = new ControlMenu();
 		foreach(CreatableUnit creatableUnit in GameUtil.GetAllCurrentUnitTypes(Owner)) {

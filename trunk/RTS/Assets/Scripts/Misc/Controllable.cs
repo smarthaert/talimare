@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Wintellect.PowerCollections;
 
 // Defines the behavior of a Selectable which can be controlled, i.e. issued actions
+[RequireComponent(typeof(ControllableStatus))]
 public abstract class Controllable : Selectable {
 	
 	// A list of Techs which apply to this object when they are gained
@@ -26,6 +27,13 @@ public abstract class Controllable : Selectable {
 		
 		// Add a kinematic rigidbody in order to make collisions work
 		gameObject.AddComponent<Rigidbody>().isKinematic = true;
+		
+		ControlMenus = new Dictionary<string, ControlMenu>();
+		BuildBaseControlMenu();
+	}
+	
+	protected void BuildBaseControlMenu() {
+		ControlMenus.Add(ControlStore.MENU_BASE, new ControlMenu());
 	}
 	
 	protected override void Start() {
@@ -35,11 +43,8 @@ public abstract class Controllable : Selectable {
 			Debug.LogError("Player was never set for the Controllable: "+name+". It should be set immediately after instantiating the object.");
 		}
 		
-		ControlMenus = new Dictionary<string, ControlMenu>();
 		SendMessage("BuildControlMenus", SendMessageOptions.DontRequireReceiver);
 	}
-	
-	protected abstract void BuildControlMenus();
 	
 	protected override void Update() {
 		base.Update();
@@ -106,7 +111,11 @@ public abstract class Controllable : Selectable {
 	public virtual void ReceiveMouseAction(RaycastHit hit) {}
 	
 	// Called when a ControlCode is received while this Controllable is selected
-	public virtual void ReceiveControlCode(string controlCode) {}
+	public virtual void ReceiveControlCode(string controlCode) {
+		if(controlCode.Equals(ControlStore.DESTROY)) {
+			GetComponent<ControllableStatus>().Die();
+		}
+	}
 	
 	public override void Deselected() {
 		base.Deselected();
