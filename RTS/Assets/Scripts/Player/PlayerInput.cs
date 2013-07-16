@@ -18,7 +18,7 @@ public class PlayerInput : MonoBehaviour {
 	protected GameObject CurrentMarker { get; set; }
 	
 	// Buildings which can be built
-	public List<CreatableBuilding> buildings; //TODO build a list of buildable buildings
+	public List<CreatableBuilding> buildings; //TODO med: build a list of buildable buildings
 	
 	// The currently-queued building to build
 	protected BuildProgressControl QueuedBuildTarget { get; set; }
@@ -139,7 +139,7 @@ public class PlayerInput : MonoBehaviour {
 			RaycastHit hit;
 			
 			if(Physics.Raycast(ray, out hit, Mathf.Infinity, ClickLayerMask)) {
-				if(CurrentSelectionIsMyControllable()) {
+				if(QueuedBuildTarget == null && CurrentSelectionIsMyControllable()) {
 					((Controllable)CurrentSelection).SendMessage("ReceiveMouseAction", hit, SendMessageOptions.DontRequireReceiver);
 				} else {
 					ReceiveMouseAction(hit);
@@ -177,7 +177,7 @@ public class PlayerInput : MonoBehaviour {
 		CurrentControlMenu = ControlMenus[ControlStore.MENU_BASE];
 	}
 	
-	protected bool CurrentSelectionIsMyControllable() {
+	public bool CurrentSelectionIsMyControllable() {
 		return (CurrentSelection != null && CurrentSelection is Controllable && ((Controllable)CurrentSelection).Owner == Game.ThisPlayer);
 	}
 	
@@ -238,6 +238,11 @@ public class PlayerInput : MonoBehaviour {
 		}
 	}
 	
+	public void InstantiateBuildProgress(CreatableBuilding building) {
+		QueuedBuildTarget = (GameUtil.InstantiateControllable(building.buildProgressControl, Game.ThisPlayer, Vector3.zero)).GetComponent<BuildProgressControl>();
+		QueuedBuildTarget.name = building.gameObject.name+" (in progress)";
+	}
+	
 	// Moves the queued building to where the mouse hits the ground
 	protected void DrawQueuedBuildingAtMouse() {
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -253,12 +258,7 @@ public class PlayerInput : MonoBehaviour {
 		}
 	}
 	
-	protected void InstantiateBuildProgress(CreatableBuilding building) {
-		QueuedBuildTarget = (GameUtil.InstantiateControllable(building.buildProgressControl, Game.ThisPlayer, Vector3.zero)).GetComponent<BuildProgressControl>();
-		QueuedBuildTarget.name = building.gameObject.name+" (in progress)";
-	}
-	
-	// Commits the currently queued building at its current position and immediately tasks this unit on its BuildJob
+	// Commits the currently queued building at its current position and immediately tasks any selected unit on its BuildJob
 	protected void CommitQueuedBuilding() {
 		if(QueuedBuildTarget.FinishedBuildingCreatable.CanCreate(Game.ThisPlayer).Bool) {
 			QueuedBuildTarget.Commit();
@@ -274,7 +274,7 @@ public class PlayerInput : MonoBehaviour {
 	}
 	
 	// Removes the currently queued build target reference. If true is passed, the target will be completely destroyed
-	protected void RemoveQueuedBuildTarget(bool andDestroyIt) {
+	public void RemoveQueuedBuildTarget(bool andDestroyIt) {
 		if(andDestroyIt) {
 			Destroy(QueuedBuildTarget.gameObject);
 		} else {

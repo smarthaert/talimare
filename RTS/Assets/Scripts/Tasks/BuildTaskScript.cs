@@ -19,13 +19,41 @@ public class BuildTaskScript : MonoBehaviour {
 		MoveTaskScript = GetComponent<MoveTaskScript>();
 	}
 	
+	protected void BuildControlMenus() {
+		Controllable.ControlMenus[ControlStore.MENU_BASE].MenuItems.Add(new ControlMenuItem(ControlStore.MENU_BUILDINGS, ControlStore.MENU_BUILDINGS));
+		
+		ControlMenu createBuildingMenu = new ControlMenu();
+		foreach(CreatableBuilding building in Game.PlayerInput.buildings) {
+			createBuildingMenu.MenuItems.Add(new ControlMenuItem(building, ControlStore.MENU_CANCEL));
+		}
+		createBuildingMenu.MenuItems.Add(new ControlMenuItem(ControlStore.MENU_BACK, ControlStore.MENU_BASE));
+		Controllable.ControlMenus.Add(ControlStore.MENU_BUILDINGS, createBuildingMenu);
+		
+		ControlMenu cancelCreateMenu = new ControlMenu();
+		cancelCreateMenu.MenuItems.Add(new ControlMenuItem(ControlStore.MENU_CANCEL, ControlStore.MENU_BUILDINGS));
+		Controllable.ControlMenus.Add(ControlStore.MENU_CANCEL, cancelCreateMenu);
+	}
+	
 	public void ReceiveMouseAction(RaycastHit hit) {
 		if(hit.transform.CompareTag(GameUtil.TAG_BUILD_PROGRESS)) {
 			hit.transform.GetComponent<BuildProgressControl>().BuildJob.AssignNextJob(Controllable, Game.PlayerInput.IsMultiKeyPressed());
 		}
 	}
 	
-	protected void Update () {
+	public void ReceiveControlCode(string controlCode) {
+		if(controlCode.Equals(ControlStore.MENU_CANCEL)) {
+			Game.PlayerInput.RemoveQueuedBuildTarget(true);
+		} else {
+			// See if control code exists in buildings and if so, queue the BuildProgress object for that building
+			foreach(CreatableBuilding building in Game.PlayerInput.buildings) {
+				if(building.ControlCode.Equals(controlCode) && building.CanCreate(Game.ThisPlayer).Bool) {
+					Game.PlayerInput.InstantiateBuildProgress(building);
+				}
+			}
+		}
+	}
+	
+	protected void Update() {
 		if(BuildJob != null) {
 			if(BuildJob.Completed || BuildJob.BuildTarget == null) {
 				StopTask();
