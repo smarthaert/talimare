@@ -18,7 +18,7 @@ public class PlayerInput : MonoBehaviour {
 	protected GameObject CurrentMarker { get; set; }
 	
 	// Buildings which can be built
-	public List<CreatableBuilding> buildings;
+	public List<CreatableBuilding> buildings; //TODO build a list of buildable buildings
 	
 	// The currently-queued building to build
 	protected BuildProgressControl QueuedBuildTarget { get; set; }
@@ -108,15 +108,18 @@ public class PlayerInput : MonoBehaviour {
 		if(Input.anyKeyDown) {
 			foreach(ControlMenuItem menuItem in GetCurrentMenuItemsSelectedByCurrentKeys()) {
 				if(menuItem.Enabled.Bool) {
-					// Send control code to this input and any selected controllables
-					ReceiveControlCode(menuItem.ControlCode);
+					// Send control code to this input or any selected controllables
 					if(CurrentSelectionIsMyControllable()) {
 						((Controllable)CurrentSelection).SendMessage("ReceiveControlCode", menuItem.ControlCode, SendMessageOptions.DontRequireReceiver);
+					} else {
+						ReceiveControlCode(menuItem.ControlCode);
 					}
 					// Handle menu navigation if needed
 					if(menuItem.DestinationMenu != null) {
 						if(CurrentSelectionIsMyControllable()) {
 							CurrentControlMenu = ((Controllable)CurrentSelection).ControlMenus[menuItem.DestinationMenu];
+						} else {
+							CurrentControlMenu = ControlMenus[menuItem.DestinationMenu];
 						}
 						DisableCurrentMenuItems();
 					}
@@ -124,6 +127,9 @@ public class PlayerInput : MonoBehaviour {
 					//print this out in the middle of the player's screen
 					Debug.Log(menuItem.Enabled.String);
 				}
+			}
+			if(Input.GetKeyDown(KeyCode.Delete) && CurrentSelectionIsMyControllable()) {
+				((Controllable)CurrentSelection).SendMessage("ReceiveControlCode", ControlStore.DESTROY, SendMessageOptions.DontRequireReceiver);
 			}
 		}
 		
@@ -133,9 +139,10 @@ public class PlayerInput : MonoBehaviour {
 			RaycastHit hit;
 			
 			if(Physics.Raycast(ray, out hit, Mathf.Infinity, ClickLayerMask)) {
-				ReceiveMouseAction(hit);
 				if(CurrentSelectionIsMyControllable()) {
 					((Controllable)CurrentSelection).SendMessage("ReceiveMouseAction", hit, SendMessageOptions.DontRequireReceiver);
+				} else {
+					ReceiveMouseAction(hit);
 				}
 			}
 		}
@@ -157,7 +164,7 @@ public class PlayerInput : MonoBehaviour {
 	}
 	
 	// Deselects the currently selected object
-	protected void DeselectCurrent() {
+	public void DeselectCurrent() {
 		if(CurrentMarker != null)
 			Destroy(CurrentMarker);
 		CurrentMarker = null;

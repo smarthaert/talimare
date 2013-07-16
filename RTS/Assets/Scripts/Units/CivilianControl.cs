@@ -35,5 +35,6 @@ public class CivilianControl : BaseUnitControl {
 	
 	public override void ReceiveControlCode(string controlCode) {
 		base.ReceiveControlCode(controlCode);
+		//TODO queue up new building when initiated from here
 	}
 }

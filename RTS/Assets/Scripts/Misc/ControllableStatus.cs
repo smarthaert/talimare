@@ -31,7 +31,11 @@ public class ControllableStatus : MonoBehaviour {
 		SetHP(HP+amount);
 	}
 	
-	protected void Die() {
+	public void Die() {
+		if(Game.PlayerInput.CurrentSelection == GetComponent<Selectable>()) {
+			Game.PlayerInput.DeselectCurrent();
+		}
+		SendMessage("StopTask", SendMessageOptions.DontRequireReceiver);
 		Destroy(this.gameObject);
 	}
 }

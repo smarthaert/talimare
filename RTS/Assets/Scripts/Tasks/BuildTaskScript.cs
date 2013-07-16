@@ -27,7 +27,7 @@ public class BuildTaskScript : MonoBehaviour {
 	
 	protected void Update () {
 		if(BuildJob != null) {
-			if(BuildJob.Completed) {
+			if(BuildJob.Completed || BuildJob.BuildTarget == null) {
 				StopTask();
 			} else {
 				UpdateBuild();

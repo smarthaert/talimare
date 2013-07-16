@@ -60,10 +60,12 @@ public abstract class Job {
 	public virtual void RemoveAssignee(Controllable assignee) {
 		Assignees.Remove(assignee);
 		// Attempt to automatically assign a related job if this one was completed
-		if(ParentJob != null && Completed) {
-			ParentJob.AssignNextJob(assignee, null);
-		} else if(ParentJob == null && Completed && Assignees.Count == 0) {
-			Owner.StrategicAI.JobComplete(this);
+		if(Completed) {
+			if(ParentJob != null) {
+				ParentJob.AssignNextJob(assignee, null);
+			} else {
+				Owner.StrategicAI.JobComplete(this);
+			}
 		}
 	}
 	
@@ -75,6 +77,16 @@ public abstract class Job {
 				}
 			}
 			return true;
+		}
+	}
+	
+	public virtual void Cancel() {
+		foreach(Job job in SubJobs) {
+			job.Cancel();
+		}
+		Assignees.Clear();
+		if(ParentJob == null) {
+			Owner.StrategicAI.JobComplete(this);
 		}
 	}
 }

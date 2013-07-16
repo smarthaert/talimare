@@ -31,14 +31,12 @@ public class BaseBuildingControl : BuildingCommonControl {
 		GameUtil.RescanPathfinding();
 	}
 	
-	protected override void BuildControlMenus() {
-		ControlMenu baseBuildingMenu = new ControlMenu();
-		baseBuildingMenu.MenuItems.Add(new ControlMenuItem(ControlStore.MENU_UNITS, ControlStore.MENU_UNITS));
-		baseBuildingMenu.MenuItems.Add(new ControlMenuItem(ControlStore.MENU_TECHS, ControlStore.MENU_TECHS));
+	protected void BuildControlMenus() {
+		ControlMenus[ControlStore.MENU_BASE].MenuItems.Add(new ControlMenuItem(ControlStore.MENU_UNITS, ControlStore.MENU_UNITS));
+		ControlMenus[ControlStore.MENU_BASE].MenuItems.Add(new ControlMenuItem(ControlStore.MENU_TECHS, ControlStore.MENU_TECHS));
 		if(GetComponent<BuildingStatus>() != null && GetComponent<BuildingStatus>().powerRequired > 0) {
-			baseBuildingMenu.MenuItems.Add(new ControlMenuItem(ControlStore.TOGGLE_POWER));
+			ControlMenus[ControlStore.MENU_BASE].MenuItems.Add(new ControlMenuItem(ControlStore.TOGGLE_POWER));
 		}
-		ControlMenus.Add(ControlStore.MENU_BASE, baseBuildingMenu);
 		
 		ControlMenu createUnitMenu = new ControlMenu();
 		foreach(CreatableUnit unit in units) {

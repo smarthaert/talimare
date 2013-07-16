@@ -40,18 +40,8 @@ public class BuildProgressControl : BuildingCommonControl {
 		}
 	}
 	
-	protected override void BuildControlMenus() {
-		ControlMenu baseBuildProgressMenu = new ControlMenu();
-		baseBuildProgressMenu.MenuItems.Add(new ControlMenuItem(ControlStore.DESTROY));
-		ControlMenus.Add(ControlStore.MENU_BASE, baseBuildProgressMenu);
-	}
-	
-	public override void ReceiveControlCode(string controlCode) {
-		base.ReceiveControlCode(controlCode);
-		
-		if(controlCode.Equals(ControlStore.DESTROY)) {
-			Cancel();
-		}
+	protected void BuildControlMenus() {
+		//nothing here yet
 	}
 	
 	// Called when this building is committed (goes from a queued/placement state to actually being in the world)
@@ -98,13 +88,16 @@ public class BuildProgressControl : BuildingCommonControl {
 		}
 	}
 	
-	// Cancel the building, destroying it
-	protected void Cancel() {
-		Destroy(this.gameObject);
-	}
-	
 	// Returns the creation percentage complete as an integer
 	public int PercentComplete() {
 		return Mathf.FloorToInt(timeSpentCreating / FinishedBuildingCreatable.creationTime);
+	}
+	
+	// Called when the object is destroyed. Drops any resources stored in the building
+	protected void OnDestroy() {
+		if(BuildJob != null) {
+			BuildJob.Cancel();
+		}
+		//drop resources
 	}
 }

@@ -30,7 +30,7 @@ public class MoveResourceTaskScript : MonoBehaviour {
 	
 	protected void Update () {
 		if(MoveResourceJob != null) {
-			if(MoveResourceJob.Completed) {
+			if(MoveResourceJob.Completed || MoveResourceJob.Destination == null) {
 				StopTask();
 			} else {
 				UpdateMoveResource();
