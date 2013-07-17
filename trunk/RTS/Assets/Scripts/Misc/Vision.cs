@@ -48,6 +48,8 @@ public class Vision : MonoBehaviour {
 		}
 		controllable = GetComponent<Controllable>();
 		personalAI = GetComponent<PersonalAI>();
+		
+		//TODO copy trigger script strategy to vision
 	}
 	
 	protected void Start() {

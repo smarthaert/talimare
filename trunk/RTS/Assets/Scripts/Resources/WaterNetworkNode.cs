@@ -4,62 +4,71 @@ using System.Collections.Generic;
 [AddComponentMenu("Resources/Water Network Node")]
 public class WaterNetworkNode : MonoBehaviour {
 	
-	// The water network this node currently belongs to
-	protected WaterNetwork Network { get; set; }
-	
 	public float supplyRange;
-	protected Controllable controllable;
 	
-	protected SphereCollider SupplyCollider { get; set; }
+	// The water network this node currently belongs to
+	public WaterNetwork Network { get; set; }
+	// And its neighbors
+	public HashSet<WaterNetworkNode> Neighbors { get; protected set; }
+	
+	// The objects which are currently within supply range and eligible for supply
+	protected HashSet<UnitStatus> SuppliablesInRange { get; set; }
 	
 	protected virtual void Awake() {
-		controllable = GetComponent<Controllable>();
+		Neighbors = new HashSet<WaterNetworkNode>();
+		SuppliablesInRange = new HashSet<UnitStatus>();
 		
 		// A child GameObject is needed to attach a collider to. Attaching the collider to the parent object causes problems
 		GameObject child = new GameObject(this.GetType().Name);
+		child.layer = LayerMask.NameToLayer("Ignore Raycast");
 		child.transform.parent = transform;
 		child.transform.localPosition = Vector3.zero;
-		child.layer = LayerMask.NameToLayer("Ignore Raycast");
 		
-		// A CapsuleCollider provides a trigger for the supply range
-		SupplyCollider = child.AddComponent<SphereCollider>();
-		SupplyCollider.isTrigger = true;
-		SupplyCollider.radius = supplyRange;
+		// A SphereCollider provides a trigger for the supply range
+		SphereCollider supplyCollider = child.AddComponent<SphereCollider>();
+		supplyCollider.isTrigger = true;
+		supplyCollider.radius = supplyRange;
+		
+		// A trigger script passes triggered events back to this one
+		WaterNetworkNodeTrigger trigger = child.AddComponent<WaterNetworkNodeTrigger>();
+		trigger.WaterNetworkNode = this;
+		trigger.Controllable = GetComponent<Controllable>();
 	}
 	
-	protected virtual void Start() {
-		// Evaluate objects already colliding
-		foreach(Collider collider in Physics.OverlapSphere(SupplyCollider.transform.position, SupplyCollider.radius)) {
-			OnTriggerEnter(collider);
+	protected virtual void Start() {}
+	
+	public void NodeEnteredRange(WaterNetworkNode otherNode) {
+		Neighbors.Add(otherNode);
+		// If other node is part of a network, join that network if we need one
+		if(Network == null && otherNode.Network != null) {
+			otherNode.Network.AddNode(this);
 		}
 	}
 	
-	public void OnTriggerEnter(Collider other) {
-		// Check to see if the other object is part of a WaterNetwork
-		if(other.transform.parent.GetComponent<WaterNetworkNode>() != null && other.transform.parent.GetComponent<WaterNetworkNode>().Network != null) {
-			if(Network == null) {
-				// Join this network
-				Network = other.transform.parent.GetComponent<WaterNetworkNode>().Network;
-				Network.AddNode(this);
-				this.transform.parent = Network.transform; //hierarchy not really needed, but useful for development
-			} else {
-				// Merge this network
-				//TODO merge water networks
+	public void NodeLeftRange(WaterNetworkNode otherNode) {
+		Neighbors.Remove(otherNode);
+	}
+	
+	public void SuppliableEnteredRange(UnitStatus suppliable) {
+		if(!SuppliablesInRange.Contains(suppliable)) {
+			SuppliablesInRange.Add(suppliable);
+			if(Network != null) {
+				Network.AddSuppliable(suppliable);
 			}
 		}
-		if(Network != null && IsControllableWithSameOwner(other) && other.GetComponent<UnitStatus>() != null) {
-			Network.AddSuppliable(other.GetComponent<UnitStatus>());
+	}
+	
+	public void SuppliableLeftRange(UnitStatus suppliable) {
+		if(SuppliablesInRange.Contains(suppliable)) {
+			SuppliablesInRange.Remove(suppliable);
+			if(Network != null) {
+				Network.RemoveSuppliable(suppliable);
+			}
 		}
 	}
 	
-	public void OnTriggerExit(Collider other) {
-		if(Network != null && IsControllableWithSameOwner(other) && other.GetComponent<UnitStatus>() != null) {
-			Network.RemoveSuppliable(other.GetComponent<UnitStatus>());
-		}
-	}
-	
-	public bool IsControllableWithSameOwner(Collider other) {
-		return other.GetComponent<Controllable>() != null && other.GetComponent<Controllable>().Owner == controllable.Owner;
+	public bool ContainsSuppliableInRange(UnitStatus suppliable) {
+		return SuppliablesInRange.Contains(suppliable);
 	}
 	
 	protected void OnDestroy() {

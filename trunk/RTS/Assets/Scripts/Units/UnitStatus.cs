@@ -10,8 +10,6 @@ public class UnitStatus : ControllableStatus {
 	public int waterLossRate;
 	public int Water { get; protected set; }
 	public float WaterPercentage { get { return Water / maxWater; } }
-	// Holds all of the water suppliers of which this object is in range
-	public WaterNetwork WaterNetwork { get; set; }
 	
 	// Amount of time since last water tick
 	protected float waterTickTimer = 0;
@@ -53,8 +51,9 @@ public class UnitStatus : ControllableStatus {
 	}
 	
 	protected void OnDestroy() {
-		if(WaterNetwork != null) {
-			WaterNetwork.RemoveSuppliable(this);
+		// Notify all WaterNetworkNodes that this suppliable is now gone, just in case it was destroyed while in one's range
+		foreach(WaterNetworkNode node in GameObject.FindObjectsOfType(typeof(WaterNetworkNode))) {
+			node.SuppliableLeftRange(this);
 		}
 	}
 }
