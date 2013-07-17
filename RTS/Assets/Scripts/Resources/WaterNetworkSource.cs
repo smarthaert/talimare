@@ -4,20 +4,21 @@ using System.Collections.Generic;
 [AddComponentMenu("Resources/Water Network Source")]
 public class WaterNetworkSource : WaterNetworkNode {
 	
-	public int maxWaterHeld;
-	public int waterGainRate;
-	// The maximum amount of water per tick that can be supplied
-	public int maxWaterSupplyRate = 25;
-	public int WaterHeld { get; protected set; }
-	protected bool waterGained = false;
+	public int waterSuppliedPerTick;
 	
 	protected override void Awake() {
 		base.Awake();
-		
-		WaterHeld = 0;
 	}
 	
 	protected override void Start() {
 		base.Start();
+		
+		// If this source still has no WaterNetwork, create one
+		if(Network == null) {
+			GameObject waterNetwork = new GameObject("Water Network");
+			waterNetwork.transform.parent = this.transform.parent; //hierarchy not really needed, but useful for development
+			this.transform.parent = waterNetwork.transform; //hierarchy not really needed, but useful for development
+			Network = waterNetwork.AddComponent<WaterNetwork>();
+		}
 	}
 }
