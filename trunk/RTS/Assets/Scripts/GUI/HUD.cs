@@ -99,9 +99,9 @@ public class HUD : MonoBehaviour {
 		//check if building
 		if(CurrentSelection.CompareTag(GameUtil.TAG_BUILDING)) {
 			//check if water supplier
-			if(CurrentSelection.GetComponent<WaterSource>() != null) {
-				WaterSource waterSupplier = CurrentSelection.GetComponent<WaterSource>();
-				GUILayout.Label("Water: " + waterSupplier.WaterHeld + " / " + waterSupplier.maxWaterHeld);
+			if(CurrentSelection.GetComponent<WaterNetworkSource>() != null) {
+				WaterNetworkSource waterSupplier = CurrentSelection.GetComponent<WaterNetworkSource>();
+				GUILayout.Label("Water Supplied: " + waterSupplier.waterSuppliedPerTick);
 			}
 			
 			//check if power supplier
