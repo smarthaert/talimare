@@ -121,4 +121,33 @@ public abstract class GameUtil : Component {
 		}
 		return minBuilding;
 	}
+	
+	// Removes all null references from the given list. This is useful for scrubbing a list which may reference destroyed objects
+	// (when destroyed objects are compared with null, true is returned)
+	public static void ScrubNullsFromList<T>(ref List<T> collection) {
+		for(int i = collection.Count - 1; i >= 0; i--) {
+			Debug.Log("checking "+i+" which should be: "+collection[i]);
+			if(collection[i] == null) {
+				Debug.LogWarning("scrubbing nulls... coll:"+collection.Count);
+				//collection.RemoveAt(i);
+				Debug.LogWarning("done scrubbing nulls... coll:"+collection.Count);
+			}
+		}
+	}
+	
+	// Removes all null references from the given set. This is useful for scrubbing a set which may reference destroyed objects
+	// (when destroyed objects are compared with null, true is returned)
+	public static void ScrubNullsFromSet<T>(ref HashSet<T> collection) {
+		List<T> itemsToRemove = new List<T>();
+		foreach(T item in collection) {
+			if(item == null) {
+				itemsToRemove.Add(item);
+			}
+		}
+		foreach(T item in itemsToRemove) {
+			Debug.LogWarning("scrubbing nulls... coll:"+collection.Count);
+			collection.Remove(item);
+			Debug.LogWarning("done scrubbing nulls... coll:"+collection.Count);
+		}
+	}
 }
