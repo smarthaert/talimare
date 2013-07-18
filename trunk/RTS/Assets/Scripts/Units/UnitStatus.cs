@@ -49,11 +49,4 @@ public class UnitStatus : ControllableStatus {
 		//shouldn't need to clamp water, as no water should ever be supplied above the maximum
 		//Water = Mathf.Clamp(Water, 0, maxWater);
 	}
-	
-	protected void OnDestroy() {
-		// Notify all WaterNetworkNodes that this suppliable is now gone, just in case it was destroyed while in one's range
-		foreach(WaterNetworkNode node in GameObject.FindObjectsOfType(typeof(WaterNetworkNode))) {
-			node.SuppliableLeftRange(this);
-		}
-	}
 }
