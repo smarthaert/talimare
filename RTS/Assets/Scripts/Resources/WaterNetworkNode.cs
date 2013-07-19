@@ -8,9 +8,17 @@ public class WaterNetworkNode : MonoBehaviour {
 	
 	// The water network this node currently belongs to
 	public WaterNetwork Network { get; set; }
+	
 	// And its neighbors
-	//TODO remove null neighbors in getter
-	public HashSet<WaterNetworkNode> Neighbors { get; protected set; }
+	private HashSet<WaterNetworkNode> _neighbors = new HashSet<WaterNetworkNode>();
+	public HashSet<WaterNetworkNode> Neighbors
+	{
+		get {
+			_neighbors.RemoveWhere(m => m == null);
+			return _neighbors;
+		}
+		protected set { _neighbors = value; }
+	}
 	
 	// The objects which are currently within supply range and eligible for supply
 	private List<UnitStatus> _suppliablesInRange = new List<UnitStatus>();
@@ -78,17 +86,5 @@ public class WaterNetworkNode : MonoBehaviour {
 	
 	public bool ContainsSuppliableInRange(UnitStatus suppliable) {
 		return SuppliablesInRange.Contains(suppliable);
-	}
-	
-	protected bool ReferenceIsNull<T>(T reference) {
-		if(reference == null)
-			Debug.Log("null reference!");
-		return reference == null;
-	}
-	
-	protected void OnDestroy() {
-		if(Network != null) {
-			Network.RemoveNode(this);
-		}
 	}
 }

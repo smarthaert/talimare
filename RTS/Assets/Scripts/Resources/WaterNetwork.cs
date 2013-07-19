@@ -4,14 +4,37 @@ using System.Collections.Generic;
 public class WaterNetwork : MonoBehaviour {
 	
 	// All of the sources in this network
-	protected HashSet<WaterNetworkSource> Sources { get; set; }
+	private HashSet<WaterNetworkSource> _sources = new HashSet<WaterNetworkSource>();
+	protected HashSet<WaterNetworkSource> Sources
+	{
+		get {
+			_sources.RemoveWhere(m => m == null);
+			return _sources;
+		}
+		set { _sources = value; }
+	}
+	
 	// All of the nodes in this network, INCLUDING the sources
-	//TODO remove null nodes and sources in getters
-	protected HashSet<WaterNetworkNode> Nodes { get; set; }
+	private HashSet<WaterNetworkNode> _nodes = new HashSet<WaterNetworkNode>();
+	protected HashSet<WaterNetworkNode> Nodes
+	{
+		get {
+			_nodes.RemoveWhere(m => m == null);
+			return _nodes;
+		}
+		set { _nodes = value; }
+	}
 	
 	// The objects which are currently within supply range and eligible for supply
-	//TODO remove null suppliables in getter
-	protected List<UnitStatus> SuppliablesInRange { get; set; }
+	private List<UnitStatus> _suppliablesInRange = new List<UnitStatus>();
+	protected List<UnitStatus> SuppliablesInRange
+	{
+		get {
+			_suppliablesInRange.RemoveAll(m => m == null);
+			return _suppliablesInRange;
+		}
+		set { _suppliablesInRange = value; }
+	}
 	
 	// Water ticks every this many seconds (supply and loss)
 	public static float waterTickRate = 2;
