@@ -21,12 +21,20 @@ public class PersonalAI : MonoBehaviour {
 	protected float StateTimer { get; set; }
 	
 	// Tracks all objects which are currently visible and owned by another player
-	//TODO make this a property and remove null visible objects in getter
-	protected List<GameObject> visibleObjects = new List<GameObject>();
+	private List<GameObject> _visibleObjects = new List<GameObject>();
+	protected List<GameObject> VisibleObjects
+	{
+		get {
+			_visibleObjects.RemoveAll(m => m == null);
+			return _visibleObjects;
+		}
+		set { _visibleObjects = value; }
+	}
 	
 	protected Controllable Controllable { get; set; }
 	
 	protected virtual void Awake() {
+		VisibleObjects = new List<GameObject>();
 		Controllable = GetComponent<Controllable>();
 	}
 	
@@ -65,7 +73,7 @@ public class PersonalAI : MonoBehaviour {
 		// Determine if object is in a state to respond to other objects
 		if(State == AIState.Idle || (State == AIState.Working && combatOverridesWork)) {
 			//TODO low: sort visibleObjects by distance before looping through
-			foreach(GameObject obj in visibleObjects.ToArray()) {
+			foreach(GameObject obj in VisibleObjects) {
 				// Determine if other object is an enemy unit
 				if(obj.CompareTag(GameUtil.TAG_UNIT) && Controllable.Owner.Relationships[obj.GetComponent<Controllable>().Owner] == PlayerRelationship.HOSTILE) {
 					// Act based on object's stance
@@ -105,14 +113,14 @@ public class PersonalAI : MonoBehaviour {
 	
 	// Called when another object moves into visual range
 	public virtual void ObjectEnteredVision(GameObject obj) {
-		if(!visibleObjects.Contains(obj)) {
-			visibleObjects.Add(obj);
+		if(!VisibleObjects.Contains(obj)) {
+			VisibleObjects.Add(obj);
 		}
 	}
 	
 	// Called when another object moves out of visual range
 	public virtual void ObjectLeftVision(GameObject obj) {
-		visibleObjects.Remove(obj);
+		VisibleObjects.Remove(obj);
 	}
 	
 	// Called whenever this object takes damage
