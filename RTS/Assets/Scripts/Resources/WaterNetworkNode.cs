@@ -9,6 +9,7 @@ public class WaterNetworkNode : MonoBehaviour {
 	// The water network this node currently belongs to
 	public WaterNetwork Network { get; set; }
 	// And its neighbors
+	//TODO remove null neighbors in getter
 	public HashSet<WaterNetworkNode> Neighbors { get; protected set; }
 	
 	// The objects which are currently within supply range and eligible for supply
@@ -16,15 +17,7 @@ public class WaterNetworkNode : MonoBehaviour {
 	protected List<UnitStatus> SuppliablesInRange
 	{
 		get {
-			//GameUtil.ScrubNullsFromList<UnitStatus>(ref _suppliablesInRange);
-			for(int i = _suppliablesInRange.Count - 1; i >= 0; i--) {
-				Debug.Log("checking "+i+" which should be: "+_suppliablesInRange[i]);
-				if(_suppliablesInRange[i] == null) {
-					Debug.LogWarning("scrubbing nulls... coll:"+_suppliablesInRange.Count);
-					_suppliablesInRange.RemoveAt(i);
-					Debug.LogWarning("done scrubbing nulls... coll:"+_suppliablesInRange.Count);
-				}
-			}
+			_suppliablesInRange.RemoveAll(m => m == null);
 			return _suppliablesInRange;
 		}
 		set { _suppliablesInRange = value; }
@@ -52,11 +45,6 @@ public class WaterNetworkNode : MonoBehaviour {
 	}
 	
 	protected virtual void Start() {}
-	
-	protected void Update() {
-		
-		Debug.Log(SuppliablesInRange[0]);
-	}
 	
 	public void NodeEnteredRange(WaterNetworkNode otherNode) {
 		Neighbors.Add(otherNode);

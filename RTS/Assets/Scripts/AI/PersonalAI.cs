@@ -21,6 +21,7 @@ public class PersonalAI : MonoBehaviour {
 	protected float StateTimer { get; set; }
 	
 	// Tracks all objects which are currently visible and owned by another player
+	//TODO make this a property and remove null visible objects in getter
 	protected List<GameObject> visibleObjects = new List<GameObject>();
 	
 	protected Controllable Controllable { get; set; }
@@ -66,9 +67,7 @@ public class PersonalAI : MonoBehaviour {
 			//TODO low: sort visibleObjects by distance before looping through
 			foreach(GameObject obj in visibleObjects.ToArray()) {
 				// Determine if other object is an enemy unit
-				if(obj == null) {
-					visibleObjects.Remove(obj);
-				} else if(obj.CompareTag(GameUtil.TAG_UNIT) && Controllable.Owner.Relationships[obj.GetComponent<Controllable>().Owner] == PlayerRelationship.HOSTILE) {
+				if(obj.CompareTag(GameUtil.TAG_UNIT) && Controllable.Owner.Relationships[obj.GetComponent<Controllable>().Owner] == PlayerRelationship.HOSTILE) {
 					// Act based on object's stance
 					if(stance == AIStance.Aggressive) {
 						Fight(obj);
