@@ -6,9 +6,11 @@ public class WaterNetwork : MonoBehaviour {
 	// All of the sources in this network
 	protected HashSet<WaterNetworkSource> Sources { get; set; }
 	// All of the nodes in this network, INCLUDING the sources
+	//TODO remove null nodes and sources in getters
 	protected HashSet<WaterNetworkNode> Nodes { get; set; }
 	
 	// The objects which are currently within supply range and eligible for supply
+	//TODO remove null suppliables in getter
 	protected List<UnitStatus> SuppliablesInRange { get; set; }
 	
 	// Water ticks every this many seconds (supply and loss)
