@@ -8,13 +8,13 @@ public class WaterNetworkNodeTrigger : MonoBehaviour {
 	
 	protected void Start() {
 		// Evaluate objects already colliding
-		foreach(Collider coll in Physics.OverlapSphere(collider.transform.position, ((SphereCollider)collider).radius)) {
+		/*foreach(Collider coll in Physics.OverlapSphere(collider.transform.position, ((SphereCollider)collider).radius)) {
 			OnTriggerEnter(coll);
-		}
+		}*/ //I don't think this is needed anymore? OnTriggerEnter seems to fire when the object is created anyway
 	}
 	
 	public void OnTriggerEnter(Collider other) {
-		//TODO when a new unit appears in range, this event fires but the unit has no Controllable component
+		//TODO when a new unit appears in range, this event doesn't fire
 		if(other.name.Equals("WaterNetworkNode")) {
 			WaterNetworkNode.NodeEnteredRange(other.transform.parent.GetComponent<WaterNetworkNode>());
 		} else if(IsSuppliableWithSameOwner(other)) {

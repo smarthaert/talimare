@@ -22,13 +22,13 @@ public class WaterNetworkNode : MonoBehaviour {
 	
 	// The objects which are currently within supply range and eligible for supply
 	private List<UnitStatus> _suppliablesInRange = new List<UnitStatus>();
-	protected List<UnitStatus> SuppliablesInRange
+	public List<UnitStatus> SuppliablesInRange
 	{
 		get {
 			_suppliablesInRange.RemoveAll(m => m == null);
 			return _suppliablesInRange;
 		}
-		set { _suppliablesInRange = value; }
+		protected set { _suppliablesInRange = value; }
 	}
 	
 	protected virtual void Awake() {
@@ -36,7 +36,7 @@ public class WaterNetworkNode : MonoBehaviour {
 		SuppliablesInRange = new List<UnitStatus>();
 		
 		// A child GameObject is needed to attach a collider to. Attaching the collider to the parent object causes problems
-		GameObject child = new GameObject(this.GetType().Name);
+		GameObject child = new GameObject("WaterNetworkNode");
 		child.layer = LayerMask.NameToLayer("Ignore Raycast");
 		child.transform.parent = transform;
 		child.transform.localPosition = Vector3.zero;
@@ -58,7 +58,7 @@ public class WaterNetworkNode : MonoBehaviour {
 		Neighbors.Add(otherNode);
 		// If other node is part of a network, join that network if we need one
 		if(Network == null && otherNode.Network != null) {
-			otherNode.Network.AddNode(this);
+			otherNode.Network.AddNode(this, true);
 		}
 	}
 	
@@ -69,22 +69,12 @@ public class WaterNetworkNode : MonoBehaviour {
 	public void SuppliableEnteredRange(UnitStatus suppliable) {
 		if(!SuppliablesInRange.Contains(suppliable)) {
 			SuppliablesInRange.Add(suppliable);
-			if(Network != null) {
-				Network.AddSuppliable(suppliable);
-			}
 		}
 	}
 	
 	public void SuppliableLeftRange(UnitStatus suppliable) {
 		if(SuppliablesInRange.Contains(suppliable)) {
 			SuppliablesInRange.Remove(suppliable);
-			if(Network != null) {
-				Network.RemoveSuppliable(suppliable);
-			}
 		}
-	}
-	
-	public bool ContainsSuppliableInRange(UnitStatus suppliable) {
-		return SuppliablesInRange.Contains(suppliable);
 	}
 }

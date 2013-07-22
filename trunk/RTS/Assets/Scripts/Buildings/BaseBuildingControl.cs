@@ -98,7 +98,12 @@ public class BaseBuildingControl : BuildingCommonControl {
 			foreach(CreatableUnit unit in units) {
 				if(unit.ControlCode.Equals(controlCode) && unit.CanCreate(Owner).Bool) {
 					//chooses a random unit to convert. only for development
-					QueueUnitToCreate(((UnitStatus)GameObject.FindObjectOfType(typeof(UnitStatus))).GetComponent<Controllable>(), unit);
+					UnityEngine.Object obj = GameObject.FindObjectOfType(typeof(UnitStatus));
+					if(obj != null) {
+						QueueUnitToCreate(((UnitStatus)obj).GetComponent<Controllable>(), unit);
+					} else {
+						Debug.LogWarning("No units exist to convert!");
+					}
 				}
 			}
 			foreach(CreatableTech tech in techs) {
