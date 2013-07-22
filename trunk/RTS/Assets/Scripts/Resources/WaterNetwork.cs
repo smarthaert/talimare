@@ -70,21 +70,20 @@ public class WaterNetwork : MonoBehaviour {
 	// Rebuilds the water network, flowing outward from each source. Any disconnected sources will have new networks created,
 	// while any disconnected non-source nodes will end with no network
 	protected void RebuildWaterNetwork(WaterNetwork network) {
-		//TODO something is still wrong with rebuilding. when two networks should join together, they do not. check the neighbors of the newly-built building.
-		// perhaps NodeEnteredRange is not being called on one of the two nodes when a new node is built
-		//reset all node networks
+		HashSet<WaterNetworkNode> closedSet = new HashSet<WaterNetworkNode>();
+		//reset all nodes' networks for the scenario where a node has been removed
 		foreach(WaterNetworkNode node in Nodes) {
 			node.Network = null;
 			node.transform.parent = this.transform.parent; //hierarchy not really needed, but useful for development
 		}
 		//start at each source
 		foreach(WaterNetworkSource source in Sources) {
-			if(source.Network == null) {
+			if(!closedSet.Contains(source)) {
 				//if the source hasn't already been accounted for, create a network around it
-				source.createNetworkAroundSelf(false);
+				source.createNetworkAroundSelf();
 				//then start flowing outward recursively through its neighbors
 				foreach(WaterNetworkNode neighbor in source.Neighbors) {
-					AddNodeToNetwork(source.Network, neighbor);
+					AddNodeToNetwork(source.Network, neighbor, closedSet);
 				}
 			}
 		}
@@ -92,11 +91,17 @@ public class WaterNetwork : MonoBehaviour {
 	}
 	
 	// Adds the node and all of its neighbors to the given network
-	protected void AddNodeToNetwork(WaterNetwork network, WaterNetworkNode node) {
-		if(node.Network == null) {
+	protected void AddNodeToNetwork(WaterNetwork network, WaterNetworkNode node, HashSet<WaterNetworkNode> closedSet) {
+		if(!closedSet.Contains(node)) {
 			network.AddNode(node, false);
+			closedSet.Add(node);
+			Debug.Log("evaluating new node:"+node+"'s neighbors");
 			foreach(WaterNetworkNode neighbor in node.Neighbors) {
-				AddNodeToNetwork(network, neighbor);
+				Debug.Log(neighbor);
+			}
+			Debug.Log("done evaluating");
+			foreach(WaterNetworkNode neighbor in node.Neighbors) {
+				AddNodeToNetwork(network, neighbor, closedSet);
 			}
 		}
 	}

@@ -6,19 +6,27 @@ public class WaterNetworkSource : WaterNetworkNode {
 	
 	public int waterSuppliedPerTick;
 	
-	protected override void Start() {
-		base.Start();
-		
+	// First makes sure that this source has a network before calling the base function
+	public override void NodeEnteredRange(WaterNetworkNode otherNode) {
 		// If this source still has no WaterNetwork, create one around it
 		if(Network == null) {
-			createNetworkAroundSelf(false);
+			createNetworkAroundSelf();
 		}
+		base.NodeEnteredRange(otherNode);
 	}
 	
-	public void createNetworkAroundSelf(bool rebuildNetwork) {
-		Debug.Log("No network, creating one if true: "+rebuildNetwork);
+	// First makes sure that this source has a network before calling the base function
+	public override void SuppliableEnteredRange(UnitStatus suppliable) {
+		// If this source still has no WaterNetwork, create one around it
+		if(Network == null) {
+			createNetworkAroundSelf();
+		}
+		base.SuppliableEnteredRange(suppliable);
+	}
+	
+	public void createNetworkAroundSelf() {
 		GameObject waterNetwork = new GameObject("Water Network");
 		waterNetwork.transform.parent = this.transform.parent; //hierarchy not really needed, but useful for development
-		waterNetwork.AddComponent<WaterNetwork>().AddNode(this, rebuildNetwork);
+		waterNetwork.AddComponent<WaterNetwork>().AddNode(this, false);
 	}
 }

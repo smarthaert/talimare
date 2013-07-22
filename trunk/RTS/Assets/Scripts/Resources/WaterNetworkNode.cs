@@ -10,6 +10,7 @@ public class WaterNetworkNode : MonoBehaviour {
 	public WaterNetwork Network { get; set; }
 	
 	// And its neighbors
+	//TODO neighbors should be gathered on the fly. trying to keep track of them just isn't working out
 	private HashSet<WaterNetworkNode> _neighbors = new HashSet<WaterNetworkNode>();
 	public HashSet<WaterNetworkNode> Neighbors
 	{
@@ -31,7 +32,7 @@ public class WaterNetworkNode : MonoBehaviour {
 		protected set { _suppliablesInRange = value; }
 	}
 	
-	protected virtual void Awake() {
+	protected void Awake() {
 		Neighbors = new HashSet<WaterNetworkNode>();
 		SuppliablesInRange = new List<UnitStatus>();
 		
@@ -52,9 +53,8 @@ public class WaterNetworkNode : MonoBehaviour {
 		trigger.Controllable = GetComponent<Controllable>();
 	}
 	
-	protected virtual void Start() {}
-	
-	public void NodeEnteredRange(WaterNetworkNode otherNode) {
+	public virtual void NodeEnteredRange(WaterNetworkNode otherNode) {
+		Debug.Log("I am: "+this+" and I am adding a neighbor: "+otherNode);
 		Neighbors.Add(otherNode);
 		// If other node is part of a network, join that network if we need one
 		if(Network == null && otherNode.Network != null) {
@@ -66,7 +66,7 @@ public class WaterNetworkNode : MonoBehaviour {
 		Neighbors.Remove(otherNode);
 	}
 	
-	public void SuppliableEnteredRange(UnitStatus suppliable) {
+	public virtual void SuppliableEnteredRange(UnitStatus suppliable) {
 		if(!SuppliablesInRange.Contains(suppliable)) {
 			SuppliablesInRange.Add(suppliable);
 		}
@@ -75,6 +75,13 @@ public class WaterNetworkNode : MonoBehaviour {
 	public void SuppliableLeftRange(UnitStatus suppliable) {
 		if(SuppliablesInRange.Contains(suppliable)) {
 			SuppliablesInRange.Remove(suppliable);
+		}
+	}
+	
+	protected void OnDestroy() {
+		if(Network != null) {
+			// Manually remove this node from the network to force the network to rebuild
+			Network.RemoveNode(this, true);
 		}
 	}
 }
