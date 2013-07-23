@@ -111,6 +111,7 @@ public class WaterNetwork : MonoBehaviour {
 	
 	// An algorithm to supply water in an (in game terms) efficient manner to suppliables in range
 	protected void SupplyWater() {
+		//TODO test water supply with mutliple units
 		List<UnitStatus> suppliablesInRange = new List<UnitStatus>();
 		foreach(WaterNetworkNode node in Nodes) {
 			suppliablesInRange.AddRange(node.SuppliablesInRange);

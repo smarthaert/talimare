@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
+[RequireComponent(typeof(Controllable))]
 [AddComponentMenu("Resources/Water Network Node")]
 public class WaterNetworkNode : MonoBehaviour {
 	
@@ -63,9 +64,7 @@ public class WaterNetworkNode : MonoBehaviour {
 	}
 	
 	public void SuppliableLeftRange(UnitStatus suppliable) {
-		if(SuppliablesInRange.Contains(suppliable)) {
-			SuppliablesInRange.Remove(suppliable);
-		}
+		SuppliablesInRange.Remove(suppliable);
 	}
 	
 	// Returns the neighbors of this node, gathered on the fly

@@ -70,10 +70,12 @@ public class Vision : MonoBehaviour {
 			CalculateRevealPoints();
 		}
 		
-		// Evaluate objects already colliding
-		foreach(Collider collider in Physics.OverlapSphere(VisionCollider.transform.position, VisionCollider.radius)) {
-			OnTriggerEnter(collider);
-		}
+		// Evaluate objects already colliding - is this still necessary?
+		/*foreach(Collider other in Physics.OverlapSphere(VisionCollider.transform.position, VisionCollider.radius)) {
+			if(other != VisionCollider) {
+				OnTriggerEnter(other);
+			}
+		}*/
 	}
 	
 	// Configures this object's vision settings based on its owner
@@ -196,6 +198,8 @@ public class Vision : MonoBehaviour {
 	
 	// Called when another collider enters this vision range
 	void OnTriggerEnter(Collider other) {
+		if(other.GetComponent<Controllable>() != null)
+			Debug.Log(this+" sees "+other.gameObject);
 		if(IsControllableWithDifferentOwner(other) && personalAI != null) {
 			personalAI.ObjectEnteredVision(other.gameObject);
 		}
@@ -203,6 +207,8 @@ public class Vision : MonoBehaviour {
 	
 	// Called when another collider exits this vision range
 	void OnTriggerExit(Collider other) {
+		if(other.GetComponent<Controllable>() != null)
+			Debug.Log(this+" no longer sees "+other.gameObject);
 		if(IsControllableWithDifferentOwner(other) && personalAI != null) {
 			personalAI.ObjectLeftVision(other.gameObject);
 		}

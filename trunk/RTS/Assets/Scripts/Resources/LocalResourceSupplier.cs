@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[RequireComponent(typeof(Controllable))]
 public abstract class LocalResourceSupplier : MonoBehaviour {
 
 	public float supplyRange;
@@ -20,13 +21,17 @@ public abstract class LocalResourceSupplier : MonoBehaviour {
 		SupplyCollider = child.AddComponent<SphereCollider>();
 		SupplyCollider.isTrigger = true;
 		SupplyCollider.radius = supplyRange;
+		
+		//TODO copy trigger script strategy to local resource supplier
 	}
 	
 	protected virtual void Start() {
-		// Evaluate objects already colliding
-		foreach(Collider collider in Physics.OverlapSphere(SupplyCollider.transform.position, SupplyCollider.radius)) {
-			OnTriggerEnter(collider);
-		}
+		// Evaluate objects already colliding - is this still necessary?
+		/*foreach(Collider other in Physics.OverlapSphere(SupplyCollider.transform.position, SupplyCollider.radius)) {
+			if(other != SupplyCollider) {
+				OnTriggerEnter(other);
+			}
+		}*/
 	}
 	
 	// Called when a collider enters this supply range
