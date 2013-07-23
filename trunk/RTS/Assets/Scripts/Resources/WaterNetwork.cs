@@ -73,6 +73,7 @@ public class WaterNetwork : MonoBehaviour {
 		HashSet<WaterNetworkNode> closedSet = new HashSet<WaterNetworkNode>();
 		//reset all nodes' networks for the scenario where a node has been removed
 		foreach(WaterNetworkNode node in Nodes) {
+			Destroy(node.Network.gameObject); //this line may be causing some errors when stopping the game in development
 			node.Network = null;
 			node.transform.parent = this.transform.parent; //hierarchy not really needed, but useful for development
 		}
@@ -82,12 +83,11 @@ public class WaterNetwork : MonoBehaviour {
 				//if the source hasn't already been accounted for, create a network around it
 				source.createNetworkAroundSelf();
 				//then start flowing outward recursively through its neighbors
-				foreach(WaterNetworkNode neighbor in source.Neighbors) {
+				foreach(WaterNetworkNode neighbor in source.GetNeighbors()) {
 					AddNodeToNetwork(source.Network, neighbor, closedSet);
 				}
 			}
 		}
-		Destroy(this.gameObject);
 	}
 	
 	// Adds the node and all of its neighbors to the given network
@@ -95,12 +95,7 @@ public class WaterNetwork : MonoBehaviour {
 		if(!closedSet.Contains(node)) {
 			network.AddNode(node, false);
 			closedSet.Add(node);
-			Debug.Log("evaluating new node:"+node+"'s neighbors");
-			foreach(WaterNetworkNode neighbor in node.Neighbors) {
-				Debug.Log(neighbor);
-			}
-			Debug.Log("done evaluating");
-			foreach(WaterNetworkNode neighbor in node.Neighbors) {
+			foreach(WaterNetworkNode neighbor in node.GetNeighbors()) {
 				AddNodeToNetwork(network, neighbor, closedSet);
 			}
 		}

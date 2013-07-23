@@ -9,17 +9,8 @@ public class WaterNetworkNode : MonoBehaviour {
 	// The water network this node currently belongs to
 	public WaterNetwork Network { get; set; }
 	
-	// And its neighbors
-	//TODO neighbors should be gathered on the fly. trying to keep track of them just isn't working out
-	private HashSet<WaterNetworkNode> _neighbors = new HashSet<WaterNetworkNode>();
-	public HashSet<WaterNetworkNode> Neighbors
-	{
-		get {
-			_neighbors.RemoveWhere(m => m == null);
-			return _neighbors;
-		}
-		protected set { _neighbors = value; }
-	}
+	public Controllable Controllable { get; protected set; }
+	protected SphereCollider SupplyCollider { get; set; }
 	
 	// The objects which are currently within supply range and eligible for supply
 	private List<UnitStatus> _suppliablesInRange = new List<UnitStatus>();
@@ -32,30 +23,29 @@ public class WaterNetworkNode : MonoBehaviour {
 		protected set { _suppliablesInRange = value; }
 	}
 	
-	protected void Awake() {
-		Neighbors = new HashSet<WaterNetworkNode>();
+	protected virtual void Awake() {
 		SuppliablesInRange = new List<UnitStatus>();
+		Controllable = GetComponent<Controllable>();
 		
 		// A child GameObject is needed to attach a collider to. Attaching the collider to the parent object causes problems
-		GameObject child = new GameObject("WaterNetworkNode");
+		GameObject child = new GameObject(this.GetType().Name);
 		child.layer = LayerMask.NameToLayer("Ignore Raycast");
 		child.transform.parent = transform;
 		child.transform.localPosition = Vector3.zero;
 		
 		// A SphereCollider provides a trigger for the supply range
-		SphereCollider supplyCollider = child.AddComponent<SphereCollider>();
-		supplyCollider.isTrigger = true;
-		supplyCollider.radius = supplyRange;
+		SupplyCollider = child.AddComponent<SphereCollider>();
+		SupplyCollider.isTrigger = true;
+		SupplyCollider.radius = supplyRange;
 		
 		// A trigger script passes triggered events back to this one
 		WaterNetworkNodeTrigger trigger = child.AddComponent<WaterNetworkNodeTrigger>();
 		trigger.WaterNetworkNode = this;
-		trigger.Controllable = GetComponent<Controllable>();
 	}
 	
-	public virtual void NodeEnteredRange(WaterNetworkNode otherNode) {
-		Debug.Log("I am: "+this+" and I am adding a neighbor: "+otherNode);
-		Neighbors.Add(otherNode);
+	protected virtual void Start() {}
+	
+	public void NodeEnteredRange(WaterNetworkNode otherNode) {
 		// If other node is part of a network, join that network if we need one
 		if(Network == null && otherNode.Network != null) {
 			otherNode.Network.AddNode(this, true);
@@ -63,10 +53,10 @@ public class WaterNetworkNode : MonoBehaviour {
 	}
 	
 	public void NodeLeftRange(WaterNetworkNode otherNode) {
-		Neighbors.Remove(otherNode);
+		//nothing here yet
 	}
 	
-	public virtual void SuppliableEnteredRange(UnitStatus suppliable) {
+	public void SuppliableEnteredRange(UnitStatus suppliable) {
 		if(!SuppliablesInRange.Contains(suppliable)) {
 			SuppliablesInRange.Add(suppliable);
 		}
@@ -76,6 +66,19 @@ public class WaterNetworkNode : MonoBehaviour {
 		if(SuppliablesInRange.Contains(suppliable)) {
 			SuppliablesInRange.Remove(suppliable);
 		}
+	}
+	
+	// Returns the neighbors of this node, gathered on the fly
+	public ICollection<WaterNetworkNode> GetNeighbors() {
+		HashSet<WaterNetworkNode> neighbors = new HashSet<WaterNetworkNode>();
+		foreach(Collider other in Physics.OverlapSphere(SupplyCollider.transform.position, SupplyCollider.radius)) {
+			if(other != SupplyCollider && other.GetComponent<WaterNetworkNodeTrigger>() != null &&
+					other.transform.parent.GetComponent<Controllable>() != null &&
+					other.transform.parent.GetComponent<Controllable>().Owner == Controllable.Owner) {
+				neighbors.Add(other.GetComponent<WaterNetworkNodeTrigger>().WaterNetworkNode);
+			}
+		}
+		return neighbors;
 	}
 	
 	protected void OnDestroy() {
