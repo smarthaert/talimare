@@ -25,7 +25,8 @@ public abstract class Controllable : Selectable {
 			Owner = transform.parent.GetComponent<Player>();
 		}
 		
-		// Add a kinematic rigidbody in order to make collisions work
+		// Add a kinematic rigidbody in order to make collisions with other CharacterControllers work.
+		// Without this, two CharacterControllers (which are colliders) will not register collisions between each other
 		gameObject.AddComponent<Rigidbody>().isKinematic = true;
 		
 		ControlMenus = new Dictionary<string, ControlMenu>();
@@ -42,6 +43,9 @@ public abstract class Controllable : Selectable {
 		if(Owner == null) {
 			Debug.LogError("Player was never set for the Controllable: "+name+". It should be set immediately after instantiating the object.");
 		}
+		
+		// Touching the object's transform forces it to trigger any collisions without needing to move
+		this.transform.position = this.transform.position;
 		
 		SendMessage("BuildControlMenus", SendMessageOptions.DontRequireReceiver);
 	}
