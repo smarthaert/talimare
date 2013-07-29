@@ -11,7 +11,6 @@ public class WaterNetwork : MonoBehaviour {
 			_sources.RemoveWhere(m => m == null);
 			return _sources;
 		}
-		set { _sources = value; }
 	}
 	
 	// All of the nodes in this network, INCLUDING the sources
@@ -22,17 +21,11 @@ public class WaterNetwork : MonoBehaviour {
 			_nodes.RemoveWhere(m => m == null);
 			return _nodes;
 		}
-		set { _nodes = value; }
 	}
 	
 	// Water ticks every this many seconds (supply and loss)
 	public static float waterTickRate = 2;
 	protected float waterTickTimer = 0;
-	
-	protected void Awake() {
-		Sources = new HashSet<WaterNetworkSource>();
-		Nodes = new HashSet<WaterNetworkNode>();
-	}
 	
 	// Adds a node to this network and optionally rebuilds the network
 	public void AddNode(WaterNetworkNode node, bool rebuildNetwork) {

@@ -21,11 +21,9 @@ public class WaterNetworkNode : MonoBehaviour {
 			_suppliablesInRange.RemoveAll(m => m == null);
 			return _suppliablesInRange;
 		}
-		protected set { _suppliablesInRange = value; }
 	}
 	
 	protected virtual void Awake() {
-		SuppliablesInRange = new List<UnitStatus>();
 		Controllable = GetComponent<Controllable>();
 		
 		// A child GameObject is needed to attach a collider to. Attaching the collider to the parent object causes problems

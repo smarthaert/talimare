@@ -14,7 +14,7 @@ public class Vision : MonoBehaviour {
 	
 	protected FogOfWar fogOfWarScript;
 	protected MoveTaskScript moveTaskScript;
-	protected Controllable controllable;
+	public Controllable controllable;
 	protected PersonalAI personalAI;
 	
 	protected bool isUnit = false;
@@ -30,6 +30,9 @@ public class Vision : MonoBehaviour {
 	protected SphereCollider VisionCollider { get; set; }
 	
 	protected void Awake() {
+		controllable = GetComponent<Controllable>();
+		personalAI = GetComponent<PersonalAI>();
+		
 		// A child GameObject is needed to attach a collider to. Attaching the collider to the parent object causes problems
 		GameObject child = new GameObject(this.GetType().Name);
 		child.transform.parent = transform;
@@ -41,15 +44,15 @@ public class Vision : MonoBehaviour {
 		VisionCollider.isTrigger = true;
 		VisionCollider.radius = visionRange;
 		
+		// A trigger script passes triggered events back to this one
+		VisionTrigger trigger = child.AddComponent<VisionTrigger>();
+		trigger.Vision = this;
+		
 		// Determine if this is a unit (the alternative would be a building)
 		if(gameObject.CompareTag(GameUtil.TAG_UNIT)) {
 			isUnit = true;
 			moveTaskScript = GetComponent<MoveTaskScript>();
 		}
-		controllable = GetComponent<Controllable>();
-		personalAI = GetComponent<PersonalAI>();
-		
-		//TODO copy trigger script strategy to vision
 	}
 	
 	protected void Start() {
@@ -69,13 +72,6 @@ public class Vision : MonoBehaviour {
 			IsHiddenByFog = false;
 			CalculateRevealPoints();
 		}
-		
-		// Evaluate objects already colliding - is this still necessary?
-		/*foreach(Collider other in Physics.OverlapSphere(VisionCollider.transform.position, VisionCollider.radius)) {
-			if(other != VisionCollider) {
-				OnTriggerEnter(other);
-			}
-		}*/
 	}
 	
 	// Configures this object's vision settings based on its owner
@@ -196,25 +192,15 @@ public class Vision : MonoBehaviour {
 		IsHiddenByFog = false;
 	}
 	
-	// Called when another collider enters this vision range
-	void OnTriggerEnter(Collider other) {
-		if(other.GetComponent<Controllable>() != null)
-			Debug.Log(this+" sees "+other.gameObject);
-		if(IsControllableWithDifferentOwner(other) && personalAI != null) {
-			personalAI.ObjectEnteredVision(other.gameObject);
+	public void ObjectEnteredVision(GameObject other) {
+		if(personalAI != null) {
+			personalAI.ObjectEnteredVision(other);
 		}
 	}
 	
-	// Called when another collider exits this vision range
-	void OnTriggerExit(Collider other) {
-		if(other.GetComponent<Controllable>() != null)
-			Debug.Log(this+" no longer sees "+other.gameObject);
-		if(IsControllableWithDifferentOwner(other) && personalAI != null) {
-			personalAI.ObjectLeftVision(other.gameObject);
+	public void ObjectLeftVision(GameObject other) {
+		if(personalAI != null) {
+			personalAI.ObjectLeftVision(other);
 		}
-	}
-	
-	protected bool IsControllableWithDifferentOwner(Collider other) {
-		return other.GetComponent<Controllable>() != null && other.GetComponent<Controllable>().Owner != controllable.Owner;
 	}
 }
