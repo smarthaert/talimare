@@ -89,10 +89,4 @@ public class BuildingStatus : ControllableStatus {
 			Powered = false;
 		}
 	}
-	
-	protected void OnDestroy() {
-		foreach(PowerSource powerSupplier in PowerSuppliersInRange.ToArray()) {
-			powerSupplier.OnTriggerExit(collider);
-		}
-	}
 }
