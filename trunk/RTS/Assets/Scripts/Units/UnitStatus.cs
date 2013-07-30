@@ -9,7 +9,7 @@ public class UnitStatus : ControllableStatus {
 	// Unit loses this much water on each water tick
 	public int waterLossRate;
 	public int Water { get; protected set; }
-	public float WaterPercentage { get { return Water / maxWater; } }
+	public float WaterPercentage { get { return Water / (float)maxWater; } }
 	
 	// Amount of time since last water tick
 	protected float waterTickTimer = 0;

@@ -72,7 +72,7 @@ public class PersonalAI : MonoBehaviour {
 	protected virtual void HandleObjectsInVision() {
 		// Determine if object is in a state to respond to other objects
 		if(State == AIState.Idle || (State == AIState.Working && combatOverridesWork)) {
-			//TODO low: sort visibleObjects by distance before looping through
+			VisibleObjects.Sort(CompareVisibleObjects);
 			foreach(GameObject obj in VisibleObjects) {
 				// Determine if other object is an enemy unit
 				if(obj.CompareTag(GameUtil.TAG_UNIT) && Controllable.Owner.Relationships[obj.GetComponent<Controllable>().Owner] == PlayerRelationship.HOSTILE) {
@@ -87,6 +87,10 @@ public class PersonalAI : MonoBehaviour {
 				}
 			}
 		}
+	}
+	
+	protected int CompareVisibleObjects(GameObject x, GameObject y) {
+		return Vector3.Distance(x.transform.position, this.transform.position).CompareTo(Vector3.Distance(y.transform.position, this.transform.position));
 	}
 	
 	// Decides what action to take when state is AIState.IDLE

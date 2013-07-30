@@ -104,27 +104,22 @@ public class PowerSource : MonoBehaviour {
 	}
 	
 	// Captures the given amount of power for use by the given object
-	public void CapturePower(BuildingStatus buildingStatus, int amount) {
-		PowerUsers.Add(buildingStatus, amount);
+	public void CapturePower(BuildingStatus suppliable, int amount) {
+		PowerUsers.Add(suppliable, amount);
 	}
 	
 	// Releases any power captured by the given object
-	public void ReleasePower(BuildingStatus buildingStatus) {
-		PowerUsers.Remove(buildingStatus);
+	public void ReleasePower(BuildingStatus suppliable) {
+		PowerUsers.Remove(suppliable);
 	}
 	
 	protected void OnDestroy() {
-		BuildingStatus[] powerUsersClone = new BuildingStatus[PowerUsers.Count];
-		PowerUsers.Keys.CopyTo(powerUsersClone, 0);
-		foreach(BuildingStatus buildingStatus in powerUsersClone) {
-			if(buildingStatus.Powered) {
-				Debug.Log("Unpowering "+buildingStatus.name);
-				buildingStatus.Powered = false;
+		foreach(BuildingStatus suppliable in PowerUsers.Keys) {
+			if(suppliable.Powered) {
+				Debug.Log("Unpowering "+suppliable.name);
+				suppliable.Powered = false;
 			}
-			ReleasePower(buildingStatus);
 		}
-		foreach(BuildingStatus buildingStatus in SuppliablesInRange) {
-			buildingStatus.RemovePowerSupplier(this);
-		}
+		PowerUsers.Clear();
 	}
 }

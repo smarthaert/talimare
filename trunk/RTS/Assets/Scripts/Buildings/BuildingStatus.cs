@@ -12,14 +12,20 @@ public class BuildingStatus : ControllableStatus {
 	// Whether or not this object is currently accepting power
 	public bool PowerEnabled { get; protected set; }
 	// Holds all of the power suppliers of which this object is in range
-	protected List<PowerSource> PowerSuppliersInRange { get; set; }
+	protected List<PowerSource> _powerSuppliersInRange = new List<PowerSource>();
+	protected List<PowerSource> PowerSuppliersInRange
+	{
+		get {
+			_powerSuppliersInRange.RemoveAll(m => m == null);
+			return _powerSuppliersInRange;
+		}
+	}
 	
 	protected override void Awake() {
 		base.Awake();
 		
 		Powered = false;
 		PowerEnabled = (powerRequired > 0 ? true : false);
-		PowerSuppliersInRange = new List<PowerSource>();
 	}
 	
 	protected override void Start() {

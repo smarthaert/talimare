@@ -29,6 +29,10 @@ public class WaterNetwork : MonoBehaviour {
 	
 	// Adds a node to this network and optionally rebuilds the network
 	public void AddNode(WaterNetworkNode node, bool rebuildNetwork) {
+		if(node.Network != null) {
+			node.Network.RemoveNode(node, false);
+		}
+		
 		if(node is WaterNetworkSource && !Sources.Contains((WaterNetworkSource)node)) {
 			Sources.Add((WaterNetworkSource)node);
 		}
@@ -40,7 +44,7 @@ public class WaterNetwork : MonoBehaviour {
 		node.transform.parent = this.transform; //hierarchy not really needed, but useful for development
 		
 		if(rebuildNetwork) {
-			RebuildWaterNetwork(this);
+			RebuildWaterNetwork();
 		}
 	}
 	
@@ -55,27 +59,31 @@ public class WaterNetwork : MonoBehaviour {
 		node.Network = null;
 		node.transform.parent = this.transform.parent; //hierarchy not really needed, but useful for development
 		
-		if(rebuildNetwork) {
-			RebuildWaterNetwork(this);
+		if(Nodes.Count == 0) {
+			Destroy(this.gameObject);
+		} else if(rebuildNetwork) {
+			RebuildWaterNetwork();
 		}
 	}
 	
 	// Rebuilds the water network, flowing outward from each source. Any disconnected sources will have new networks created,
 	// while any disconnected non-source nodes will end with no network
-	protected void RebuildWaterNetwork(WaterNetwork network) {
+	protected void RebuildWaterNetwork() {
 		HashSet<WaterNetworkNode> closedSet = new HashSet<WaterNetworkNode>();
-		//reset all nodes' networks for the scenario where a node has been removed
+		// Reset all nodes' networks for the scenario where a node has been removed
 		foreach(WaterNetworkNode node in Nodes) {
-			Destroy(node.Network.gameObject); //this line may be causing some errors when stopping the game in development
 			node.Network = null;
 			node.transform.parent = this.transform.parent; //hierarchy not really needed, but useful for development
 		}
-		//start at each source
+		// Destroy this network, because new ones will be created as necessary
+		Destroy(this.gameObject);
+		// Start at each source
 		foreach(WaterNetworkSource source in Sources) {
 			if(!closedSet.Contains(source)) {
-				//if the source hasn't already been accounted for, create a network around it
+				// If the source hasn't already been accounted for, create a network around it
 				source.createNetworkAroundSelf();
-				//then start flowing outward recursively through its neighbors
+				closedSet.Add(source);
+				// Then start flowing outward recursively through its neighbors
 				foreach(WaterNetworkNode neighbor in source.GetNeighbors()) {
 					AddNodeToNetwork(source.Network, neighbor, closedSet);
 				}
@@ -104,7 +112,6 @@ public class WaterNetwork : MonoBehaviour {
 	
 	// An algorithm to supply water in an (in game terms) efficient manner to suppliables in range
 	protected void SupplyWater() {
-		//TODO test water supply with mutliple units
 		List<UnitStatus> suppliablesInRange = new List<UnitStatus>();
 		foreach(WaterNetworkNode node in Nodes) {
 			suppliablesInRange.AddRange(node.SuppliablesInRange);
@@ -114,7 +121,7 @@ public class WaterNetwork : MonoBehaviour {
 			foreach(WaterNetworkSource source in Sources) {
 				waterLeftToSupply += source.waterSuppliedPerTick;
 			}
-			// Sort suppliables from lowest to highest current water
+			// Sort suppliables from lowest to highest current water percentage
 			suppliablesInRange.Sort(CompareSuppliables);
 			// First loop through suppliables, supplying only enough to cover their water loss rate
 			int waterSupplied;
