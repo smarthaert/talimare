@@ -84,4 +84,9 @@ public class WaterNetworkNode : MonoBehaviour {
 			Network.RemoveNode(this, true);
 		}
 	}
+	
+	protected void OnApplicationQuit() {
+		// Set the network to null so we don't bother trying to rebuild the water network while quitting
+		Network = null;
+	}
 }

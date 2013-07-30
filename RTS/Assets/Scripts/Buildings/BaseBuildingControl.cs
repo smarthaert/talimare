@@ -16,6 +16,7 @@ public class BaseBuildingControl : BuildingCommonControl {
 	protected Queue<UnitQueueEntry> unitQueue = new Queue<UnitQueueEntry>();
 	protected CreateUnitJob currentUnitJob;
 	protected Queue<CreatableTech> techQueue = new Queue<CreatableTech>();
+	protected CreateTechJob currentTechJob;
 	protected float techTimer = 0;
 	
 	protected Vector3? rallyPoint = null;
@@ -56,7 +57,7 @@ public class BaseBuildingControl : BuildingCommonControl {
 	protected override void Update() {
 		base.Update();
 		
-		// Advance creation queues
+		// Advance unit creation
 		if(currentUnitJob != null) {
 			if(currentUnitJob.CreationStarted) {
 				currentUnitJob.AdvanceCreationTime(Time.deltaTime);
@@ -70,11 +71,18 @@ public class BaseBuildingControl : BuildingCommonControl {
 			StartCreateUnitJob();
 		}
 		
-		//TODO high: CreateTechJob
-		if(techQueue.Count > 0) {
-			techTimer += Time.deltaTime;
-			if(techTimer >= techQueue.Peek().creationTime)
-				CompleteTech();
+		// Advance tech creation
+		if(currentTechJob != null) {
+			if(currentTechJob.CreationStarted) {
+				currentTechJob.AdvanceCreationTime(Time.deltaTime);
+				if(currentTechJob.Completed) {
+					CompleteTechCreation();
+				}
+			} else if(currentTechJob.ReadyForCreationStart) {
+				BeginTechCreation();
+			}
+		} else if(techQueue.Count > 0) {
+			StartCreateTechJob();
 		}
 	}
 	
@@ -167,11 +175,34 @@ public class BaseBuildingControl : BuildingCommonControl {
 		currentUnitJob = null;
 	}
 	
-	// Complete a tech, adding it to the player's tech list
-	protected void CompleteTech() {
-		Tech tech = techQueue.Dequeue().GetComponent<Tech>();
-		tech.AddTechForPlayer(Owner);
-		techTimer = 0;
+	protected void StartCreateTechJob() {
+		currentTechJob = new CreateTechJob(this, techQueue.Dequeue(), Owner, true);
+	}
+	
+	// Begin a tech
+	protected void BeginTechCreation() {
+		bool resourcesAllHere = true;
+		foreach(ResourceAmount resourceAmount in currentTechJob.Tech.resourceCosts) {
+			if(!resourceAmount.IsUpkeepResource() && StoredResources[resourceAmount.resource] < resourceAmount.amount) {
+				resourcesAllHere = false;
+			}
+		}
+		if(resourcesAllHere) {
+			foreach(ResourceAmount resourceAmount in currentTechJob.Tech.resourceCosts) {
+				if(!resourceAmount.IsUpkeepResource()) {
+					StoredResources[resourceAmount.resource] -= resourceAmount.amount;
+				}
+			}
+			currentTechJob.CreationStarted = true;
+		} else {
+			Debug.LogError("Resources missing while beginning tech creation. Tech :"+currentTechJob.Tech+", Building: "+this);
+		}
+	}
+	
+	// Complete a tech
+	protected void CompleteTechCreation() {
+		currentTechJob.Tech.GetComponent<Tech>().AddTechForPlayer(Owner);
+		currentTechJob = null;
 	}
 	
 	protected void OnDestroy() {
