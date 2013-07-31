@@ -15,10 +15,35 @@ public class MoveResourceTaskScript : MonoBehaviour {
 	
 	// Resource amount this unit is currently holding
 	public ResourceAmount HeldResource { get; protected set; }
+	
 	// Depot this unit is currently fetching resources from
-	protected ResourceDepot DepotFetchTarget { get; set; }
+	protected ResourceDepot _depotFetchTarget;
+	protected ResourceDepot DepotFetchTarget
+	{
+		get {
+			return _depotFetchTarget;
+		}
+		set {
+			_depotFetchTarget = value;
+			depotRefreshTimer = MoveTaskScript.repathRate;
+		}
+	}
+	
 	// Depot this unit is currently returning resources to
-	protected ResourceDepot DepotReturnTarget { get; set; }
+	protected ResourceDepot _depotReturnTarget;
+	protected ResourceDepot DepotReturnTarget
+	{
+		get {
+			return _depotReturnTarget;
+		}
+		set {
+			_depotReturnTarget = value;
+			depotRefreshTimer = MoveTaskScript.repathRate;
+		}
+	}
+	
+	// Timer to signal when the current depot reference should be refreshed
+	protected float depotRefreshTimer = 0f;
 	
 	protected Controllable Controllable { get; set; }
 	protected MoveTaskScript MoveTaskScript { get; set; }
@@ -29,17 +54,18 @@ public class MoveResourceTaskScript : MonoBehaviour {
 	}
 	
 	protected void Update () {
-		if(MoveResourceJob != null) {
+		if (DepotReturnTarget != null) {
+			UpdateDepotReturn();
+		} else if(MoveResourceJob != null) {
 			if(MoveResourceJob.Completed || MoveResourceJob.Destination == null) {
 				StopTask();
 			} else {
 				UpdateMoveResource();
 			}
-		} else if (DepotReturnTarget != null) {
-			UpdateDepotReturn();
 		}
 	}
 	
+	// Update loop for the case where resources are being move from a depot to a destination
 	protected void UpdateMoveResource() {
 		if(HoldingRequiredResource()) {
 			if(IsInRange(MoveResourceJob.Destination.gameObject)) {
@@ -57,40 +83,64 @@ public class MoveResourceTaskScript : MonoBehaviour {
 				MoveTaskScript.StartTask(MoveResourceJob.Destination.transform);
 			}
 		} else {
-			//TODO med: check for updated DepotFetchTarget every x seconds (equal to seeker update rate)
-			if(DepotFetchTarget == null) {
+			// Check for a new depot fetch target
+			if(DepotFetchTarget == null || depotRefreshTimer <= 0f) {
 				DepotFetchTarget = ResourceDepot.FindNearestDepotWithResource(MoveResourceJob.Resource, Controllable.Owner, transform.position);
 				if(DepotFetchTarget == null) {
-					Debug.Log("No "+MoveResourceJob.Resource+" is available to move as requested.");
+					Debug.Log("No "+MoveResourceJob.Resource+" is available to move as requested. Stopping task.");
 					StopTask();
 				}
-			} else if(DepotFetchTarget.GetResourceAmount(MoveResourceJob.Resource) > 0) {
-				if(IsInRange(DepotFetchTarget.gameObject)) {
-					// In range, fetch resources from DepotFetchTarget
-					MoveTaskScript.StopTask();
-					// Currently, a unit can fetch an unlimited amount of resource from a depot instantly
-					HoldResource(MoveResourceJob.Resource, DepotFetchTarget.WithdrawResource(MoveResourceJob.Resource, Mathf.Min(MoveResourceJob.AmountRemaining, heldResourceLimit)));
-				} else {
-					// Not in range, make sure we're moving toward DepotFetchTarget
-					MoveTaskScript.StartTask(DepotFetchTarget.transform);
-				}
 			} else {
-				DepotFetchTarget = null;
+				depotRefreshTimer -= Time.deltaTime;
+			}
+			
+			if(DepotFetchTarget != null) {
+				// Make sure this depot still has the resource we need...
+				if(DepotFetchTarget.GetResourceAmount(MoveResourceJob.Resource) > 0) {
+					if(IsInRange(DepotFetchTarget.gameObject)) {
+						// In range, fetch resources from DepotFetchTarget
+						MoveTaskScript.StopTask();
+						// Currently, a unit can fetch an unlimited amount of resource from a depot instantly
+						HoldResource(MoveResourceJob.Resource, DepotFetchTarget.WithdrawResource(MoveResourceJob.Resource, Mathf.Min(MoveResourceJob.AmountRemaining, heldResourceLimit)));
+					} else {
+						// Not in range, make sure we're moving toward DepotFetchTarget
+						MoveTaskScript.StartTask(DepotFetchTarget.transform);
+					}
+				} else {
+					// ...and if not, ditch it
+					DepotFetchTarget = null;
+				}
 			}
 		}
 	}
 	
+	// Update loop for the case where held resources are being returned to a depot.
+	// DepotReturnTarget is assumed to be non-null
 	protected void UpdateDepotReturn() {
-		//TODO med: check for updated DepotReturnTarget every x seconds (equal to seeker update rate)
+		// Check for a new depot return target
+		if(depotRefreshTimer <= 0f) {
+			FindDepotReturnTarget();
+		} else {
+			depotRefreshTimer -= Time.deltaTime;
+		}
+		
 		if(IsInRange(DepotReturnTarget.gameObject)) {
 			// In range, deposit resources in DepotReturnTarget
 			MoveTaskScript.StopTask();
 			DepotReturnTarget.DepositResource(HeldResource.resource, HeldResource.amount);
 			HeldResource = null;
-			DepotReturnTarget = null;
+			DepotReturnTarget = null; //don't call StopTask because we may still have a MoveResourceJob to complete
 		} else {
 			// Not in range, make sure we're moving toward DepotReturnTarget
 			MoveTaskScript.StartTask(DepotReturnTarget.transform);
+		}
+	}
+	
+	protected void FindDepotReturnTarget() {
+		DepotReturnTarget = ResourceDepot.FindNearestDepotForResource(HeldResource.resource, Controllable.Owner, transform.position);
+		if(DepotReturnTarget == null) {
+			Debug.Log("No depot is available to return "+HeldResource.resource+" to as requested. Stopping task.");
+			StopTask();
 		}
 	}
 	
@@ -104,10 +154,11 @@ public class MoveResourceTaskScript : MonoBehaviour {
 		}
 	}
 	
+	//TODO med: clicking on a depot should return any held resources to it
 	// Starts this task as a special case where all currently-held resources will be moved to the nearest depot
 	public void StartTask() {
 		if(HeldResource != null) {
-			DepotReturnTarget = ResourceDepot.FindNearestDepotForResource(HeldResource.resource, Controllable.Owner, transform.position);
+			FindDepotReturnTarget();
 		}
 	}
 	

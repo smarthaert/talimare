@@ -11,8 +11,6 @@ public abstract class GameUtil : Component {
 	public const string TAG_BUILD_PROGRESS = "BuildProgress";
 	public const string TAG_RESOURCE = "Resource";
 	
-	//TODO med: roads and walls. start by drawing a line between two clicked points on the ground
-	
 	// Creates a new instance of the given Controllable for the given Player at the given position.
 	// Also applies applicable techs to this new object
 	public static GameObject InstantiateControllable(Controllable controllable, Player player, Vector3 position) {

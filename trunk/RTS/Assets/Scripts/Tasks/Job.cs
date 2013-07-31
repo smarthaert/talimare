@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
+// A job is a series of tasks to be completed which may be stored in a job list in a strategic AI.
 public abstract class Job {
 	
 	protected Player Owner { get; set; }

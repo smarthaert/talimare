@@ -149,7 +149,7 @@ public class PersonalAI : MonoBehaviour {
 	}
 	
 	protected virtual void Flee(GameObject fleeFrom) {
-		//TODO low: flee
+		//flee
 		UpdateState();
 	}
 }

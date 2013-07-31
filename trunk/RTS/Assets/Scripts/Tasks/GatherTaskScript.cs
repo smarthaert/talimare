@@ -87,6 +87,7 @@ public class GatherTaskScript : MonoBehaviour {
 	public void StopTask() {
 		GatherTarget = null;
 		MoveTaskScript.StopTask();
+		MoveResourceTaskScript.StopTask();
 	}
 	
 	protected bool IsInRange(GameObject gameObject) {
