@@ -18,7 +18,7 @@ public class PlayerInput : MonoBehaviour {
 	protected GameObject CurrentMarker { get; set; }
 	
 	// Buildings which can be built
-	public List<CreatableBuilding> buildings; //TODO med: build a list of buildable buildings
+	public List<CreatableBuilding> buildings; //TODO med: build a list of buildable buildings on the fly
 	
 	// The currently-queued building to build
 	protected BuildProgressControl QueuedBuildTarget { get; set; }

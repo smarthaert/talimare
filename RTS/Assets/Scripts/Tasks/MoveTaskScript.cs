@@ -40,7 +40,7 @@ public class MoveTaskScript : MonoBehaviour {
 	 * If you have fast moving targets or AIs, you might want to set it to a lower value.
 	 * The value is in seconds between path requests.
 	 */
-	protected float repathRate = 1;
+	public float repathRate = 1;
 	
 	/** Maximum velocity.
 	 * This is the maximum speed in world units per second.
