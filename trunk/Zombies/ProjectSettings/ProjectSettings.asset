@@ -70,7 +70,7 @@ PlayerSettings:
     16:9: 1
     Others: 1
   iPhoneBundleIdentifier: com.Company.ProductName
-  productGUID: 10632e9e56ef4414f98f6a4c6c27b971
+  productGUID: e32b5762f35d0584397333f553645f4f
   iPhoneBundleVersion: 1.0
   AndroidBundleVersionCode: 1
   AndroidMinSdkVersion: 6
