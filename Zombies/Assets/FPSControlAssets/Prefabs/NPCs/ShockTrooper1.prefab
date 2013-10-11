@@ -360,7 +360,7 @@ GameObject:
   - 54: {fileID: 5400000}
   - 65: {fileID: 6500000}
   - 114: {fileID: 11400004}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: MeleeSensor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -633,7 +633,7 @@ GameObject:
   - 54: {fileID: 5400002}
   - 65: {fileID: 6500002}
   - 114: {fileID: 11400006}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: SightSensor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2433,8 +2433,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100090}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 22.7080536, y: .304172397, z: 52.9429932}
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: -4.37113883e-08}
+  m_LocalPosition: {x: -16.0913887, y: .00999999046, z: 27.7367973}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_Children:
   - {fileID: 400062}
@@ -3478,6 +3478,8 @@ AudioSource:
   Pan2D: 0
   rolloffMode: 0
   BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
   rolloffCustomCurve:
     serializedVersion: 2
     m_Curve:
@@ -3602,8 +3604,9 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: -1456383791, guid: d5b7e7bc48f50bc49b16520df5c134e0, type: 3}
   m_Name: 
+  m_EditorClassIdentifier: 
   rainVersionString: RAIN.Minds.BehaviorTreeMind
-  behaviorTreeFilename: ShockTrooper1
+  behaviorTreeFilename: Zombie
   rootName: root
 --- !u!114 &11400002
 MonoBehaviour:
@@ -3615,6 +3618,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 681896232, guid: d5b7e7bc48f50bc49b16520df5c134e0, type: 3}
   m_Name: 
+  m_EditorClassIdentifier: 
   rainVersionString: RAIN.Path.RAINPathManager
   moveTarget:
     closeEnoughDistance: 0
@@ -3652,6 +3656,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 1013492972, guid: d5b7e7bc48f50bc49b16520df5c134e0, type: 3}
   m_Name: 
+  m_EditorClassIdentifier: 
   rainVersionString: RAIN.Sensors.BoxSensor
   focusOfAttention: []
   maxFocus: 5
@@ -3674,6 +3679,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 1013492972, guid: d5b7e7bc48f50bc49b16520df5c134e0, type: 3}
   m_Name: 
+  m_EditorClassIdentifier: 
   rainVersionString: RAIN.Sensors.BoxSensor
   focusOfAttention: []
   maxFocus: 5
@@ -3684,8 +3690,8 @@ MonoBehaviour:
   raycastLocation: {fileID: 400000}
   layerMask:
     serializedVersion: 2
-    m_Bits: 4294967295
-  visualize: 0
+    m_Bits: 4294965247
+  visualize: 1
 --- !u!114 &11400008
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3696,6 +3702,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: -2121150447, guid: d5b7e7bc48f50bc49b16520df5c134e0, type: 3}
   m_Name: 
+  m_EditorClassIdentifier: 
   rainVersionString: RAIN.Motion.AICharacterController
   controllerType: 2
 --- !u!114 &11400010
@@ -3708,6 +3715,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: -2124519495, guid: d5b7e7bc48f50bc49b16520df5c134e0, type: 3}
   m_Name: 
+  m_EditorClassIdentifier: 
   rainVersionString: RAIN.Core.RAINAgent
   avatar: {fileID: 100090}
   mind: {fileID: 11400000}
@@ -3727,6 +3735,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 326f2adaf6f64b44ba985cbd68dbbd03, type: 3}
   m_Name: 
+  m_EditorClassIdentifier: 
   _gunLogic: {fileID: 11400016}
   _dataController: {fileID: 11400014}
   _player: {fileID: 100090}
@@ -3743,6 +3752,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 1975918722, guid: bc76cc0c25d9143f9a3f919db1a9dd44, type: 3}
   m_Name: 
+  m_EditorClassIdentifier: 
   max: 100
   current: 100
   initial: 100
@@ -3760,6 +3770,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ef061d5df26bb0d4aa30faa6af790775, type: 3}
   m_Name: 
+  m_EditorClassIdentifier: 
   _weaponsName: 
   _weaponOwner: {fileID: 100090}
   accuracy: 1
@@ -3811,6 +3822,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 1975918722, guid: bc76cc0c25d9143f9a3f919db1a9dd44, type: 3}
   m_Name: 
+  m_EditorClassIdentifier: 
   max: 100
   current: 100
   initial: 100
