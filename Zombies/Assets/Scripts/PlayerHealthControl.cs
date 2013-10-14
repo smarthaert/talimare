@@ -14,13 +14,13 @@ public class PlayerHealthControl : MonoBehaviour {
 	
 	protected DataController dataController;
 	
-	public void Start() {
+	protected void Start() {
 		IsAlive = true;
 		dataController = GetComponent<DataController>();
 	}
 	
 	// Hit by something
-	public void OnCollisionEnter(Collision collision) {
+	protected void OnCollisionEnter(Collision collision) {
 		float damage = collision.relativeVelocity.magnitude;
 		
 		// Take collider damage? (fall damage, etc)
@@ -77,7 +77,7 @@ public class PlayerHealthControl : MonoBehaviour {
 		DeathCheck();
 	}
 	
-	public void DeathCheck() {
+	protected void DeathCheck() {
 		if(dataController.current <= 0 && IsAlive) {
 			IsAlive = false;
 			
