@@ -44,9 +44,9 @@ MonoBehaviour:
     Errored: 0
   - FileName: Zombie.xml
     BehaviorTreeName: Zombie
-    BehaviorTreeID: 147
-    LastUpdate: 635171026813620826
-    LastModified: 635171026813620826
+    BehaviorTreeID: 157
+    LastUpdate: 635173003789920307
+    LastModified: 635173003789920307
     Errored: 0
   TreeState:
     _branchRepo:
@@ -3578,7 +3578,7 @@ MonoBehaviour:
         _recordChange: 1
         _changed: 0
       - _field: open
-        _currentValue: True
+        _currentValue: False
         _recordChange: 0
         _changed: 0
       - _field: precondition
@@ -3911,7 +3911,7 @@ MonoBehaviour:
         _recordChange: 1
         _changed: 0
       - _field: open
-        _currentValue: True
+        _currentValue: False
         _recordChange: 0
         _changed: 0
       - _field: precondition
@@ -4035,7 +4035,7 @@ MonoBehaviour:
         _recordChange: 1
         _changed: 0
       - _field: open
-        _currentValue: True
+        _currentValue: False
         _recordChange: 0
         _changed: 0
       - _field: precondition
@@ -4209,7 +4209,7 @@ MonoBehaviour:
         _recordChange: 1
         _changed: 0
       - _field: open
-        _currentValue: True
+        _currentValue: False
         _recordChange: 0
         _changed: 0
       - _field: precondition
@@ -4647,43 +4647,6 @@ MonoBehaviour:
       _variables: 
     - _fields:
       - _field: name
-        _currentValue: Enemy Still In Sight
-        _recordChange: 1
-        _changed: 0
-      - _field: precondition
-        _currentValue: 
-        _recordChange: 1
-        _changed: 0
-      - _field: repeatuntil
-        _currentValue: failure
-        _recordChange: 1
-        _changed: 0
-      - _field: debug
-        _currentValue: False
-        _recordChange: 1
-        _changed: 0
-      - _field: sensor
-        _currentValue: SightSensor
-        _recordChange: 1
-        _changed: 0
-      - _field: aspect
-        _currentValue: player
-        _recordChange: 1
-        _changed: 0
-      - _field: variable
-        _currentValue: playerTarget
-        _recordChange: 1
-        _changed: 0
-      _type: 9
-      _id: 131
-      _parent: 135
-      _reference: 0
-      _referencedCount: 0
-      _lastUpdate: 635171026803130226
-      _children: 
-      _variables: 
-    - _fields:
-      - _field: name
         _currentValue: Move To Player
         _recordChange: 1
         _changed: 0
@@ -4708,11 +4671,11 @@ MonoBehaviour:
         _recordChange: 1
         _changed: 0
       - _field: movespeed
-        _currentValue: 0.5
+        _currentValue: -1
         _recordChange: 1
         _changed: 0
       - _field: looktargettype
-        _currentValue: variable
+        _currentValue: none
         _recordChange: 1
         _changed: 0
       - _field: looktarget
@@ -4720,7 +4683,7 @@ MonoBehaviour:
         _recordChange: 1
         _changed: 0
       - _field: lookspeed
-        _currentValue: 180
+        _currentValue: -1
         _recordChange: 1
         _changed: 0
       - _field: animation
@@ -4740,65 +4703,11 @@ MonoBehaviour:
         _recordChange: 1
         _changed: 0
       _type: 12
-      _id: 132
-      _parent: 135
+      _id: 131
+      _parent: 132
       _reference: 0
       _referencedCount: 0
-      _lastUpdate: 635171026803130226
-      _children: 
-      _variables: 
-    - _fields:
-      - _field: name
-        _currentValue: gothit
-        _recordChange: 1
-        _changed: 0
-      - _field: initialvalue
-        _currentValue: 0
-        _recordChange: 1
-        _changed: 0
-      _type: 6
-      _id: 133
-      _parent: 0
-      _reference: 0
-      _referencedCount: 0
-      _lastUpdate: 0
-      _children: 
-      _variables: 
-    - _fields:
-      - _field: name
-        _currentValue: Enemy In Melee Range
-        _recordChange: 1
-        _changed: 0
-      - _field: precondition
-        _currentValue: 
-        _recordChange: 1
-        _changed: 0
-      - _field: repeatuntil
-        _currentValue: success
-        _recordChange: 1
-        _changed: 0
-      - _field: debug
-        _currentValue: False
-        _recordChange: 1
-        _changed: 0
-      - _field: sensor
-        _currentValue: TouchSensor
-        _recordChange: 1
-        _changed: 0
-      - _field: aspect
-        _currentValue: player
-        _recordChange: 1
-        _changed: 0
-      - _field: variable
-        _currentValue: meleetarget
-        _recordChange: 1
-        _changed: 0
-      _type: 9
-      _id: 134
-      _parent: 135
-      _reference: 0
-      _referencedCount: 0
-      _lastUpdate: 635171026803130226
+      _lastUpdate: 635172787315413814
       _children: 
       _variables: 
     - _fields:
@@ -4835,16 +4744,33 @@ MonoBehaviour:
         _recordChange: 1
         _changed: 0
       _type: 16
-      _id: 135
-      _parent: 137
+      _id: 132
+      _parent: 135
       _reference: 0
       _referencedCount: 0
-      _lastUpdate: 635171026803130226
-      _children: 830000008600000084000000
+      _lastUpdate: 635172312848695407
+      _children: 83000000ac000000ad000000
       _variables: 
     - _fields:
       - _field: name
-        _currentValue: Enemy In Sight
+        _currentValue: gothit
+        _recordChange: 1
+        _changed: 0
+      - _field: initialvalue
+        _currentValue: 0
+        _recordChange: 1
+        _changed: 0
+      _type: 6
+      _id: 133
+      _parent: 0
+      _reference: 0
+      _referencedCount: 0
+      _lastUpdate: 0
+      _children: 
+      _variables: 
+    - _fields:
+      - _field: name
+        _currentValue: Player In Sight
         _recordChange: 1
         _changed: 0
       - _field: precondition
@@ -4872,11 +4798,11 @@ MonoBehaviour:
         _recordChange: 1
         _changed: 0
       _type: 9
-      _id: 136
-      _parent: 137
+      _id: 134
+      _parent: 135
       _reference: 0
       _referencedCount: 0
-      _lastUpdate: 635171026803130226
+      _lastUpdate: 0
       _children: 
       _variables: 
     - _fields:
@@ -4901,62 +4827,16 @@ MonoBehaviour:
         _recordChange: 1
         _changed: 0
       _type: 20
-      _id: 137
-      _parent: 143
+      _id: 135
+      _parent: 144
       _reference: 0
       _referencedCount: 0
-      _lastUpdate: 635171026803130226
-      _children: 8800000087000000
+      _lastUpdate: 635172312848695407
+      _children: 8600000084000000
       _variables: 
     - _fields:
       - _field: name
-        _currentValue: Melee Attack
-        _recordChange: 1
-        _changed: 0
-      - _field: precondition
-        _currentValue: 
-        _recordChange: 1
-        _changed: 0
-      - _field: repeatuntil
-        _currentValue: 
-        _recordChange: 1
-        _changed: 0
-      - _field: debug
-        _currentValue: False
-        _recordChange: 1
-        _changed: 0
-      - _field: classname
-        _currentValue: Melee
-        _recordChange: 1
-        _changed: 0
-      _type: 1
-      _id: 138
-      _parent: 142
-      _reference: 0
-      _referencedCount: 0
-      _lastUpdate: 635171026803130226
-      _children: 
-      _variables: 
-    - _fields:
-      - _field: name
-        _currentValue: health
-        _recordChange: 1
-        _changed: 0
-      - _field: initialvalue
-        _currentValue: 0
-        _recordChange: 1
-        _changed: 0
-      _type: 6
-      _id: 139
-      _parent: 0
-      _reference: 0
-      _referencedCount: 0
-      _lastUpdate: 0
-      _children: 
-      _variables: 
-    - _fields:
-      - _field: name
-        _currentValue: Enemy In Melee Range
+        _currentValue: Player In Melee Range
         _recordChange: 1
         _changed: 0
       - _field: precondition
@@ -4980,15 +4860,175 @@ MonoBehaviour:
         _recordChange: 1
         _changed: 0
       - _field: variable
-        _currentValue: meleetarget
+        _currentValue: meleeTarget
         _recordChange: 1
         _changed: 0
       _type: 9
+      _id: 136
+      _parent: 143
+      _reference: 0
+      _referencedCount: 0
+      _lastUpdate: 0
+      _children: 
+      _variables: 
+    - _fields:
+      - _field: name
+        _currentValue: Melee Attack
+        _recordChange: 1
+        _changed: 0
+      - _field: precondition
+        _currentValue: 
+        _recordChange: 1
+        _changed: 0
+      - _field: repeatuntil
+        _currentValue: 
+        _recordChange: 1
+        _changed: 0
+      - _field: debug
+        _currentValue: False
+        _recordChange: 1
+        _changed: 0
+      - _field: classname
+        _currentValue: ZombieMelee
+        _recordChange: 1
+        _changed: 0
+      _type: 1
+      _id: 137
+      _parent: 143
+      _reference: 0
+      _referencedCount: 0
+      _lastUpdate: 0
+      _children: 
+      _variables: 
+    - _fields:
+      - _field: name
+        _currentValue: Look At Target
+        _recordChange: 1
+        _changed: 0
+      - _field: precondition
+        _currentValue: 
+        _recordChange: 1
+        _changed: 0
+      - _field: repeatuntil
+        _currentValue: 
+        _recordChange: 1
+        _changed: 0
+      - _field: debug
+        _currentValue: False
+        _recordChange: 1
+        _changed: 0
+      - _field: movetargettype
+        _currentValue: none
+        _recordChange: 1
+        _changed: 0
+      - _field: movetarget
+        _currentValue: 
+        _recordChange: 1
+        _changed: 0
+      - _field: movespeed
+        _currentValue: -1
+        _recordChange: 1
+        _changed: 0
+      - _field: looktargettype
+        _currentValue: variable
+        _recordChange: 1
+        _changed: 0
+      - _field: looktarget
+        _currentValue: meleeTarget
+        _recordChange: 1
+        _changed: 0
+      - _field: lookspeed
+        _currentValue: -1
+        _recordChange: 1
+        _changed: 0
+      - _field: animation
+        _currentValue: 
+        _recordChange: 1
+        _changed: 0
+      - _field: animationlayer
+        _currentValue: 0
+        _recordChange: 1
+        _changed: 0
+      - _field: animationwrapmode
+        _currentValue: default
+        _recordChange: 1
+        _changed: 0
+      - _field: animationbasespeed
+        _currentValue: 1
+        _recordChange: 1
+        _changed: 0
+      _type: 12
+      _id: 138
+      _parent: 142
+      _reference: 0
+      _referencedCount: 0
+      _lastUpdate: 635172312848695407
+      _children: 
+      _variables: 
+    - _fields:
+      - _field: name
+        _currentValue: health
+        _recordChange: 1
+        _changed: 0
+      - _field: initialvalue
+        _currentValue: 0
+        _recordChange: 1
+        _changed: 0
+      _type: 6
+      _id: 139
+      _parent: 0
+      _reference: 0
+      _referencedCount: 0
+      _lastUpdate: 0
+      _children: 
+      _variables: 
+    - _fields:
+      - _field: name
+        _currentValue: Melee Animation
+        _recordChange: 1
+        _changed: 0
+      - _field: precondition
+        _currentValue: 
+        _recordChange: 1
+        _changed: 0
+      - _field: repeatuntil
+        _currentValue: 
+        _recordChange: 1
+        _changed: 0
+      - _field: debug
+        _currentValue: False
+        _recordChange: 1
+        _changed: 0
+      - _field: animation
+        _currentValue: MeleeAttack
+        _recordChange: 1
+        _changed: 0
+      - _field: waitforsec
+        _currentValue: 1.067
+        _recordChange: 1
+        _changed: 0
+      - _field: layer
+        _currentValue: 1
+        _recordChange: 1
+        _changed: 0
+      - _field: wrapmode
+        _currentValue: clamp
+        _recordChange: 1
+        _changed: 0
+      - _field: fadein
+        _currentValue: 0
+        _recordChange: 1
+        _changed: 0
+      - _field: fadeout
+        _currentValue: 0
+        _recordChange: 1
+        _changed: 0
+      _type: 2
       _id: 140
       _parent: 142
       _reference: 0
       _referencedCount: 0
-      _lastUpdate: 635171026803110225
+      _lastUpdate: 0
       _children: 
       _variables: 
     - _fields:
@@ -5010,7 +5050,7 @@ MonoBehaviour:
       _variables: 
     - _fields:
       - _field: name
-        _currentValue: Melee
+        _currentValue: Animate
         _recordChange: 1
         _changed: 0
       - _field: open
@@ -5029,13 +5069,54 @@ MonoBehaviour:
         _currentValue: False
         _recordChange: 1
         _changed: 0
-      _type: 20
+      - _field: fail
+        _currentValue: all
+        _recordChange: 1
+        _changed: 0
+      - _field: succeed
+        _currentValue: all
+        _recordChange: 1
+        _changed: 0
+      - _field: tiebreaker
+        _currentValue: succeed
+        _recordChange: 1
+        _changed: 0
+      _type: 16
       _id: 142
       _parent: 143
       _reference: 0
       _referencedCount: 0
-      _lastUpdate: 635171026803130226
-      _children: 8c000000920000008a000000
+      _lastUpdate: 635172312848685406
+      _children: 8c0000008a000000
+      _variables: 
+    - _fields:
+      - _field: name
+        _currentValue: Melee
+        _recordChange: 1
+        _changed: 0
+      - _field: open
+        _currentValue: True
+        _recordChange: 0
+        _changed: 0
+      - _field: precondition
+        _currentValue: meleeTarget != null
+        _recordChange: 1
+        _changed: 0
+      - _field: repeatuntil
+        _currentValue: 
+        _recordChange: 1
+        _changed: 0
+      - _field: debug
+        _currentValue: False
+        _recordChange: 1
+        _changed: 0
+      _type: 20
+      _id: 143
+      _parent: 144
+      _reference: 0
+      _referencedCount: 0
+      _lastUpdate: 635172312848685406
+      _children: 8e0000008900000088000000
       _variables: 
     - _fields:
       - _field: name
@@ -5047,7 +5128,7 @@ MonoBehaviour:
         _recordChange: 0
         _changed: 0
       - _field: precondition
-        _currentValue: 
+        _currentValue: dead != true
         _recordChange: 1
         _changed: 0
       - _field: repeatuntil
@@ -5059,41 +5140,12 @@ MonoBehaviour:
         _recordChange: 1
         _changed: 0
       _type: 19
-      _id: 143
-      _parent: 144
-      _reference: 0
-      _referencedCount: 0
-      _lastUpdate: 635171026803130226
-      _children: 8e00000089000000
-      _variables: 
-    - _fields:
-      - _field: name
-        _currentValue: root
-        _recordChange: 1
-        _changed: 0
-      - _field: open
-        _currentValue: True
-        _recordChange: 0
-        _changed: 0
-      - _field: precondition
-        _currentValue: 
-        _recordChange: 1
-        _changed: 0
-      - _field: repeatuntil
-        _currentValue: 
-        _recordChange: 1
-        _changed: 0
-      - _field: debug
-        _currentValue: False
-        _recordChange: 1
-        _changed: 0
-      _type: 20
       _id: 144
       _parent: 147
       _reference: 0
       _referencedCount: 0
-      _lastUpdate: 635171026803140226
-      _children: 8f000000
+      _lastUpdate: 635172984824985574
+      _children: 8f00000087000000ab000000ae000000
       _variables: 
     - _fields:
       - _field: name
@@ -5128,58 +5180,18 @@ MonoBehaviour:
       _lastUpdate: 635171014411351457
       _children: 24000000
       _variables: 8d0000008b000000850000002600000025000000
-    - _fields:
-      - _field: name
-        _currentValue: Melee Animation
-        _recordChange: 1
-        _changed: 0
-      - _field: precondition
-        _currentValue: 
-        _recordChange: 1
-        _changed: 0
-      - _field: repeatuntil
-        _currentValue: 
-        _recordChange: 1
-        _changed: 0
-      - _field: debug
-        _currentValue: False
-        _recordChange: 1
-        _changed: 0
-      - _field: animation
-        _currentValue: MeleeAttack
-        _recordChange: 1
-        _changed: 0
-      - _field: waitforsec
-        _currentValue: 1.067
-        _recordChange: 1
-        _changed: 0
-      - _field: layer
-        _currentValue: 0
-        _recordChange: 1
-        _changed: 0
-      - _field: wrapmode
-        _currentValue: clamp
-        _recordChange: 1
-        _changed: 0
-      - _field: fadein
-        _currentValue: 0
-        _recordChange: 1
-        _changed: 0
-      - _field: fadeout
-        _currentValue: 0
-        _recordChange: 1
-        _changed: 0
-      _type: 2
-      _id: 146
-      _parent: 142
+    - _fields: []
+      _type: 0
+      _id: 0
+      _parent: 0
       _reference: 0
       _referencedCount: 0
-      _lastUpdate: 635171026803130226
+      _lastUpdate: 0
       _children: 
       _variables: 
     - _fields:
       - _field: name
-        _currentValue: Zombie
+        _currentValue: root
         _recordChange: 1
         _changed: 0
       - _field: open
@@ -5198,16 +5210,12 @@ MonoBehaviour:
         _currentValue: False
         _recordChange: 1
         _changed: 0
-      - _field: variablesopen
-        _currentValue: False
-        _recordChange: 1
-        _changed: 0
-      _type: 5
+      _type: 20
       _id: 147
-      _parent: 0
+      _parent: 157
       _reference: 0
       _referencedCount: 0
-      _lastUpdate: 635171026803140226
+      _lastUpdate: 635172312848685406
       _children: 90000000
       _variables: 
     - _fields:
@@ -5346,5 +5354,580 @@ MonoBehaviour:
       _lastUpdate: 0
       _children: 
       _variables: 
-    _freeList: 
+    - _fields: []
+      _type: 0
+      _id: 0
+      _parent: 0
+      _reference: 0
+      _referencedCount: 0
+      _lastUpdate: 0
+      _children: 
+      _variables: 
+    - _fields: []
+      _type: 0
+      _id: 0
+      _parent: 0
+      _reference: 0
+      _referencedCount: 0
+      _lastUpdate: 0
+      _children: 
+      _variables: 
+    - _fields: []
+      _type: 0
+      _id: 0
+      _parent: 0
+      _reference: 0
+      _referencedCount: 0
+      _lastUpdate: 0
+      _children: 
+      _variables: 
+    - _fields: []
+      _type: 0
+      _id: 0
+      _parent: 0
+      _reference: 0
+      _referencedCount: 0
+      _lastUpdate: 0
+      _children: 
+      _variables: 
+    - _fields: []
+      _type: 0
+      _id: 0
+      _parent: 0
+      _reference: 0
+      _referencedCount: 0
+      _lastUpdate: 0
+      _children: 
+      _variables: 
+    - _fields:
+      - _field: name
+        _currentValue: Zombie
+        _recordChange: 1
+        _changed: 0
+      - _field: open
+        _currentValue: True
+        _recordChange: 0
+        _changed: 0
+      - _field: precondition
+        _currentValue: 
+        _recordChange: 1
+        _changed: 0
+      - _field: repeatuntil
+        _currentValue: 
+        _recordChange: 1
+        _changed: 0
+      - _field: debug
+        _currentValue: False
+        _recordChange: 1
+        _changed: 0
+      - _field: variablesopen
+        _currentValue: False
+        _recordChange: 1
+        _changed: 0
+      _type: 5
+      _id: 157
+      _parent: 0
+      _reference: 0
+      _referencedCount: 0
+      _lastUpdate: 635173003779759725
+      _children: 93000000
+      _variables: 
+    - _fields: []
+      _type: 0
+      _id: 0
+      _parent: 0
+      _reference: 0
+      _referencedCount: 0
+      _lastUpdate: 0
+      _children: 
+      _variables: 
+    - _fields: []
+      _type: 0
+      _id: 0
+      _parent: 0
+      _reference: 0
+      _referencedCount: 0
+      _lastUpdate: 0
+      _children: 
+      _variables: 
+    - _fields: []
+      _type: 0
+      _id: 0
+      _parent: 0
+      _reference: 0
+      _referencedCount: 0
+      _lastUpdate: 0
+      _children: 
+      _variables: 
+    - _fields: []
+      _type: 0
+      _id: 0
+      _parent: 0
+      _reference: 0
+      _referencedCount: 0
+      _lastUpdate: 0
+      _children: 
+      _variables: 
+    - _fields: []
+      _type: 0
+      _id: 0
+      _parent: 0
+      _reference: 0
+      _referencedCount: 0
+      _lastUpdate: 0
+      _children: 
+      _variables: 
+    - _fields: []
+      _type: 0
+      _id: 0
+      _parent: 0
+      _reference: 0
+      _referencedCount: 0
+      _lastUpdate: 0
+      _children: 
+      _variables: 
+    - _fields: []
+      _type: 0
+      _id: 0
+      _parent: 0
+      _reference: 0
+      _referencedCount: 0
+      _lastUpdate: 0
+      _children: 
+      _variables: 
+    - _fields: []
+      _type: 0
+      _id: 0
+      _parent: 0
+      _reference: 0
+      _referencedCount: 0
+      _lastUpdate: 0
+      _children: 
+      _variables: 
+    - _fields: []
+      _type: 0
+      _id: 0
+      _parent: 0
+      _reference: 0
+      _referencedCount: 0
+      _lastUpdate: 0
+      _children: 
+      _variables: 
+    - _fields: []
+      _type: 0
+      _id: 0
+      _parent: 0
+      _reference: 0
+      _referencedCount: 0
+      _lastUpdate: 0
+      _children: 
+      _variables: 
+    - _fields:
+      - _field: name
+        _currentValue: Forget Last Hit
+        _recordChange: 1
+        _changed: 0
+      - _field: precondition
+        _currentValue: 
+        _recordChange: 1
+        _changed: 0
+      - _field: repeatuntil
+        _currentValue: 
+        _recordChange: 1
+        _changed: 0
+      - _field: debug
+        _currentValue: False
+        _recordChange: 1
+        _changed: 0
+      - _field: expression
+        _currentValue: lastHitPos = null
+        _recordChange: 1
+        _changed: 0
+      _type: 3
+      _id: 168
+      _parent: 171
+      _reference: 0
+      _referencedCount: 0
+      _lastUpdate: 635173003779759725
+      _children: 
+      _variables: 
+    - _fields:
+      - _field: name
+        _currentValue: Look Toward Last Hit
+        _recordChange: 1
+        _changed: 0
+      - _field: precondition
+        _currentValue: 
+        _recordChange: 1
+        _changed: 0
+      - _field: repeatuntil
+        _currentValue: 
+        _recordChange: 1
+        _changed: 0
+      - _field: debug
+        _currentValue: False
+        _recordChange: 1
+        _changed: 0
+      - _field: movetargettype
+        _currentValue: none
+        _recordChange: 1
+        _changed: 0
+      - _field: movetarget
+        _currentValue: 
+        _recordChange: 1
+        _changed: 0
+      - _field: movespeed
+        _currentValue: -1
+        _recordChange: 1
+        _changed: 0
+      - _field: looktargettype
+        _currentValue: variable
+        _recordChange: 1
+        _changed: 0
+      - _field: looktarget
+        _currentValue: lastHitPos
+        _recordChange: 1
+        _changed: 0
+      - _field: lookspeed
+        _currentValue: -1
+        _recordChange: 1
+        _changed: 0
+      - _field: animation
+        _currentValue: 
+        _recordChange: 1
+        _changed: 0
+      - _field: animationlayer
+        _currentValue: 0
+        _recordChange: 1
+        _changed: 0
+      - _field: animationwrapmode
+        _currentValue: default
+        _recordChange: 1
+        _changed: 0
+      - _field: animationbasespeed
+        _currentValue: 1
+        _recordChange: 1
+        _changed: 0
+      _type: 12
+      _id: 169
+      _parent: 171
+      _reference: 0
+      _referencedCount: 0
+      _lastUpdate: 635173003779749725
+      _children: 
+      _variables: 
+    - _fields: []
+      _type: 0
+      _id: 0
+      _parent: 0
+      _reference: 0
+      _referencedCount: 0
+      _lastUpdate: 0
+      _children: 
+      _variables: 
+    - _fields:
+      - _field: name
+        _currentValue: React To Hit
+        _recordChange: 1
+        _changed: 0
+      - _field: open
+        _currentValue: True
+        _recordChange: 0
+        _changed: 0
+      - _field: precondition
+        _currentValue: lastHitPos != null
+        _recordChange: 1
+        _changed: 0
+      - _field: repeatuntil
+        _currentValue: 
+        _recordChange: 1
+        _changed: 0
+      - _field: debug
+        _currentValue: False
+        _recordChange: 1
+        _changed: 0
+      _type: 20
+      _id: 171
+      _parent: 144
+      _reference: 0
+      _referencedCount: 0
+      _lastUpdate: 635173003779759725
+      _children: a9000000a8000000
+      _variables: 
+    - _fields:
+      - _field: name
+        _currentValue: Player Still In Sight
+        _recordChange: 1
+        _changed: 0
+      - _field: precondition
+        _currentValue: 
+        _recordChange: 1
+        _changed: 0
+      - _field: repeatuntil
+        _currentValue: failure
+        _recordChange: 1
+        _changed: 0
+      - _field: debug
+        _currentValue: False
+        _recordChange: 1
+        _changed: 0
+      - _field: sensor
+        _currentValue: SightSensor
+        _recordChange: 1
+        _changed: 0
+      - _field: aspect
+        _currentValue: player
+        _recordChange: 1
+        _changed: 0
+      - _field: variable
+        _currentValue: playerTarget
+        _recordChange: 1
+        _changed: 0
+      _type: 9
+      _id: 172
+      _parent: 132
+      _reference: 0
+      _referencedCount: 0
+      _lastUpdate: 0
+      _children: 
+      _variables: 
+    - _fields:
+      - _field: name
+        _currentValue: Player In Melee Range
+        _recordChange: 1
+        _changed: 0
+      - _field: precondition
+        _currentValue: 
+        _recordChange: 1
+        _changed: 0
+      - _field: repeatuntil
+        _currentValue: success
+        _recordChange: 1
+        _changed: 0
+      - _field: debug
+        _currentValue: False
+        _recordChange: 1
+        _changed: 0
+      - _field: sensor
+        _currentValue: TouchSensor
+        _recordChange: 1
+        _changed: 0
+      - _field: aspect
+        _currentValue: player
+        _recordChange: 1
+        _changed: 0
+      - _field: variable
+        _currentValue: meleeTarget
+        _recordChange: 1
+        _changed: 0
+      _type: 9
+      _id: 173
+      _parent: 132
+      _reference: 0
+      _referencedCount: 0
+      _lastUpdate: 0
+      _children: 
+      _variables: 
+    - _fields:
+      - _field: name
+        _currentValue: Seek Last Target
+        _recordChange: 1
+        _changed: 0
+      - _field: open
+        _currentValue: True
+        _recordChange: 0
+        _changed: 0
+      - _field: precondition
+        _currentValue: lastTargetPos != null
+        _recordChange: 1
+        _changed: 0
+      - _field: repeatuntil
+        _currentValue: 
+        _recordChange: 1
+        _changed: 0
+      - _field: debug
+        _currentValue: False
+        _recordChange: 1
+        _changed: 0
+      _type: 20
+      _id: 174
+      _parent: 144
+      _reference: 0
+      _referencedCount: 0
+      _lastUpdate: 635172988495195498
+      _children: af000000b2000000
+      _variables: 
+    - _fields:
+      - _field: name
+        _currentValue: Move
+        _recordChange: 1
+        _changed: 0
+      - _field: open
+        _currentValue: True
+        _recordChange: 0
+        _changed: 0
+      - _field: precondition
+        _currentValue: 
+        _recordChange: 1
+        _changed: 0
+      - _field: repeatuntil
+        _currentValue: 
+        _recordChange: 1
+        _changed: 0
+      - _field: debug
+        _currentValue: False
+        _recordChange: 1
+        _changed: 0
+      - _field: fail
+        _currentValue: all
+        _recordChange: 1
+        _changed: 0
+      - _field: succeed
+        _currentValue: any
+        _recordChange: 1
+        _changed: 0
+      - _field: tiebreaker
+        _currentValue: fail
+        _recordChange: 1
+        _changed: 0
+      _type: 16
+      _id: 175
+      _parent: 174
+      _reference: 0
+      _referencedCount: 0
+      _lastUpdate: 635172988395649805
+      _children: b0000000b1000000
+      _variables: 
+    - _fields:
+      - _field: name
+        _currentValue: Move To Last Target Pos
+        _recordChange: 1
+        _changed: 0
+      - _field: precondition
+        _currentValue: 
+        _recordChange: 1
+        _changed: 0
+      - _field: repeatuntil
+        _currentValue: 
+        _recordChange: 1
+        _changed: 0
+      - _field: debug
+        _currentValue: False
+        _recordChange: 1
+        _changed: 0
+      - _field: movetargettype
+        _currentValue: variable
+        _recordChange: 1
+        _changed: 0
+      - _field: movetarget
+        _currentValue: lastTargetPos
+        _recordChange: 1
+        _changed: 0
+      - _field: movespeed
+        _currentValue: -1
+        _recordChange: 1
+        _changed: 0
+      - _field: looktargettype
+        _currentValue: none
+        _recordChange: 1
+        _changed: 0
+      - _field: looktarget
+        _currentValue: lastTargetPos
+        _recordChange: 1
+        _changed: 0
+      - _field: lookspeed
+        _currentValue: -1
+        _recordChange: 1
+        _changed: 0
+      - _field: animation
+        _currentValue: WoundedWalk
+        _recordChange: 1
+        _changed: 0
+      - _field: animationlayer
+        _currentValue: 0
+        _recordChange: 1
+        _changed: 0
+      - _field: animationwrapmode
+        _currentValue: loop
+        _recordChange: 1
+        _changed: 0
+      - _field: animationbasespeed
+        _currentValue: 1
+        _recordChange: 1
+        _changed: 0
+      _type: 12
+      _id: 176
+      _parent: 175
+      _reference: 0
+      _referencedCount: 0
+      _lastUpdate: 635172988090892374
+      _children: 
+      _variables: 
+    - _fields:
+      - _field: name
+        _currentValue: Player In Sight
+        _recordChange: 1
+        _changed: 0
+      - _field: precondition
+        _currentValue: 
+        _recordChange: 1
+        _changed: 0
+      - _field: repeatuntil
+        _currentValue: success
+        _recordChange: 1
+        _changed: 0
+      - _field: debug
+        _currentValue: False
+        _recordChange: 1
+        _changed: 0
+      - _field: sensor
+        _currentValue: SightSensor
+        _recordChange: 1
+        _changed: 0
+      - _field: aspect
+        _currentValue: player
+        _recordChange: 1
+        _changed: 0
+      - _field: variable
+        _currentValue: playerTarget
+        _recordChange: 1
+        _changed: 0
+      _type: 9
+      _id: 177
+      _parent: 175
+      _reference: 0
+      _referencedCount: 0
+      _lastUpdate: 635172315086083378
+      _children: 
+      _variables: 
+    - _fields:
+      - _field: name
+        _currentValue: Forget Last Target Pos
+        _recordChange: 1
+        _changed: 0
+      - _field: precondition
+        _currentValue: 
+        _recordChange: 1
+        _changed: 0
+      - _field: repeatuntil
+        _currentValue: 
+        _recordChange: 1
+        _changed: 0
+      - _field: debug
+        _currentValue: False
+        _recordChange: 1
+        _changed: 0
+      - _field: expression
+        _currentValue: lastTargetPos = null
+        _recordChange: 1
+        _changed: 0
+      _type: 3
+      _id: 178
+      _parent: 174
+      _reference: 0
+      _referencedCount: 0
+      _lastUpdate: 635172988244021132
+      _children: 
+      _variables: 
+    _freeList: 9200000098000000990000009a0000009b0000009c0000009e0000009f000000a0000000a1000000a2000000a3000000a4000000a5000000a6000000a7000000aa000000
   Version: 14
