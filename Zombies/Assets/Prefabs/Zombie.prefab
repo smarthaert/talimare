@@ -874,7 +874,7 @@ GameObject:
   - 54: {fileID: 5400000}
   - 65: {fileID: 6500000}
   - 114: {fileID: 11400000}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: SightSensor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1770,12 +1770,13 @@ GameObject:
   m_Component:
   - 4: {fileID: 400232}
   - 111: {fileID: 11100000}
-  - 143: {fileID: 14300000}
+  - 54: {fileID: 5400004}
+  - 136: {fileID: 13600000}
+  - 82: {fileID: 8200000}
   - 114: {fileID: 11400014}
   - 114: {fileID: 11400012}
   - 114: {fileID: 11400008}
-  - 114: {fileID: 11400010}
-  - 82: {fileID: 8200000}
+  - 114: {fileID: 11400020}
   m_Layer: 0
   m_Name: Zombie
   m_TagString: Enemy
@@ -2842,7 +2843,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100158}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: .25}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400232}
@@ -2991,7 +2992,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100184}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: .850000024, z: .0500000007}
+  m_LocalPosition: {x: 0, y: .800000012, z: .0500000007}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400232}
@@ -3216,9 +3217,9 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100222}
-  m_LocalRotation: {x: -.313073605, y: -.948710144, z: -.0439782031, w: 1.73349477e-08}
-  m_LocalPosition: {x: 15.107954, y: -4.52739668, z: -5.06635475}
-  m_LocalScale: {x: -.400000215, y: -.399999708, z: -.400000423}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 400246}
   - {fileID: 400244}
@@ -3362,8 +3363,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100244}
-  m_LocalRotation: {x: -.110154331, y: .0217504166, z: -.09739393, w: .988892019}
-  m_LocalPosition: {x: .00657759281, y: .0133086629, z: -.0561677404}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400222}
@@ -3433,6 +3434,21 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!54 &5400004
+Rigidbody:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100232}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: .0500000007
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 112
+  m_CollisionDetection: 0
 --- !u!65 &6500000
 BoxCollider:
   m_ObjectHideFlags: 1
@@ -3455,8 +3471,8 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: .5, z: 0}
+  m_Size: {x: .400000006, y: .800000012, z: .5}
+  m_Center: {x: 0, y: .400000006, z: 0}
 --- !u!82 &8200000
 AudioSource:
   m_ObjectHideFlags: 1
@@ -3619,7 +3635,7 @@ MonoBehaviour:
   persistenceTime: 1
   sensations:
   - sensationName: sight
-  useRaycastTest: 0
+  useRaycastTest: 1
   raycastLocation: {fileID: 400184}
   layerMask:
     serializedVersion: 2
@@ -3708,28 +3724,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 100232}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: -2121150447, guid: d5b7e7bc48f50bc49b16520df5c134e0, type: 3}
+  m_Script: {fileID: -1598434837, guid: d5b7e7bc48f50bc49b16520df5c134e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   rainVersionString: RAIN.Motion.AICharacterController
   controllerType: 2
---- !u!114 &11400010
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100232}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 326f2adaf6f64b44ba985cbd68dbbd03, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _gunLogic: {fileID: 11400018}
-  _dataController: {fileID: 11400014}
-  _player: {fileID: 100184, guid: 7dc3317358bce4e8f9d701f50f58268e, type: 2}
-  meleeDamage: 10
-  hideWhenDead: 0
-  _ai: {fileID: 11400012}
 --- !u!114 &11400012
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3744,10 +3743,10 @@ MonoBehaviour:
   rainVersionString: RAIN.Core.RAINAgent
   avatar: {fileID: 100232}
   mind: {fileID: 11400006}
-  maxSpeed: 1
-  maxAcceleration: 1
+  maxSpeed: .5
+  maxAcceleration: .5
   ApplyMaxToYAxis: 0
-  maxRotationRate: 180
+  maxRotationRate: 360
   maxAngularAcceleration: 90
   stepUpHeight: .5
 --- !u!114 &11400014
@@ -3761,9 +3760,9 @@ MonoBehaviour:
   m_Script: {fileID: 1975918722, guid: bc76cc0c25d9143f9a3f919db1a9dd44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  max: 20
-  current: 20
-  initial: 20
+  max: 40
+  current: 40
+  initial: 40
   min: 0
   healingSpeed: 3
   autoHeal: 0
@@ -3838,6 +3837,31 @@ MonoBehaviour:
   dataController: {fileID: 11400016}
   _handsNormalPos: {x: 0, y: 0, z: 0}
   _lookDownOffset: {x: 0, y: 0, z: 0}
+--- !u!114 &11400020
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100232}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08640db60cb1c4a409e21dced006082e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  meleeDamage: 10
+--- !u!136 &13600000
+CapsuleCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100232}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: .140000001
+  m_Height: 1
+  m_Direction: 1
+  m_Center: {x: 0, y: .5, z: 0}
 --- !u!137 &13700000
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 1
@@ -3975,7 +3999,7 @@ SkinnedMeshRenderer:
   m_Mesh: {fileID: 4300020, guid: 50d66e574762440369cf0f20d8cac6e3, type: 3}
   m_Bones:
   - {fileID: 0}
-  m_RootBone: {fileID: 0}
+  m_RootBone: {fileID: 400058}
   m_AABB:
     m_Center: {x: -.0464402214, y: .000889211311, z: .197741032}
     m_Extent: {x: .0164504126, y: .00322617218, z: .00807098299}
@@ -4100,7 +4124,7 @@ SkinnedMeshRenderer:
   m_Mesh: {fileID: 4300018, guid: 50d66e574762440369cf0f20d8cac6e3, type: 3}
   m_Bones:
   - {fileID: 0}
-  m_RootBone: {fileID: 0}
+  m_RootBone: {fileID: 400058}
   m_AABB:
     m_Center: {x: -.00117596099, y: .0193075743, z: .158153415}
     m_Extent: {x: .00637290347, y: .0100379772, z: .0157200992}
@@ -4129,7 +4153,7 @@ SkinnedMeshRenderer:
   m_Mesh: {fileID: 4300016, guid: 50d66e574762440369cf0f20d8cac6e3, type: 3}
   m_Bones:
   - {fileID: 0}
-  m_RootBone: {fileID: 0}
+  m_RootBone: {fileID: 400058}
   m_AABB:
     m_Center: {x: -.0909154192, y: .000760853756, z: .252515733}
     m_Extent: {x: .054714866, y: .00774756959, z: .0292381123}
@@ -4240,20 +4264,6 @@ SkinnedMeshRenderer:
     m_Center: {x: .00717272609, y: -.0218346901, z: .0618473589}
     m_Extent: {x: .158866346, y: .128813416, z: .143201753}
   m_DirtyAABB: 0
---- !u!143 &14300000
-CharacterController:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100232}
-  serializedVersion: 2
-  m_Height: 1
-  m_Radius: .140000001
-  m_SlopeLimit: 50
-  m_StepOffset: .300000012
-  m_SkinWidth: .0799999982
-  m_MinMoveDistance: 0
-  m_Center: {x: 0, y: .5, z: 0}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

@@ -15,22 +15,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!1 &100002
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
-  m_Component:
-  - 4: {fileID: 400002}
-  - 132: {fileID: 13200000}
-  m_Layer: 0
-  m_Name: HelpTxt
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
 --- !u!1 &100004
 GameObject:
   m_ObjectHideFlags: 0
@@ -173,7 +157,7 @@ GameObject:
   - 132: {fileID: 13200006}
   - 114: {fileID: 11400004}
   m_Layer: 0
-  m_Name: PlayerStateText
+  m_Name: DeathText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -240,22 +224,10 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400004}
-  - {fileID: 400002}
   - {fileID: 400006}
   - {fileID: 400014}
   - {fileID: 400020}
   m_Father: {fileID: 0}
---- !u!4 &400002
-Transform:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100002}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: .009786129, y: .24207592, z: -.107162476}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 400000}
 --- !u!4 &400004
 Transform:
   m_ObjectHideFlags: 1
@@ -359,7 +331,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100020}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: .5, y: .5, z: 3.44748211}
+  m_LocalPosition: {x: .5, y: .5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400000}
@@ -519,7 +491,7 @@ MonoBehaviour:
   m_Script: {fileID: -660264726, guid: bc76cc0c25d9143f9a3f919db1a9dd44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _fadeRate: .5
+  _fadeRate: .600000024
   _initialAlpha: 0
   _maxAlpha: 1
   _player: {fileID: 0}
@@ -616,45 +588,6 @@ GUITexture:
   m_RightBorder: 0
   m_TopBorder: 0
   m_BottomBorder: 0
---- !u!132 &13200000
-GUIText:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100002}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Text: 'W, A, S, D for movement
-
-    E for iinteracting with objects. e.g. the gemstones. Need to be within 2m of them.
-
-    R to reload weapon.
-
-
-    1 or 2 AND Scrollwheel to change weapons.
-
-    Note: Unity has trouble with scrollwheels on certain OS and hardware.
-
-
-    SPACE to jump. Can only jump once every 0.5 seconds.
-
-    Hold SHIFT down to run.
-
-    LEFT mouse button to fire.'
-  m_Anchor: 0
-  m_Alignment: 0
-  m_PixelOffset: {x: 0, y: 0}
-  m_LineSpacing: 1
-  m_TabSize: 4
-  m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-  m_Material: {fileID: 0}
-  m_FontSize: 0
-  m_FontStyle: 0
-  m_Color:
-    serializedVersion: 2
-    rgba: 4294967295
-  m_PixelCorrect: 1
-  m_RichText: 1
 --- !u!132 &13200002
 GUIText:
   m_ObjectHideFlags: 1
@@ -687,7 +620,7 @@ GUIText:
   m_Enabled: 1
   serializedVersion: 3
   m_Text: 
-  m_Anchor: 1
+  m_Anchor: 4
   m_Alignment: 1
   m_PixelOffset: {x: 0, y: 0}
   m_LineSpacing: 1
@@ -709,8 +642,8 @@ GUIText:
   m_GameObject: {fileID: 100020}
   m_Enabled: 1
   serializedVersion: 3
-  m_Text: you are dead
-  m_Anchor: 1
+  m_Text: YOU ARE DEAD
+  m_Anchor: 4
   m_Alignment: 1
   m_PixelOffset: {x: 0, y: 0}
   m_LineSpacing: 1
