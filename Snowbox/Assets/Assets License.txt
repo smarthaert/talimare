@@ -1,0 +1,25 @@
+TUTORIAL ASSETS LICENSE AGREEMENT
+
+UnityPark has created a package of tutorial assets (3D models, textures, scripts and sounds) to be used with the uLink technology. UnityPark will provide the tutorial assets for you free of charge, but the terms of use will be limited as described in this document. 
+
+UnityPark must have your agreement to the following:
+
+1.	You are free to use or modify the tutorial assets as long as you use them only for projects or applications utilizing the uLink technology.
+
+2.	You are free to release your application containing tutorial assets or parts thereof to the public, or to sell your application to a 3rd party, as long as the public or 3rd party cannot extract any parts of the tutorial assets from the application.
+
+3.	You are not required to credit UnityPark as the creator of any tutorial assets you may choose to include in your application.
+
+4.	You are not allowed to use the tutorial assets or any parts thereof in non-uLink applications.
+
+5.	The agreements herein shall remain in place from the date you gain access to the tutorial assets; however such agreements will not pertain to any tutorial assets or part thereof to the extent such assets:
+	a.	are or subsequently become public without fault on your part.
+	b.	are or subsequently becomes lawfully known to you other than as result of a disclosure by UnityPark, or a breach of confidentiality by another party.
+	c.	are approved in writing by UnityPark for release.
+	d.	are disclosed by operation of law, regulation or court order.
+
+6.	You hereby acknowledges and agree that any unauthorized disclosure or use of the tutorial assets will cause UnityPark to suffer severe and continuing financial losses, and accordingly, you agree to compensate UnityPark for such losses in the event these are caused by you breaching any of its convents or agreements contained herein. You further acknowledges that the payment of compensation pursuant to the preceding sentence will not in any way preclude UnityPark from obtaining any other lawful remedy for such breaches
+
+7.	This agreement shall be constructed in accordance with the laws of Sweden. Exclusive jurisdiction and venue for any suit or proceeding for any claims brought against UnityPark with regard to this agreement shall be in a Swedish Court. Jurisdiction and venue in any suit or proceeding to be brought by UnityPark for any claims arising out of this agreement may be in a forum of competent jurisdiction to be determined by UnityPark in its sole and complete discretion. The parties hereby unconditionally agree to the above jurisdiction of this agreement.
+
+8.	The official language of this agreement shall be English.
