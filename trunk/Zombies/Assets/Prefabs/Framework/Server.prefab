@@ -8,9 +8,10 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 400000}
+  - 114: {fileID: 11400002}
   - 114: {fileID: 11400000}
   m_Layer: 0
-  m_Name: Network
+  m_Name: Server
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -35,9 +36,35 @@ MonoBehaviour:
   m_GameObject: {fileID: 100000}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6c3e53e7cfc8b64409eac43bea7189fa, type: 3}
+  m_Script: {fileID: 11500000, guid: b5b96ffb49a2aef4fb6f5d92bf3914f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  creatorPrefab: {fileID: 100232, guid: 67d52c82b7c2ee640930bf8494a9bdad, type: 2}
+  proxyPrefab: {fileID: 100232, guid: 46246e9691c3a924e972533cbfba58ab, type: 2}
+--- !u!114 &11400002
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 70aca81a980d02644a47c438f68e4cfd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  port: 7100
+  maxConnections: 64
+  cleanupAfterPlayers: 1
+  registerHost: 0
+  targetFrameRate: 60
+  dontDestroyOnLoad: 0
+  instantiateOnConnected:
+    startPosition: {x: 0, y: 3, z: 0}
+    startRotation: {x: 0, y: 0, z: 0}
+    ownerPrefab: {fileID: 0}
+    proxyPrefab: {fileID: 0}
+    serverPrefab: {fileID: 0}
+    appendLoginData: 0
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
