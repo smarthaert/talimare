@@ -9,8 +9,9 @@ GameObject:
   m_Component:
   - 4: {fileID: 400000}
   - 114: {fileID: 11400000}
+  - 114: {fileID: 11400002}
   m_Layer: 0
-  m_Name: Game
+  m_Name: Client
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -38,6 +39,35 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b19817419e57444f9cef1a267d961c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &11400002
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c8ea36ef8dda574699b97c833b9003a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  inputName: 1
+  quickText: Play on Localhost
+  quickHost: 127.0.0.1
+  quickPort: 7100
+  hasAdvancedMode: 1
+  gameType: MyUniqueGameType
+  showGameLevel: 0
+  iconFavorite: {fileID: 0}
+  iconNonfavorite: {fileID: 0}
+  enableWhenGUI: []
+  disableWhenGUI: []
+  reloadOnDisconnect: 0
+  targetFrameRate: 60
+  guiSkin: {fileID: 0}
+  guiDepth: 0
+  dontDestroyOnLoad: 0
+  lockCursor: 1
+  hideCursor: 1
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

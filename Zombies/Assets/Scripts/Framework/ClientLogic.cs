@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class GameManager : MonoBehaviour {
+public class ClientLogic : MonoBehaviour {
 
 	protected void Start() {
 		Screen.lockCursor = true;

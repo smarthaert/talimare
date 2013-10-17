@@ -15,7 +15,7 @@ public class ZombieController : MonoBehaviour {
 	
 	public const string DEATH_ANIM = "DieEasy";
 
-	public void Start() {
+	protected void Start() {
 		ai = GetComponent<RAINAgent>();
 		dataController = GetComponent<DataController>();
 		lastTargetPosition = new MoveLookTarget();
@@ -25,7 +25,7 @@ public class ZombieController : MonoBehaviour {
 		ai.Agent.actionContext.SetContextItem<bool>(Constants.AI_DEAD_VAR, false);
 	}
 	
-	public void Update() {
+	protected void Update() {
 		ai.Agent.actionContext.SetContextItem<float>(Constants.AI_HEALTH_VAR, dataController.current);
 		
 		// Remember the target's last position in case he is no longer detected
@@ -67,7 +67,7 @@ public class ZombieController : MonoBehaviour {
 		target.SendMessageUpwards("ApplyDamage", damageSource);
 	}
 	
-	public void Die() {
+	protected void Die() {
 		ai.Agent.actionContext.SetContextItem<bool>(Constants.AI_DEAD_VAR, true);
 		
 		AnimationParams anim = new AnimationParams(DEATH_ANIM, AnimationPlayRequest.START, 1, 0, WrapMode.Once, 0);
