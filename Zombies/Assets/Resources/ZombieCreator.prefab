@@ -3253,7 +3253,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 1
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 0
   m_CollisionDetection: 0
 --- !u!65 &6500000
 BoxCollider:
@@ -3410,7 +3410,7 @@ MonoBehaviour:
   raycastLocation: {fileID: 400184}
   layerMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 4294965247
   visualize: 1
 --- !u!114 &11400002
 MonoBehaviour:
@@ -3471,7 +3471,7 @@ MonoBehaviour:
   raycastLocation: {fileID: 0}
   layerMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 4294965247
   visualize: 0
 --- !u!114 &11400006
 MonoBehaviour:
@@ -3493,7 +3493,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100232}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: af6a803229e53e643b2327221b5ca82b, type: 3}
   m_Name: 
@@ -3540,8 +3540,8 @@ MonoBehaviour:
   rainVersionString: RAIN.Core.RAINAgent
   avatar: {fileID: 100232}
   mind: {fileID: 11400006}
-  maxSpeed: .5
-  maxAcceleration: .5
+  maxSpeed: 1
+  maxAcceleration: 1
   ApplyMaxToYAxis: 0
   maxRotationRate: 360
   maxAngularAcceleration: 90
